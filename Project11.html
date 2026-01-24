@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT 11 | TECH BUREAU</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. BASE SETTINGS --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg: #050505;       /* Глубокий черный */
+            --fg: #E6E6E6;       /* Грязновато-белый (бетон) */
+            --dim: #555555;      /* Технический серый */
+            --line: #333333;     /* Линии сетки */
+            --accent: #FFFFFF;   
+            --font-main: 'Inter', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        img { display: block; max-width: 100%; }
+        
+        /* --- 2. UTILITY CLASSES --- */
+        .tech-font { 
+            font-family: var(--font-tech); 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            font-size: 11px; 
+        }
+        .flex { display: flex; }
+        .j-btwn { justify-content: space-between; }
+        .a-center { align-items: center; }
+        .uppercase { text-transform: uppercase; }
+
+        /* --- 3. LAYOUT WRAPPER --- */
+        .wrapper {
+            max-width: 100%;
+            margin: 0 auto;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            min-height: 100vh;
+        }
+
+        /* --- 4. HEADER --- */
+        header {
+            padding: 20px 40px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .logo-container { width: 50px; height: 50px; }
+        .logo-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            border-radius: 50%;
+            filter: grayscale(100%) contrast(1.2); 
+        }
+
+        .header-nav span { margin-left: 20px; color: var(--dim); }
+
+        /* --- 5. HERO SECTION --- */
+        .hero {
+            padding-top: 25vh;
+            padding-bottom: 10vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 13vw, 15rem);
+            font-weight: 800;
+            line-height: 0.8;
+            letter-spacing: -0.04em;
+            margin-bottom: 40px;
+            color: var(--accent);
+            white-space: nowrap;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 60px;
+            text-align: left;
+            color: var(--dim);
+        }
+        .hero-meta div { border-left: 1px solid var(--dim); padding-left: 15px; }
+
+        /* --- 6. MARQUEE (БЕГУЩАЯ СТРОКА) --- */
+        .marquee-wrapper {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            color: var(--accent);
+        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- 7. PROJECTS GRID --- */
+        .project-card {
+            display: grid;
+            grid-template-columns: 0.5fr 1.5fr 1.5fr; /* Сетка: Индекс | Инфо | Фото */
+            min-height: 70vh;
+            border-bottom: 1px solid var(--line);
+            transition: background 0.3s ease;
+            position: relative;
+        }
+
+        /* Эффект инверсии (Brutal hover) */
+        .project-card:hover {
+            background-color: var(--fg);
+            color: var(--bg);
+        }
+
+        .p-col {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid var(--line);
+        }
+        
+        /* Убираем отступы для колонки с фото, чтобы оно было на весь блок */
+        .p-col.visual {
+            padding: 0;
+            border-right: none;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .p-title {
+            font-size: clamp(2rem, 4vw, 5rem);
+            line-height: 0.9;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+
+        .p-desc {
+            font-family: var(--font-tech);
+            max-width: 420px;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        /* Кнопка */
+        .btn-buy {
+            display: inline-block;
+            border: 1px solid var(--dim);
+            padding: 15px 30px;
+            font-family: var(--font-tech);
+            font-size: 11px;
+            text-transform: uppercase;
+            transition: 0.2s;
+            width: fit-content;
+        }
+        
+        .project-card:hover .btn-buy {
+            border-color: var(--bg); /* Кнопка становится черной при наведении */
+            color: var(--bg);
+            font-weight: 700;
+        }
+
+        /* --- 8. IMAGES STYLES --- */
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Заполняет весь блок, обрезая лишнее */
+            filter: grayscale(100%) brightness(0.9); /* ЧБ по умолчанию */
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+        }
+
+        /* При наведении фото оживает */
+        .project-card:hover .project-img {
+            filter: grayscale(0%) brightness(1); /* Цвет возвращается */
+            transform: scale(1.03); /* Легкий зум */
+        }
+
+        /* --- 9. FOOTER --- */
+        footer {
+            padding: 60px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .footer-logo { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
+
+        /* --- MOBILE ADAPTIVE --- */
+        @media (max-width: 900px) {
+            .project-card { grid-template-columns: 1fr; min-height: auto; }
+            .p-col { border-right: none; border-bottom: 1px solid var(--line); }
+            .p-col.visual { height: 350px; border-bottom: 1px solid var(--line); }
+            .hero h1 { font-size: 16vw; }
+            header { padding: 15px 20px; }
+            .header-nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header class="flex j-btwn a-center">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="P11 Logo" class="logo-img">
+        </div>
+        <nav class="header-nav tech-font">
+            <span>[ SYSTEM: ACTIVE ]</span>
+            <span>[ ACCESS: GRANTED ]</span>
+        </nav>
+        <div class="tech-font">MENU ///</div>
+    </header>
+
+    <section class="hero">
+        <h1 class="uppercase">Project<br>Eleven</h1>
+        <div class="hero-meta tech-font">
+            <div>
+                BUREAU ID: P-11<br>
+                STATUS: CLASSIFIED
+            </div>
+            <div>
+                ADVANCED PROTOTYPING<br>
+                DEFENSE & AEROSPACE
+            </div>
+        </div>
+    </section>
+
+    <div class="marquee-wrapper tech-font">
+        <div class="marquee-content">
+            /// NEW PROTOTYPES AVAILABLE /// CATCHER V.04 /// CRYSTALLAMP OPTICS /// ZACK SYSTEM MODULAR /// OMEGA CORE /// 
+            /// NEW PROTOTYPES AVAILABLE /// CATCHER V.04 /// CRYSTALLAMP OPTICS /// ZACK SYSTEM MODULAR /// OMEGA CORE ///
+        </div>
+    </div>
+
+    <div class="projects-list">
+
+        <article class="project-card">
+            <div class="p-col p-index">
+                <span class="tech-font">NO. 001</span>
+                <span class="tech-font" style="margin-top: auto;">INTERCEPT</span>
+            </div>
+            <div class="p-col">
+                <div>
+                    <h2 class="p-title uppercase">Catcher</h2>
+                    <p class="p-desc">
+                        Автономная система перехвата. Раскладное крыло. Диаметр 120мм.
+						Скорость перехвата 200км/ч.
+						Усиленный корпус из композитных материалов.
+                        Кинетический захват и таранная система.
+						
+						
+                    </p>
+                </div>
+                <a href="#" class="btn-buy">Access Data</a>
+            </div>
+            <div class="p-col visual">
+                <img src="catcher.jpg" alt="Catcher Drone" class="project-img">
+            </div>
+        </article>
+
+        <article class="project-card">
+            <div class="p-col p-index">
+                <span class="tech-font">NO. 002</span>
+                <span class="tech-font" style="margin-top: auto;">OPTICS</span>
+            </div>
+            <div class="p-col">
+                <div>
+                    <h2 class="p-title uppercase">Crystal<br>Lamp</h2>
+                    <p class="p-desc">
+                        Тактический оптический излучатель. Сфокусированный фотонный пучок.
+                        Сапфировая линза высокой чистоты для работы в экстремальных условиях.
+                    </p>
+                </div>
+                <a href="#" class="btn-buy">Request Unit</a>
+            </div>
+            <div class="p-col visual">
+                <img src="crystallamp.jpg" alt="Crystal Lamp" class="project-img">
+            </div>
+        </article>
+
+        <article class="project-card">
+            <div class="p-col p-index">
+                <span class="tech-font">NO. 003</span>
+                <span class="tech-font" style="margin-top: auto;">FRAMEWORK</span>
+            </div>
+            <div class="p-col">
+                <div>
+                    <h2 class="p-title uppercase">Zack<br>System</h2>
+                    <p class="p-desc">
+                        Интеллектульный помощник.Автономная работа, отслеживание активности.
+                        Общение и поддержка пользователя, экосистема умный дом ZackSystem.
+                    </p>
+                </div>
+                <a href="#" class="btn-buy">View Schematics</a>
+            </div>
+            <div class="p-col visual">
+                <img src="zacksystem.jpg" alt="Zack System" class="project-img">
+            </div>
+        </article>
+
+        <article class="project-card">
+            <div class="p-col p-index">
+                <span class="tech-font">NO. 004</span>
+                <span class="tech-font" style="margin-top: auto;">AI CORE</span>
+            </div>
+            <div class="p-col">
+                <div>
+                    <h2 class="p-title uppercase">Omega</h2>
+                    <p class="p-desc">
+						Обучающая платформа для старта в робототехнике.
+                        4-х осевой робот манипулятор. Адаптиная констуркция. 
+						Управление с приложения на телефона, интуитивное управление.
+                        
+                    </p>
+                </div>
+                <a href="#" class="btn-buy">Pre-Order</a>
+            </div>
+            <div class="p-col visual">
+                <img src="omega.jpg" alt="Omega Server" class="project-img">
+            </div>
+        </article>
+
+    </div>
+
+    <footer class="border-t">
+        <div class="tech-font">
+            PROJECT ELEVEN BUREAU<br>
+            © 2026. ALL RIGHTS RESERVED.
+        </div>
+        <div class="footer-logo">P—11®</div>
+    </footer>
+
+</div>
+
+</body>
+</html>
