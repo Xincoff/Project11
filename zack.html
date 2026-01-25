@@ -3,67 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT DETAILS | P-11</title>
+    <title>ZACK SYSTEM | P-11 DETAILS</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* (Те же стили, что и на главной, для целостности) */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         :root {
             --bg: #050505; --fg: #E6E6E6; --dim: #555555;
             --line: #333333; --accent: #FFFFFF;
             --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); }
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; }
         a { text-decoration: none; color: inherit; cursor: none; }
         img { display: block; max-width: 100%; }
 
-        /* --- LAYOUT --- */
-        .wrapper { max-width: 100%; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
-        
-        /* HEADER */
-        header { padding: 20px 40px; position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center;}
-        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; }
-        .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-
-        /* HERO PROJECT */
-        .p-hero { padding: 150px 40px 60px; border-bottom: 1px solid var(--line); }
-        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; }
-        .p-hero h1 { font-size: clamp(3rem, 8vw, 10rem); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; }
-        
-        /* GRID INFO */
-        .p-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 60vh; }
-        .p-left { border-right: 1px solid var(--line); padding: 40px; border-bottom: 1px solid var(--line); }
-        .p-right { border-bottom: 1px solid var(--line); overflow: hidden; position: relative;}
-        
-        .p-text-block { max-width: 500px; margin-bottom: 60px; }
-        .p-text-block h3 { font-family: var(--font-tech); font-size: 12px; margin-bottom: 20px; color: var(--dim); }
-        .p-text-block p { font-size: 16px; line-height: 1.6; color: #ccc; }
-
-        /* SPECS TABLE */
-        .specs-table { width: 100%; border-top: 1px solid var(--line); margin-top: 40px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; font-family: var(--font-tech); font-size: 12px; }
-        .spec-val { color: var(--accent); }
-
-        /* IMAGES */
-        .detail-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .p-right:hover .detail-img { filter: grayscale(0%); }
-
-        /* FOOTER CTA */
-        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); }
-        .cta-btn { font-size: 40px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
-        .cta-btn:hover { color: var(--dim); border-color: var(--dim); }
-
-        /* CURSOR */
         .cursor { width: 20px; height: 20px; border: 1px solid var(--accent); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
         
+        .wrapper { max-width: 100%; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
+        
+        header { padding: 20px 40px; position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center;}
+        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; }
+        .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+        .p-hero { padding: 150px 40px 60px; border-bottom: 1px solid var(--line); }
+        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 11px; letter-spacing: 2px; }
+        .p-hero h1 { font-size: clamp(3rem, 8vw, 10rem); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; }
+        
+        .p-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
+        .p-left { border-right: 1px solid var(--line); padding: 40px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .p-text-block { max-width: 500px; margin-bottom: 60px; }
+        .p-text-block h3 { font-family: var(--font-tech); font-size: 11px; margin-bottom: 20px; color: var(--dim); letter-spacing: 1px; }
+        .p-text-block p { font-size: 15px; line-height: 1.6; color: #aaa; }
+
+        .specs-table { width: 100%; border-top: 1px solid var(--line); margin-top: 20px; }
+        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; font-family: var(--font-tech); font-size: 11px; }
+        .spec-val { color: var(--accent); }
+
+        /* --- GALLERY SLIDER STYLES --- */
+        .p-right { border-bottom: 1px solid var(--line); position: relative; background: #000; overflow: hidden; }
+        
+        .slider-container { width: 100%; height: 100%; position: relative; }
+        
+        .slider-track { 
+            display: flex; width: 100%; height: 100%; 
+            transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); 
+        }
+        
+        .slider-track img { 
+            min-width: 100%; height: 100%; object-fit: cover; 
+            filter: grayscale(100%); transition: 0.5s ease;
+        }
+        
+        .p-right:hover .slider-track img { filter: grayscale(0%); }
+
+        .slider-nav {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 30px;
+            background: rgba(5,5,5,0.8); padding: 12px 25px;
+            border: 1px solid var(--line); backdrop-filter: blur(10px); z-index: 10;
+        }
+
+        .nav-btn { 
+            background: none; border: none; color: var(--accent); 
+            font-family: var(--font-tech); font-size: 10px; letter-spacing: 1px;
+            transition: 0.3s; cursor: none;
+        }
+        .nav-btn:hover { color: var(--dim); }
+
+        #slide-counter { font-family: var(--font-tech); font-size: 10px; color: var(--dim); min-width: 60px; text-align: center; }
+
+        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); }
+        .cta-btn { font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 800; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 5px; transition: 0.3s; }
+        .cta-btn:hover { color: var(--dim); border-color: var(--dim); }
+
         @media (max-width: 900px) {
             .p-grid { grid-template-columns: 1fr; }
             .p-left { border-right: none; }
-            .p-right { height: 400px; }
+            .p-right { height: 500px; }
             .cursor { display: none; }
             * { cursor: auto; }
         }
@@ -75,13 +95,13 @@
 
 <div class="wrapper">
     <header>
-        <div style="font-weight: 800;">P—11</div>
-        <a href="index.html" class="back-btn"><< RETURN TO BASE</a>
+        <div style="font-weight: 800; letter-spacing: -1px;">P—11</div>
+        <a href="index.html" class="back-btn">[ RETURN TO BASE ]</a>
     </header>
 
     <section class="p-hero">
-        <span class="p-type">[ CLASSIFIED PROJECT ]</span>
-        <h1 id="project-title">ZACK</h1> 
+        <span class="p-type">[ CLASSIFIED PROJECT: NO. 003 ]</span>
+        <h1 id="project-title">ZACK SYSTEM</h1> 
     </section>
 
     <section class="p-grid">
@@ -89,40 +109,75 @@
             <div class="p-text-block">
                 <h3>/// MISSION BRIEF</h3>
                 <p id="project-desc">
-                    Тестовое описание.
+                    Интеллектуальный помощник нового поколения. Экосистема ZackSystem спроектирована для полной автоматизации жилых и рабочих пространств. Центральный узел обработки данных на базе кастомного ядра ESP32-S3 Sense обеспечивает мгновенный отклик и конфиденциальность локальных вычислений.
                 </p>
             </div>
 
             <div class="p-text-block">
                 <h3>/// TECHNICAL DATA</h3>
                 <div class="specs-table">
-                    <div class="spec-row"><span>STATUS</span><span class="spec-val">PROTOTYPE</span></div>
-                    <div class="spec-row"><span>MATERIAL</span><span class="spec-val">PETG</span></div>
-                    <div class="spec-row"><span>CORE</span><span class="spec-val">ESP32-S3 SENSE</span></div>
-                    <div class="spec-row"><span>AI</span><span class="spec-val">GEMINI</span></div>
+                    <div class="spec-row"><span>STATUS</span><span class="spec-val">ACTIVE / PROTOTYPE</span></div>
+                    <div class="spec-row"><span>MATERIAL</span><span class="spec-val">PETG CARBON REINFORCED</span></div>
+                    <div class="spec-row"><span>CORE UNIT</span><span class="spec-val">ESP32-S3 SENSE</span></div>
+                    <div class="spec-row"><span>OS INTERFACE</span><span class="spec-val">P11 NEURAL CORE</span></div>
                 </div>
             </div>
         </div>
 
         <div class="p-right">
-            <img src="zacksystem.jpg" alt="Project Detail" class="detail-img" id="project-img">
+            <div class="slider-container">
+                <div class="slider-track" id="slider-track">
+                    <img src="zacksystem.jpg" alt="Zack Front View">
+                    <img src="catcher.jpg" alt="Zack Side View">
+                    <img src="omega.jpg" alt="Zack Internal">
+                </div>
+
+                <div class="slider-nav">
+                    <button onclick="moveSlide(-1)" class="nav-btn">PREV</button>
+                    <span id="slide-counter">01 / 03</span>
+                    <button onclick="moveSlide(1)" class="nav-btn">NEXT</button>
+                </div>
+            </div>
         </div>
     </section>
 
     <section class="cta-section">
-        <div style="margin-bottom: 20px;" class="p-type">INTERESTED IN THIS TECHNOLOGY?</div>
+        <div style="margin-bottom: 20px;" class="p-type">READY TO DEPLOY?</div>
         <a href="mailto:contact@project11.bureau" class="cta-btn">INITIATE INQUIRY</a>
     </section>
 </div>
 
 <script>
+    // Курсор
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
+
+    // Логика слайдера
+    let currentSlide = 0;
+    const track = document.getElementById('slider-track');
+    const counter = document.getElementById('slide-counter');
+    const slides = track.getElementsByTagName('img');
+    const totalSlides = slides.length;
+
+    function moveSlide(direction) {
+        currentSlide += direction;
+
+        if (currentSlide >= totalSlides) currentSlide = 0;
+        if (currentSlide < 0) currentSlide = totalSlides - 1;
+
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        updateCounter();
+    }
+
+    function updateCounter() {
+        const currentNum = (currentSlide + 1).toString().padStart(2, '0');
+        const totalNum = totalSlides.toString().padStart(2, '0');
+        counter.innerText = `${currentNum} / ${totalNum}`;
+    }
 </script>
 
 </body>
-
 </html>
