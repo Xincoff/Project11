@@ -10,18 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- CORE SETTINGS --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Скрываем стандартный курсор */ }
         
         :root {
-            --bg: #050505;       /* Глубокий черный */
-            --fg: #E6E6E6;       /* Грязновато-белый (бетон) */
-            --dim: #555555;      /* Технический серый */
-            --line: #333333;     /* Линии сетки */
+            --bg: #050505;
+            --fg: #E6E6E6;
+            --dim: #555555;
+            --line: #333333;
             --accent: #FFFFFF;   
             --font-main: 'Inter', sans-serif;
             --font-tech: 'JetBrains Mono', monospace;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg);
@@ -32,21 +34,61 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        a { text-decoration: none; color: inherit; cursor: pointer; }
+        a { text-decoration: none; color: inherit; cursor: none; }
         img { display: block; max-width: 100%; }
-        
 
-        .tech-font { 
-            font-family: var(--font-tech); 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            font-size: 11px; 
+        /* --- CUSTOM CURSOR --- */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--accent);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            mix-blend-mode: difference;
         }
+        .cursor::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* Эффект курсора при наведении */
+        body:hover .cursor { opacity: 1; }
+        a:hover ~ .cursor, .project-card:hover ~ .cursor {
+            width: 50px; height: 50px; background: rgba(255,255,255,0.1);
+        }
+
+        /* --- PRELOADER --- */
+        .preloader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease;
+        }
+        .loader-text {
+            font-family: var(--font-tech);
+            color: var(--accent);
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- TYPOGRAPHY & LAYOUT --- */
+        .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
         .flex { display: flex; }
         .j-btwn { justify-content: space-between; }
         .a-center { align-items: center; }
         .uppercase { text-transform: uppercase; }
-
 
         .wrapper {
             max-width: 100%;
@@ -56,162 +98,77 @@
             min-height: 100vh;
         }
 
-
         header {
             padding: 20px 40px;
             position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
+            top: 0; width: 100%; z-index: 100;
             background: rgba(5, 5, 5, 0.85);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--line);
         }
 
         .logo-container { width: 50px; height: 50px; }
-        .logo-img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            border-radius: 50%;
-            filter: grayscale(100%) contrast(1.2); 
-        }
-
+        .logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; filter: grayscale(100%) contrast(1.2); }
         .header-nav span { margin-left: 20px; color: var(--dim); }
 
-        /* --- 5. HERO SECTION --- */
         .hero {
-            padding-top: 25vh;
-            padding-bottom: 10vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            padding-top: 25vh; padding-bottom: 10vh;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
             border-bottom: 1px solid var(--line);
         }
-
         .hero h1 {
             font-size: clamp(3rem, 13vw, 15rem);
-            font-weight: 800;
-            line-height: 0.8;
-            letter-spacing: -0.04em;
-            margin-bottom: 40px;
-            color: var(--accent);
-            white-space: nowrap;
+            font-weight: 800; line-height: 0.8; letter-spacing: -0.04em;
+            margin-bottom: 40px; color: var(--accent); white-space: nowrap;
         }
-
-        .hero-meta {
-            display: flex;
-            gap: 60px;
-            text-align: left;
-            color: var(--dim);
-        }
+        .hero-meta { display: flex; gap: 60px; text-align: left; color: var(--dim); }
         .hero-meta div { border-left: 1px solid var(--dim); padding-left: 15px; }
 
-
         .marquee-wrapper {
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 12px 0;
-            background: var(--bg);
-            border-bottom: 1px solid var(--line);
+            overflow: hidden; white-space: nowrap; padding: 12px 0;
+            background: var(--bg); border-bottom: 1px solid var(--line);
         }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-            color: var(--accent);
-        }
+        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; color: var(--accent); }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        
         .project-card {
-            display: grid;
-            grid-template-columns: 0.5fr 1.5fr 1.5fr; 
-            min-height: 70vh;
-            border-bottom: 1px solid var(--line);
-            transition: background 0.3s ease;
-            position: relative;
+            display: grid; grid-template-columns: 0.5fr 1.5fr 1.5fr;
+            min-height: 70vh; border-bottom: 1px solid var(--line);
+            transition: background 0.3s ease; position: relative;
         }
-
-        /* Эффект инверсии */
-        .project-card:hover {
-            background-color: var(--fg);
-            color: var(--bg);
-        }
+        .project-card:hover { background-color: var(--fg); color: var(--bg); }
 
         .p-col {
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            border-right: 1px solid var(--line);
+            padding: 40px; display: flex; flex-direction: column;
+            justify-content: space-between; border-right: 1px solid var(--line);
         }
-        
-        .p-col.visual {
-            padding: 0;
-            border-right: none;
-            overflow: hidden;
-            background: #000;
-        }
+        .p-col.visual { padding: 0; border-right: none; overflow: hidden; background: #000; }
 
         .p-title {
-            font-size: clamp(2rem, 4vw, 5rem);
-            line-height: 0.9;
-            font-weight: 500;
-            letter-spacing: -0.02em;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 4vw, 5rem); line-height: 0.9;
+            font-weight: 500; letter-spacing: -0.02em; margin-bottom: 20px;
         }
-
         .p-desc {
-            font-family: var(--font-tech);
-            max-width: 420px;
-            font-size: 12px;
-            line-height: 1.5;
-            margin-bottom: 40px;
-            opacity: 0.8;
+            font-family: var(--font-tech); max-width: 420px; font-size: 12px;
+            line-height: 1.5; margin-bottom: 40px; opacity: 0.8;
         }
 
-        /* Кнопка */
         .btn-buy {
-            display: inline-block;
-            border: 1px solid var(--dim);
-            padding: 15px 30px;
-            font-family: var(--font-tech);
-            font-size: 11px;
-            text-transform: uppercase;
-            transition: 0.2s;
-            width: fit-content;
+            display: inline-block; border: 1px solid var(--dim);
+            padding: 15px 30px; font-family: var(--font-tech); font-size: 11px;
+            text-transform: uppercase; transition: 0.2s; width: fit-content;
         }
-        
-        .project-card:hover .btn-buy {
-            border-color: var(--bg); /* Кнопка становится черной при наведении */
-            color: var(--bg);
-            font-weight: 700;
-        }
+        .project-card:hover .btn-buy { border-color: var(--bg); color: var(--bg); font-weight: 700; }
 
         .project-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Заполняет весь блок, обрезая лишнее */
-            filter: grayscale(100%) brightness(0.9); /* ЧБ по умолчанию */
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%) brightness(0.9);
             transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
         }
+        .project-card:hover .project-img { filter: grayscale(0%) brightness(1); transform: scale(1.03); }
 
-
-        .project-card:hover .project-img {
-            filter: grayscale(0%) brightness(1); 
-            transform: scale(1.03); 
-        }
-
-
-        footer {
-            padding: 60px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
+        footer { padding: 60px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-logo { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
-
 
         @media (max-width: 900px) {
             .project-card { grid-template-columns: 1fr; min-height: auto; }
@@ -220,10 +177,19 @@
             .hero h1 { font-size: 16vw; }
             header { padding: 15px 20px; }
             .header-nav { display: none; }
+            .cursor { display: none; } /* Отключаем кастомный курсор на мобильных */
+            * { cursor: auto; }
         }
     </style>
 </head>
 <body>
+
+<div class="preloader" id="preloader">
+    <div class="loader-text">[ INITIALIZING SYSTEM ]</div>
+    <div class="loader-text" style="font-size: 10px; margin-top: 10px;">PLEASE WAIT...</div>
+</div>
+
+<div class="cursor" id="cursor"></div>
 
 <div class="wrapper">
 
@@ -271,17 +237,13 @@
                     <h2 class="p-title uppercase">Catcher</h2>
                     <p class="p-desc">
                         Автономная система перехвата. Раскладное крыло. Диаметр 120мм.
-						Скорость перехвата 200км/ч.
-						Усиленный корпус из композитных материалов.
-                        Кинетический захват и таранная система.
-						
-						
+                        Скорость перехвата 200км/ч. Усиленный корпус.
                     </p>
                 </div>
-                <a href="#" class="btn-buy">Access Data</a>
+                <a href="catcher.html" class="btn-buy">Access Dossier</a>
             </div>
             <div class="p-col visual">
-                <img src="catcher.jpg" alt="Catcher Drone" class="project-img">
+                <img src="catcher.jpg" alt="Catcher" class="project-img">
             </div>
         </article>
 
@@ -294,14 +256,13 @@
                 <div>
                     <h2 class="p-title uppercase">Crystal<br>Lamp</h2>
                     <p class="p-desc">
-                        Технологии и природа в одном корпусе. Натуральный аметист оживает при помощи современных решений.
-                        Только точность. Только технологии. Только холод стекла и металла. И немного магии природы.
+                        Технологии и природа в одном корпусе. Натуральный аметист и современные решения.
                     </p>
                 </div>
-                <a href="#" class="btn-buy">Request Unit</a>
+                <a href="crystallamp.html" class="btn-buy">View Unit</a>
             </div>
             <div class="p-col visual">
-                <img src="crystallamp.jpg" alt="Crystal Lamp" class="project-img">
+                <img src="crystallamp.jpg" alt="Lamp" class="project-img">
             </div>
         </article>
 
@@ -314,14 +275,13 @@
                 <div>
                     <h2 class="p-title uppercase">Zack<br>System</h2>
                     <p class="p-desc">
-                        Интеллектульный помощник.Автономная работа, отслеживание активности.
-                        Общение и поддержка пользователя, экосистема умный дом ZackSystem.
+                        Интеллектуальный помощник. Экосистема умный дом.
                     </p>
                 </div>
-                <a href="#" class="btn-buy">View Schematics</a>
+                <a href="zack.html" class="btn-buy">System Specs</a>
             </div>
             <div class="p-col visual">
-                <img src="zacksystem.jpg" alt="Zack System" class="project-img">
+                <img src="zacksystem.jpg" alt="Zack" class="project-img">
             </div>
         </article>
 
@@ -334,16 +294,13 @@
                 <div>
                     <h2 class="p-title uppercase">Omega</h2>
                     <p class="p-desc">
-						Обучающая платформа для старта в робототехнике.
-                        4-х осевой робот манипулятор. Адаптиная констуркция. 
-						Управление с приложения на телефоне, интуитивное управление.
-                        
+                        Обучающая платформа. 4-х осевой манипулятор.
                     </p>
                 </div>
-                <a href="#" class="btn-buy">Pre-Order</a>
+                <a href="omega.html" class="btn-buy">Initialize</a>
             </div>
             <div class="p-col visual">
-                <img src="omega.jpg" alt="Omega Server" class="project-img">
+                <img src="omega.jpg" alt="Omega" class="project-img">
             </div>
         </article>
 
@@ -359,9 +316,25 @@
 
 </div>
 
+<script>
+    // Preloader Script
+    window.addEventListener('load', () => {
+        const preloader = document.getElementById('preloader');
+        setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.remove();
+            }, 800);
+        }, 1000);
+    });
+
+    // Custom Cursor Script
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+</script>
+
 </body>
-
 </html>
-
-
-
