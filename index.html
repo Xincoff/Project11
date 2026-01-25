@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT 11 | TECH BUREAU</title>
+    <title>PROJECT 11</title>
     
+    <link rel="icon" type="image/jpeg" href="favicon.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         /* --- CORE SETTINGS --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Скрываем стандартный курсор */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         
         :root {
             --bg: #050505;
@@ -58,9 +60,8 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
         }
-        /* Эффект курсора при наведении */
         body:hover .cursor { opacity: 1; }
-        a:hover ~ .cursor, .project-card:hover ~ .cursor {
+        a:hover ~ .cursor, .project-card:hover ~ .cursor, .tech-font:hover ~ .cursor {
             width: 50px; height: 50px; background: rgba(255,255,255,0.1);
         }
 
@@ -82,6 +83,50 @@
             animation: blink 1s infinite;
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* --- SIDE MENU STYLES --- */
+        .side-panel {
+            position: fixed;
+            top: 0; right: -100%;
+            width: 450px; height: 100vh;
+            background: var(--bg);
+            border-left: 1px solid var(--line);
+            z-index: 10000; /* Поверх всего */
+            padding: 40px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -10px 0 50px rgba(0,0,0,0.9);
+        }
+        .side-panel.active { right: 0; }
+
+        .menu-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9998;
+            opacity: 0; pointer-events: none;
+            transition: 0.5s ease;
+        }
+        .menu-backdrop.active { opacity: 1; pointer-events: all; }
+
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 40px;
+        }
+        .close-btn {
+            background: none; border: none; color: var(--accent);
+            cursor: none; font-size: 12px; transition: 0.3s;
+        }
+        .close-btn:hover { color: var(--dim); }
+
+        .panel-links a {
+            display: block; font-size: 2rem; font-weight: 500; text-transform: uppercase;
+            margin-bottom: 30px; color: var(--dim); transition: 0.3s;
+        }
+        .panel-links a:hover { color: var(--accent); padding-left: 10px; }
+        
+        .panel-footer { color: var(--dim); border-top: 1px solid var(--line); padding-top: 20px; line-height: 1.6; }
 
         /* --- TYPOGRAPHY & LAYOUT --- */
         .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
@@ -177,7 +222,8 @@
             .hero h1 { font-size: 16vw; }
             header { padding: 15px 20px; }
             .header-nav { display: none; }
-            .cursor { display: none; } /* Отключаем кастомный курсор на мобильных */
+            .cursor { display: none; }
+            .side-panel { width: 100%; }
             * { cursor: auto; }
         }
     </style>
@@ -191,6 +237,31 @@
 
 <div class="cursor" id="cursor"></div>
 
+<div id="menu-backdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
+
+<div id="side-menu" class="side-panel">
+    <div class="panel-header">
+        <span class="tech-font">[ SYSTEM_MENU ]</span>
+        <button onclick="toggleMenu()" class="close-btn tech-font">[ CLOSE X ]</button>
+    </div>
+
+    <nav class="panel-links">
+        <a href="index.html">01. ARCHIVE</a>
+        <a href="#">02. INTELLIGENCE</a>
+        <a href="mailto:contact@project11.bureau">03. COMMS</a>
+    </nav>
+
+    <div class="panel-footer tech-font">
+        <div>
+            LOC: 55.75 N, 37.61 E<br>
+            ENCRYPTION: AES-256
+        </div>
+        <div style="margin-top: 20px; opacity: 0.5;">
+            /// PROJECT ELEVEN BUREAU ///
+        </div>
+    </div>
+</div>
+
 <div class="wrapper">
 
     <header class="flex j-btwn a-center">
@@ -201,7 +272,9 @@
             <span>[ SYSTEM: ACTIVE ]</span>
             <span>[ ACCESS: GRANTED ]</span>
         </nav>
-        <div class="tech-font">MENU ///</div>
+        <div class="tech-font" onclick="toggleMenu()" style="cursor: none; padding: 10px; border: 1px solid transparent; transition:0.3s;">
+           [ MENU /// ]
+        </div>
     </header>
 
     <section class="hero">
@@ -278,10 +351,10 @@
                         Интеллектуальный помощник. Экосистема умный дом.
                     </p>
                 </div>
-                <a href="zack.html" class="btn-buy">VIEW MORE</a>
+                <a href="zacksystem.html" class="btn-buy">VIEW MORE</a>
             </div>
             <div class="p-col visual">
-                <img src="zacksystem.jpg" alt="Zack" class="project-img">
+                <img src="zack.jpg" alt="Zack" class="project-img">
             </div>
         </article>
 
@@ -334,9 +407,15 @@
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
+
+    // Menu Toggle Script
+    function toggleMenu() {
+        const menu = document.getElementById('side-menu');
+        const backdrop = document.getElementById('menu-backdrop');
+        menu.classList.toggle('active');
+        backdrop.classList.toggle('active');
+    }
 </script>
 
 </body>
 </html>
-
-
