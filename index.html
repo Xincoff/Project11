@@ -31,41 +31,14 @@
             background-color: var(--bg);
             color: var(--fg);
             font-family: var(--font-main);
+            line-height: 1.5;
             overflow-x: hidden;
-            font-size: 14px;
-            -webkit-font-smoothing: antialiased;
         }
 
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
+        .uppercase { text-transform: uppercase; }
+        .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- CUSTOM CURSOR --- */
-        .cursor {
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--accent);
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background 0.2s;
-            mix-blend-mode: difference;
-        }
-        .cursor::after {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        body:hover .cursor { opacity: 1; }
-        a:hover ~ .cursor, .project-card:hover ~ .cursor, .tech-font:hover ~ .cursor {
-            width: 50px; height: 50px; background: rgba(255,255,255,0.1);
-        }
-
-        /* --- PRELOADER --- */
+        /* --- GLITCH PRELOADER --- */
         .preloader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -74,303 +47,280 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             transition: opacity 0.8s ease;
         }
-        .loader-text {
-            font-family: var(--font-tech);
-            color: var(--accent);
-            animation: blink 1s infinite;
-        }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* --- SIDE MENU STYLES --- */
-        .side-panel {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 450px; height: 100vh;
-            background: var(--bg);
-            border-left: 1px solid var(--line);
-            z-index: 10000; /* Поверх всего */
-            padding: 40px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: -10px 0 50px rgba(0,0,0,0.9);
+        .glitch-wrapper {
+            position: relative;
+            width: 150px; 
+            height: 150px;
         }
-        .side-panel.active { right: 0; }
 
-        .menu-backdrop {
-            position: fixed;
+        .glitch-logo {
+            width: 100%;
+            height: 100%;
+            background-image: url('logo2.png'); /* Использую ваш логотип из фавикона */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+        }
+
+        .glitch-logo::before,
+        .glitch-logo::after {
+            content: '';
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0; pointer-events: none;
-            transition: 0.5s ease;
+            background-image: inherit;
+            background-size: inherit;
+            background-repeat: inherit;
+            background-position: inherit;
+            opacity: 0.8;
         }
-        .menu-backdrop.active { opacity: 1; pointer-events: all; }
 
-        .panel-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 40px;
+        .glitch-logo::before {
+            left: 2px;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
         }
-        .close-btn {
-            background: none; border: none; color: var(--accent);
-            cursor: none; font-size: 12px; transition: 0.3s;
+
+        .glitch-logo::after {
+            left: -2px;
+            animation: glitch-anim-2 3s infinite linear alternate;
         }
-        .close-btn:hover { color: var(--dim); }
 
-        .panel-links a {
-            display: block; font-size: 2rem; font-weight: 500; text-transform: uppercase;
-            margin-bottom: 30px; color: var(--dim); transition: 0.3s;
+        @keyframes glitch-anim-1 {
+           0% { clip-path: inset(20% 0 80% 0); transform: translate(-5px); opacity: 0.7; }
+           20% { clip-path: inset(60% 0 20% 0); transform: translate(5px); opacity: 1; }
+           40% { clip-path: inset(40% 0 50% 0); transform: translate(-5px); opacity: 0.8; }
+           60% { clip-path: inset(80% 0 10% 0); transform: translate(5px); opacity: 1; }
+           80% { clip-path: inset(10% 0 70% 0); transform: translate(-5px); opacity: 0.9; }
+           100% { clip-path: inset(30% 0 60% 0); transform: translate(0); opacity: 1; }
         }
-        .panel-links a:hover { color: var(--accent); padding-left: 10px; }
-        
-        .panel-footer { color: var(--dim); border-top: 1px solid var(--line); padding-top: 20px; line-height: 1.6; }
 
-        /* --- TYPOGRAPHY & LAYOUT --- */
-        .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
-        .flex { display: flex; }
-        .j-btwn { justify-content: space-between; }
-        .a-center { align-items: center; }
-        .uppercase { text-transform: uppercase; }
+        @keyframes glitch-anim-2 {
+           0% { clip-path: inset(15% 0 75% 0); transform: translate(5px); opacity: 0.8; }
+           20% { clip-path: inset(55% 0 25% 0); transform: translate(-5px); opacity: 1; }
+           40% { clip-path: inset(35% 0 55% 0); transform: translate(5px); opacity: 0.7; }
+           60% { clip-path: inset(75% 0 15% 0); transform: translate(-5px); opacity: 1; }
+           80% { clip-path: inset(5% 0 85% 0); transform: translate(5px); opacity: 0.9; }
+           100% { clip-path: inset(25% 0 65% 0); transform: translate(0); opacity: 1; }
+        }
 
+        /* --- CURSOR --- */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--accent);
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        /* --- LAYOUT --- */
         .wrapper {
             max-width: 100%;
             margin: 0 auto;
             border-left: 1px solid var(--line);
             border-right: 1px solid var(--line);
-            min-height: 100vh;
         }
 
         header {
             padding: 20px 40px;
-            position: fixed;
-            top: 0; width: 100%; z-index: 100;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            background-color: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
         }
 
-        .logo-container { width: 50px; height: 50px; }
-        .logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; filter: grayscale(100%) contrast(1.2); }
-        .header-nav span { margin-left: 20px; color: var(--dim); }
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
+        
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--fg);
+            font-family: var(--font-tech);
+            font-size: 12px;
+            cursor: none;
+        }
 
+        /* --- HERO --- */
         .hero {
-            padding-top: 25vh; padding-bottom: 10vh;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
+            padding: 100px 40px;
             border-bottom: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
+
         .hero h1 {
-            font-size: clamp(3rem, 13vw, 15rem);
-            font-weight: 800; line-height: 0.8; letter-spacing: -0.04em;
-            margin-bottom: 40px; color: var(--accent); white-space: nowrap;
-        }
-        .hero-meta { display: flex; gap: 60px; text-align: left; color: var(--dim); }
-        .hero-meta div { border-left: 1px solid var(--dim); padding-left: 15px; }
-
-        .marquee-wrapper {
-            overflow: hidden; white-space: nowrap; padding: 12px 0;
-            background: var(--bg); border-bottom: 1px solid var(--line);
-        }
-        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; color: var(--accent); }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        .project-card {
-            display: grid; grid-template-columns: 0.5fr 1.5fr 1.5fr;
-            min-height: 70vh; border-bottom: 1px solid var(--line);
-            transition: background 0.3s ease; position: relative;
-        }
-        .project-card:hover { background-color: var(--fg); color: var(--bg); }
-
-        .p-col {
-            padding: 40px; display: flex; flex-direction: column;
-            justify-content: space-between; border-right: 1px solid var(--line);
-        }
-        .p-col.visual { padding: 0; border-right: none; overflow: hidden; background: #000; }
-
-        .p-title {
-            font-size: clamp(2rem, 4vw, 5rem); line-height: 0.9;
-            font-weight: 500; letter-spacing: -0.02em; margin-bottom: 20px;
-        }
-        .p-desc {
-            font-family: var(--font-tech); max-width: 420px; font-size: 12px;
-            line-height: 1.5; margin-bottom: 40px; opacity: 0.8;
-        }
-
-        .btn-buy {
-            display: inline-block; border: 1px solid var(--dim);
-            padding: 15px 30px; font-family: var(--font-tech); font-size: 11px;
-            text-transform: uppercase; transition: 0.2s; width: fit-content;
-        }
-        .project-card:hover .btn-buy { border-color: var(--bg); color: var(--bg); font-weight: 700; }
-
-        .project-img {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(100%) brightness(0.9);
-            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
-        }
-        .project-card:hover .project-img { filter: grayscale(0%) brightness(1); transform: scale(1.03); }
-
-        footer { padding: 60px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .footer-logo { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
-
-        @media (max-width: 900px) {
-            .project-card { grid-template-columns: 1fr; min-height: auto; }
-            .p-col { border-right: none; border-bottom: 1px solid var(--line); }
-            .p-col.visual { height: 350px; border-bottom: 1px solid var(--line); }
-            .hero h1 { font-size: 16vw; }
-            header { padding: 15px 20px; }
-            .header-nav { display: none; }
-            .cursor { display: none; }
-            .side-panel { width: 100%; }
-            * { cursor: auto; }
+            font-size: clamp(4rem, 15vw, 12rem);
+            line-height: 0.85;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 10px;
         }
 
         .manifesto {
-            margin-top: -10px; 
-            margin-bottom: 50px;
+            margin-top: 0;
+            margin-bottom: 60px;
             font-size: 14px;
-            letter-spacing: 0.3em; 
+            letter-spacing: 0.3em;
             text-transform: uppercase;
             color: var(--dim);
             opacity: 0.7;
             font-weight: 400;
         }
+
+        .hero-meta {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 40px;
+            font-size: 10px;
+            color: var(--dim);
+            text-align: left;
+        }
+
+        /* --- PROJECTS GRID --- */
+        .project-card {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr;
+            border-bottom: 1px solid var(--line);
+            min-height: 400px;
+        }
+
+        .p-col { padding: 40px; display: flex; flex-direction: column; }
+        .p-index { border-right: 1px solid var(--line); color: var(--dim); font-size: 12px; }
+        .visual { border-left: 1px solid var(--line); padding: 0; overflow: hidden; position: relative; }
+
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1);
+            transition: 0.5s ease;
+        }
+
+        .project-card:hover .project-img { filter: grayscale(0); transform: scale(1.05); }
+
+        .p-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 20px; line-height: 1; }
+        .p-desc { max-width: 400px; color: #aaa; margin-bottom: 40px; }
+
+        .btn-buy {
+            margin-top: auto;
+            align-self: flex-start;
+            padding: 12px 24px;
+            border: 1px solid var(--dim);
+            font-family: var(--font-tech);
+            font-size: 11px;
+            text-decoration: none;
+            color: var(--fg);
+            transition: 0.3s;
+        }
+
+        .btn-buy:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 60px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo { font-weight: 800; font-size: 2rem; color: var(--line); }
+
+        /* --- ADAPTIVITY --- */
+        @media (max-width: 900px) {
+            .project-card { grid-template-columns: 1fr; }
+            .p-index { display: none; }
+            .visual { height: 300px; order: -1; }
+            .hero-meta { flex-direction: column; gap: 20px; align-items: flex-start; }
+            .cursor { display: none; }
+            * { cursor: auto; }
+        }
     </style>
 </head>
 <body>
 
-<div class="preloader" id="preloader">
-    <div class="loader-text">[ INITIALIZING SYSTEM ]</div>
-    <div class="loader-text" style="font-size: 10px; margin-top: 10px;">PLEASE WAIT...</div>
-</div>
-
-<div class="cursor" id="cursor"></div>
-
-<div id="menu-backdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
-
-<div id="side-menu" class="side-panel">
-    <div class="panel-header">
-        <span class="tech-font">[ SYSTEM_MENU ]</span>
-        <button onclick="toggleMenu()" class="close-btn tech-font">[ CLOSE X ]</button>
-    </div>
-
-    <nav class="panel-links">
-        <a href="index.html">01. ARCHIVE</a>
-        <a href="#">02. INTELLIGENCE</a>
-        <a href="mailto:contact@project11.bureau">03. COMMS</a>
-    </nav>
-
-    <div class="panel-footer tech-font">
-        <div>
-            LOC: 55.75 N, 37.61 E<br>
-            ENCRYPTION: AES-256
-        </div>
-        <div style="margin-top: 20px; opacity: 0.5;">
-            /// PROJECT ELEVEN BUREAU ///
+    <div class="preloader" id="preloader">
+        <div class="glitch-wrapper">
+            <div class="glitch-logo"></div>
         </div>
     </div>
-</div>
 
-<div class="wrapper">
+    <div class="cursor" id="cursor"></div>
 
-    <header class="flex j-btwn a-center">
-        <div class="logo-container">
-            <img src="logo.jpg" alt="P11 Logo" class="logo-img">
-        </div>
-        <nav class="header-nav tech-font">
-            <span>[ SYSTEM: ACTIVE ]</span>
-            <span>[ ACCESS: GRANTED ]</span>
-        </nav>
-        <div class="tech-font" onclick="toggleMenu()" style="cursor: none; padding: 10px; border: 1px solid transparent; transition:0.3s;">
-           [ MENU /// ]
-        </div>
-    </header>
+    <div class="wrapper">
+        <header>
+            <div class="logo">P—11®</div>
+            <button class="menu-btn" onclick="toggleMenu()">[ MENU ]</button>
+        </header>
 
-<section class="hero">
-        <h1 class="uppercase">Project<br>Eleven</h1>
-        
-        <div class="manifesto tech-font">
-            Everything is easier than it seems
-        </div>
-
-        <div class="hero-meta tech-font">
-            <div>
-                BUREAU ID: P-11<br>
-                STATUS: TESTING AND DEVELOPMENT
+        <section class="hero">
+            <h1 class="uppercase">Project<br>Eleven</h1>
+            
+            <div class="manifesto tech-font">
+                Everything is easier than it seems
             </div>
-            <div>
-                ADVANCED PROTOTYPING<br>
-                DEFENSE & AEROSPACE
+
+            <div class="hero-meta tech-font">
+                <div>
+                    BUREAU ID: P-11<br>
+                    STATUS: TESTING AND DEVELOPMENT
+                </div>
+                <div>
+                    ADVANCED PROTOTYPING<br>
+                    DEFENSE & AEROSPACE
+                </div>
             </div>
-        </div>
-    </section>
-
-    <div class="marquee-wrapper tech-font">
-        <div class="marquee-content">
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM /// 
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM ///
-        </div>
-    </div>
-
-    <div class="projects-list">
+        </section>
 
         <article class="project-card">
             <div class="p-col p-index">
                 <span class="tech-font">NO. 001</span>
-                <span class="tech-font" style="margin-top: auto;">UNMANNED SYSTEM</span>
+                <span class="tech-font" style="margin-top: auto;">DRONE</span>
             </div>
             <div class="p-col">
                 <div>
                     <h2 class="p-title uppercase">Catcher</h2>
                     <p class="p-desc">
-                        Автономная система перехвата. Раскладное крыло. Диаметр 120мм.
-                        Скорость перехвата 200км/ч. Усиленный корпус.
+                        Автономная система перехвата воздушных целей. Компактный складной корпус из углеволокна.
                     </p>
                 </div>
                 <a href="catcher.html" class="btn-buy">VIEW MORE</a>
             </div>
             <div class="p-col visual">
-                <img src="catcher.jpg" alt="Catcher" class="project-img">
-            </div>
-        </article>
-
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 002</span>
-                <span class="tech-font" style="margin-top: auto;">ACCESSORY</span>
-            </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Crystal<br>Lamp</h2>
-                    <p class="p-desc">
-                        Технологии и природа в одном корпусе. Натуральный аметист и современные решения.
-                    </p>
-                </div>
-                <a href="crystallamp.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="crystallamp.jpg" alt="Lamp" class="project-img">
+                <img src="catcher.jpg" alt="Catcher Drone" class="project-img">
             </div>
         </article>
 
         <article class="project-card">
             <div class="p-col p-index">
                 <span class="tech-font">NO. 003</span>
-                <span class="tech-font" style="margin-top: auto;">AI CORE</span>
+                <span class="tech-font" style="margin-top: auto;">HOME AI</span>
             </div>
             <div class="p-col">
                 <div>
-                    <h2 class="p-title uppercase">Zack<br></h2>
+                    <h2 class="p-title uppercase">Zack</h2>
                     <p class="p-desc">
-                        Интеллектуальный помощник. Экосистема умный дом.
+                        Интеллектуальный помощник для управления умным домом ZackSystem.
                     </p>
                 </div>
                 <a href="zack.html" class="btn-buy">VIEW MORE</a>
             </div>
             <div class="p-col visual">
-                <img src="zacksystem.jpg" alt="Zack" class="project-img">
+                <img src="zacksystem.jpg" alt="Zack System" class="project-img">
             </div>
         </article>
 
@@ -406,7 +356,7 @@
 </div>
 
 <script>
-    // Preloader Script
+    // Preloader Script (плавное исчезновение после анимации)
     window.addEventListener('load', () => {
         const preloader = document.getElementById('preloader');
         setTimeout(() => {
@@ -414,7 +364,7 @@
             setTimeout(() => {
                 preloader.remove();
             }, 800);
-        }, 1000);
+        }, 1500); // Чуть увеличил время, чтобы глитч успели заметить
     });
 
     // Custom Cursor Script
@@ -424,22 +374,24 @@
         cursor.style.top = e.clientY + 'px';
     });
 
-    // Menu Toggle Script
+    // Hover effect for cursor on links
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.width = '40px';
+            cursor.style.height = '40px';
+            cursor.style.backgroundColor = 'rgba(255,255,255,0.1)';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.width = '20px';
+            cursor.style.height = '20px';
+            cursor.style.backgroundColor = 'transparent';
+        });
+    });
+
     function toggleMenu() {
-        const menu = document.getElementById('side-menu');
-        const backdrop = document.getElementById('menu-backdrop');
-        menu.classList.toggle('active');
-        backdrop.classList.toggle('active');
+        alert('Systems Online. Navigation module under development.');
     }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
