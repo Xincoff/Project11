@@ -45,13 +45,12 @@
             background: var(--bg);
             z-index: 10000;
             display: flex; justify-content: center; align-items: center;
-            /* Убрали плавный transition: opacity */
+            /* Никаких плавных переходов */
         }
 
         .glitch-wrapper {
             position: relative; 
             width: 150px; height: 150px;
-            /* steps(1) гарантирует отсутствие промежуточных кадров */
             animation: container-jump 0.4s infinite steps(1);
         }
 
@@ -71,45 +70,41 @@
             pointer-events: none;
         }
 
-        /* Слой 1: Агрессивные сдвиги и инверсия */
         .glitch-logo::before {
             animation: glitch-step-1 0.6s infinite steps(1);
             mix-blend-mode: difference;
             filter: hue-rotate(180deg);
         }
 
-        /* Слой 2: Цветовые артефакты */
         .glitch-logo::after {
             animation: glitch-step-2 0.8s infinite steps(1);
             filter: saturate(10) contrast(5);
         }
 
-        /* --- КЛЮЧЕВЫЕ КАДРЫ БЕЗ ПЛАВНОСТИ --- */
-
         @keyframes glitch-step-1 {
-            0% { opacity: 1; clip-path: inset(80% 0 1% 0); transform: translate(-20px, 10px); }
+            0% { opacity: 1; clip-path: inset(80% 0 1% 0); transform: translate(-25px, 15px); }
             20% { opacity: 0; }
-            35% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(15px, -15px); }
+            35% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(20px, -20px); }
             50% { opacity: 0; }
-            70% { opacity: 1; clip-path: inset(40% 0 40% 0); transform: translate(-10px, -5px); }
+            70% { opacity: 1; clip-path: inset(40% 0 40% 0); transform: translate(-15px, -10px); }
             85% { opacity: 0; }
-            95% { opacity: 1; clip-path: inset(0% 0 95% 0); transform: translate(25px, 20px); }
+            95% { opacity: 1; clip-path: inset(0% 0 95% 0); transform: translate(30px, 25px); }
         }
 
         @keyframes glitch-step-2 {
             0% { opacity: 0; }
-            15% { opacity: 1; clip-path: inset(50% 0 10% 0); transform: translate(20px, -5px); }
+            15% { opacity: 1; clip-path: inset(50% 0 10% 0); transform: translate(25px, -10px); }
             30% { opacity: 0; }
-            45% { opacity: 1; clip-path: inset(5% 0 80% 0); transform: translate(-25px, 15px); }
+            45% { opacity: 1; clip-path: inset(5% 0 80% 0); transform: translate(-30px, 20px); }
             60% { opacity: 0; }
-            80% { opacity: 1; clip-path: inset(25% 0 25% 0); transform: translate(10px, 10px); }
+            80% { opacity: 1; clip-path: inset(25% 0 25% 0); transform: translate(15px, 15px); }
         }
 
         @keyframes container-jump {
             0% { transform: translate(0, 0); }
-            25% { transform: translate(-4px, 2px); filter: brightness(2); }
-            50% { transform: translate(4px, -2px); filter: brightness(0.5); }
-            75% { transform: translate(-2px, -4px); }
+            25% { transform: translate(-6px, 3px); filter: brightness(2.5); }
+            50% { transform: translate(6px, -3px); filter: brightness(0.2); }
+            75% { transform: translate(-3px, -6px); }
         }
 
         /* --- CURSOR --- */
@@ -176,7 +171,6 @@
         }
 
         .manifesto {
-            margin-top: 0;
             margin-bottom: 60px;
             font-size: 14px;
             letter-spacing: 0.3em;
@@ -236,7 +230,6 @@
 
         .btn-buy:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-        /* --- FOOTER --- */
         footer {
             padding: 60px 40px;
             display: flex;
@@ -246,7 +239,6 @@
 
         .footer-logo { font-weight: 800; font-size: 2rem; color: var(--line); }
 
-        /* --- ADAPTIVITY --- */
         @media (max-width: 900px) {
             .project-card { grid-template-columns: 1fr; }
             .p-index { display: none; }
@@ -275,20 +267,11 @@
 
         <section class="hero">
             <h1 class="uppercase">Project<br>Eleven</h1>
-            
-            <div class="manifesto tech-font">
-                Everything is easier than it seems
-            </div>
+            <div class="manifesto tech-font">Everything is easier than it seems</div>
 
             <div class="hero-meta tech-font">
-                <div>
-                    BUREAU ID: P-11<br>
-                    STATUS: TESTING AND DEVELOPMENT
-                </div>
-                <div>
-                    ADVANCED PROTOTYPING<br>
-                    DEFENSE & AEROSPACE
-                </div>
+                <div>BUREAU ID: P-11<br>STATUS: TESTING AND DEVELOPMENT</div>
+                <div>ADVANCED PROTOTYPING<br>DEFENSE & AEROSPACE</div>
             </div>
         </section>
 
@@ -300,9 +283,7 @@
             <div class="p-col">
                 <div>
                     <h2 class="p-title uppercase">Catcher</h2>
-                    <p class="p-desc">
-                        Автономная система перехвата воздушных целей. Компактный складной корпус из углеволокна.
-                    </p>
+                    <p class="p-desc">Автономная система перехвата воздушных целей. Компактный корпус из углеволокна.</p>
                 </div>
                 <a href="catcher.html" class="btn-buy">VIEW MORE</a>
             </div>
@@ -319,9 +300,7 @@
             <div class="p-col">
                 <div>
                     <h2 class="p-title uppercase">Zack</h2>
-                    <p class="p-desc">
-                        Интеллектуальный помощник для управления умным домом ZackSystem.
-                    </p>
+                    <p class="p-desc">Интеллектуальный помощник для управления умным домом ZackSystem.</p>
                 </div>
                 <a href="zack.html" class="btn-buy">VIEW MORE</a>
             </div>
@@ -338,9 +317,7 @@
             <div class="p-col">
                 <div>
                     <h2 class="p-title uppercase">Omega</h2>
-                    <p class="p-desc">
-                        Обучающая платформа. 4-х осевой манипулятор.
-                    </p>
+                    <p class="p-desc">Обучающая платформа. 4-х осевой манипулятор.</p>
                 </div>
                 <a href="omega.html" class="btn-buy">VIEW MORE</a>
             </div>
@@ -351,52 +328,43 @@
 
     </div>
 
-    <footer class="border-t">
-        <div class="tech-font">
-            PROJECT ELEVEN <br>
-            © 2026. ALL RIGHTS RESERVED.
-        </div>
+    <footer>
+        <div class="tech-font">PROJECT ELEVEN <br>© 2026. ALL RIGHTS RESERVED.</div>
         <div class="footer-logo">P—11®</div>
     </footer>
 
-</div>
-
-<script>
-   window.addEventListener('load', () => {
-        const preloader = document.getElementById('preloader');
-        // Ждем 1.5 секунды шоу и просто удаляем блок из DOM
-        setTimeout(() => {
-            preloader.style.display = 'none'; // Мгновенное исчезновение
-        }, 1500);
-    });
-
-    // Custom Cursor Script
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-    });
-
-    // Hover effect for cursor on links
-    document.querySelectorAll('a, button').forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursor.style.width = '40px';
-            cursor.style.height = '40px';
-            cursor.style.backgroundColor = 'rgba(255,255,255,0.1)';
+    <script>
+        // Резкое выключение прелоадера
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.display = 'none'; // Мгновенно убираем из видимости
+            }, 1500);
         });
-        el.addEventListener('mouseleave', () => {
-            cursor.style.width = '20px';
-            cursor.style.height = '20px';
-            cursor.style.backgroundColor = 'transparent';
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
         });
-    });
 
-    function toggleMenu() {
-        alert('Systems Online. Navigation module under development.');
-    }
-</script>
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '40px';
+                cursor.style.height = '40px';
+                cursor.style.backgroundColor = 'rgba(255,255,255,0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.backgroundColor = 'transparent';
+            });
+        });
 
+        function toggleMenu() {
+            alert('Systems Online. Navigation module under development.');
+        }
+    </script>
 </body>
 </html>
-
-
