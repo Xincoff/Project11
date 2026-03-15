@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P-11 | ENGINEERING BUREAU</title>
+    <title>PROJECT 11 | ENGINEERING BUREAU</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
         html { scroll-behavior: smooth; }
         body { background-color: var(--bg); color: var(--fg); font-family: var(--font-main); line-height: 1.5; overflow-x: hidden; }
 
+        /* Эффекты появления */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
@@ -28,18 +29,26 @@
         .border-b { border-bottom: 1px solid var(--line); }
         .tech-font { font-family: var(--font-tech); text-transform: uppercase; font-size: 12px; letter-spacing: 2px; color: var(--dim); }
 
+        /* Кастомный курсор */
         #cursor { width: 10px; height: 10px; background: var(--accent); position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
 
         header { padding: 40px 0; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 800; font-size: 20px; letter-spacing: -1px; font-family: var(--font-tech); }
-        .status-terminal { font-family: var(--font-tech); font-size: 10px; color: #00FF41; text-transform: uppercase; max-width: 300px; text-align: right; }
+        .status-terminal { font-family: var(--font-tech); font-size: 10px; color: #00FF41; text-transform: uppercase; }
 
+        /* HERO SECTION */
         .hero { padding: 100px 0 140px 0; }
-        .hero-slogan { font-size: clamp(40px, 9vw, 130px); font-weight: 800; line-height: 0.85; letter-spacing: -5px; margin-bottom: 50px; text-transform: uppercase; }
+        .hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; gap: 40px; }
+        .hero-title { font-size: clamp(50px, 10vw, 150px); font-weight: 800; line-height: 0.85; letter-spacing: -5px; text-transform: uppercase; }
+        
+        .hero-logo-wrap { width: clamp(120px, 20vw, 220px); flex-shrink: 0; opacity: 0.5; transition: 0.4s; }
+        .hero-logo-wrap:hover { opacity: 1; transform: scale(1.05); }
+        .hero-logo-wrap img { width: 100%; height: auto; mix-blend-mode: screen; }
+
         .hero-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
+        /* PROJECTS */
         .sec-title { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
-
         .project-card { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 500px; }
         .p-info { padding: 60px 40px 60px 0; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); }
         .p-visual { background: #0a0a0a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -48,23 +57,39 @@
 
         .p-category { font-family: var(--font-tech); color: var(--dim); margin-bottom: 10px; }
         .p-name { font-size: 48px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; }
-        .p-desc { color: var(--dim); max-width: 450px; margin-bottom: 30px; font-size: 16px; }
-        .btn-action { display: inline-block; padding: 15px 30px; border: 1px solid var(--fg); font-family: var(--font-tech); font-size: 12px; transition: 0.3s; }
-        .btn-action:hover { background: var(--fg); color: var(--bg); }
+        .p-desc { color: var(--dim); max-width: 450px; margin-bottom: 30px; }
+        
+        /* ЧИСТЫЙ СТИЛЬ КНОПОК (БЕЗ СИНЕГО) */
+        .btn-action { 
+            display: inline-flex; 
+            align-items: center;
+            width: fit-content;
+            padding: 15px 35px; 
+            border: 1px solid var(--line); 
+            font-family: var(--font-tech); 
+            font-size: 11px; 
+            color: var(--fg);
+            text-decoration: none;
+            transition: all 0.3s ease; 
+        }
+        .btn-action:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+        .btn-action::after { content: ' →'; opacity: 0; transform: translateX(-10px); transition: 0.3s; }
+        .btn-action:hover::after { opacity: 1; transform: translateX(5px); }
 
-        .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
-        .cap-item { background: var(--bg); padding: 60px 40px; transition: 0.4s; }
-        .cap-item:hover { background: #0a0a0a; }
-        .cap-item h3 { font-family: var(--font-tech); font-size: 16px; margin-bottom: 20px; color: var(--accent); }
-        .cap-item p { color: var(--dim); font-size: 14px; }
+        /* CAPABILITIES (2x2) */
+        .cap-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+        .cap-item { background: var(--bg); padding: 60px 40px; }
+        .cap-item h3 { font-family: var(--font-tech); font-size: 15px; margin-bottom: 15px; color: var(--accent); }
+        .cap-item p { color: var(--dim); font-size: 14px; line-height: 1.6; }
 
         footer { padding: 80px 0; display: flex; justify-content: space-between; align-items: flex-end; }
         .footer-logo { font-size: 64px; font-weight: 800; letter-spacing: -5px; color: #111; }
 
         @media (max-width: 768px) {
+            .hero-top { flex-direction: column; align-items: flex-start; }
             .hero-meta, .project-card, .cap-grid { grid-template-columns: 1fr; }
             .p-info { border-right: none; border-bottom: 1px solid var(--line); }
-            .hero-slogan { letter-spacing: -2px; }
+            .hero-title { letter-spacing: -2px; }
         }
     </style>
 </head>
@@ -74,16 +99,21 @@
 
 <div class="container">
     <header class="border-b">
-        <div class="logo">P-11 | ENGINEERING BUREAU</div>
-        <div class="status-terminal" id="terminal">MOTTO: ВСЕ ПРОЩЕ, ЧЕМ КАЖЕТСЯ // STATUS: ACTIVE</div>
+        <div class="logo">P-11 | BUREAU</div>
+        <div class="status-terminal" id="terminal">PROJECT ELEVEN // SYSTEMS OPERATIONAL</div>
     </header>
 
     <section class="hero reveal">
-        <h1 class="hero-slogan">ВСЕ ПРОЩЕ,<br>ЧЕМ КАЖЕТСЯ.</h1>
+        <div class="hero-top">
+            <h1 class="hero-title">PROJECT<br>ELEVEN.</h1>
+            <div class="hero-logo-wrap">
+                <img src="logo.jpg" alt="P-11 Logo">
+            </div>
+        </div>
         <div class="hero-meta border-t" style="padding-top: 30px;">
-            <div class="tech-font">Vision: Инженерия здравого смысла</div>
+            <div class="tech-font">Vision: Все проще, чем кажется</div>
             <p class="p-desc">
-                Сложные задачи — изящные решения. Мы проектируем, программируем и собираем устройства, которые работают на стыке механики и интеллекта.
+                Сложные инженерные задачи — изящные технологические решения. Бюро междисциплинарной разработки на стыке механики, электроники и интеллекта.
             </p>
         </div>
     </section>
@@ -91,16 +121,20 @@
     <div class="tech-font border-t sec-title">01 / Capabilities</div>
     <section class="cap-grid reveal">
         <div class="cap-item">
-            <h3>HARDWARE DEPLOYMENT</h3>
-            <p>Проектирование систем на базе ESP32/ARM. Разработка топологии печатных плат и бесшовная IoT-интеграция.</p>
+            <h3>HARDWARE & IOT</h3>
+            <p>Разработка систем на базе ESP32/ARM. Проектирование печатных плат и интеграция в экосистемы умного дома (MQTT/Alice).</p>
         </div>
         <div class="cap-item">
-            <h3>CAD & REVERSE ENG</h3>
-            <p>Высокоточное моделирование в SolidWorks и Siemens NX. Адаптация под современные материалы: Carbon и Nylon.</p>
+            <h3>CAD & MECHANICAL ENG</h3>
+            <p>Высокоточное моделирование в SolidWorks и Siemens NX. Расчет кинематики манипуляторов и механизмов.</p>
         </div>
         <div class="cap-item">
-            <h3>AI INTELLIGENCE</h3>
-            <p>Внедрение Computer Vision и LLM-моделей в автономные системы и робототехнические комплексы.</p>
+            <h3>AI & VISION</h3>
+            <p>Разработка и внедрение Computer Vision и VLM-моделей (Visual Language Models) в автономные Edge-устройства.</p>
+        </div>
+        <div class="cap-item">
+            <h3>3D PRINTING (ADDITIVE)</h3>
+            <p>Функциональные детали из инженерных полимеров: Carbon-filled, Nylon (PA6) и PETG. Оптимизация под высокие нагрузки.</p>
         </div>
     </section>
 
@@ -109,53 +143,59 @@
     <article class="project-card reveal">
         <div class="p-info">
             <div>
-                <div class="p-category">SYSTEMS / UAV INTERCEPTOR</div>
+                <div class="p-category">ROBOTICS / PRECISION ARM</div>
+                <h2 class="p-name">Omega Unit</h2>
+                <p class="p-desc">4-осевой манипулятор для обучения нейросетей пространственному взаимодействию.</p>
+            </div>
+            <a href="omega.html" class="btn-action">VIEW SPECIFICATIONS</a>
+        </div>
+        <div class="p-visual"><img src="omega.jpg" alt="Omega Unit"></div>
+    </article>
+
+    <article class="project-card reveal">
+        <div class="p-info">
+            <div>
+                <div class="p-category">DEFENCE / UAV INTERCEPTOR</div>
                 <h2 class="p-name">Catcher</h2>
-                <p class="p-desc">Автономный комплекс перехвата. От аэродинамического расчета до финального прототипа.</p>
+                <p class="p-desc">Система автономного перехвата. Скорость, точность и мгновенное развертывание.</p>
             </div>
             <a href="catcher.html" class="btn-action">MISSION BRIEF</a>
         </div>
-        <div class="p-visual">
-            <img src="catcher.jpg" alt="Catcher UAV">
-        </div>
+        <div class="p-visual"><img src="catcher.jpg" alt="Catcher UAV"></div>
     </article>
 
     <article class="project-card reveal">
         <div class="p-info">
             <div>
-                <div class="p-category">IOT / ADAPTIVE LIGHTING</div>
+                <div class="p-category">COMMERCIAL / SMART LIGHT</div>
                 <h2 class="p-name">Crystal Lamp</h2>
-                <p class="p-desc">Коммерческий проект интерьерного освещения с управлением через Yandex Alice и MQTT.</p>
+                <p class="p-desc">Дизайнерский IoT-светильник с адаптивными алгоритмами свечения и поддержкой Алисы.</p>
             </div>
-            <a href="crystallamp.html" class="btn-action">PRODUCT DETAILS</a>
+            <a href="crystallamp.html" class="btn-action">PRODUCT DATA</a>
         </div>
-        <div class="p-visual">
-            <img src="crystallamp.jpg" alt="Crystal Lamp">
-        </div>
+        <div class="p-visual"><img src="crystallamp.jpg" alt="Crystal Lamp"></div>
     </article>
 
     <article class="project-card reveal">
         <div class="p-info">
             <div>
-                <div class="p-category">ROBOTICS / VLM MODULE</div>
+                <div class="p-category">AI / VISION COMPANION</div>
                 <h2 class="p-name">ZACK System</h2>
-                <p class="p-desc">Исследовательская платформа с визуальным интеллектом на базе ESP32-S3 Sense.</p>
+                <p class="p-desc">Экспериментальный модуль «глаз» для робототехники на базе ESP32-S3 Sense.</p>
             </div>
-            <a href="zack.html" class="btn-action">INTELLIGENCE DATA</a>
+            <a href="zack.html" class="btn-action">INTELLIGENCE LOG</a>
         </div>
-        <div class="p-visual">
-            <img src="zack.jpg" alt="ZACK AI">
-        </div>
+        <div class="p-visual"><img src="zack.jpg" alt="ZACK AI"></div>
     </article>
 
     <footer class="border-t reveal">
         <div class="tech-font">
-            P-11 ENGINEERING BUREAU <br>
+            PROJECT ELEVEN BUREAU <br>
             CREATING REALITY © 2026
         </div>
         <div class="footer-logo">P—11</div>
         <div class="tech-font">
-            <a href="mailto:contact@project11.bureau" style="border-bottom: 1px solid var(--fg);">RECRUIT / INQUIRY</a>
+            <a href="mailto:contact@project11.bureau" class="btn-action" style="padding: 10px 20px;">INQUIRY</a>
         </div>
     </footer>
 </div>
@@ -183,9 +223,7 @@
     const reveal = () => {
         const reveals = document.querySelectorAll('.reveal');
         reveals.forEach(el => {
-            const windowHeight = window.innerHeight;
-            const elementTop = el.getBoundingClientRect().top;
-            if (elementTop < windowHeight - 100) {
+            if (el.getBoundingClientRect().top < window.innerHeight - 100) {
                 el.classList.add('active');
             }
         });
