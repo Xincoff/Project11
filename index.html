@@ -3,484 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT 11</title>
+    <title>P-11 | ENGINEERING BUREAU</title>
     
-    <link rel="icon" type="image/jpeg" href="logo2.png">
-
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE SETTINGS --- */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        
         :root {
-            --bg: #050505;
-            --fg: #E6E6E6;
-            --dim: #555555;
-            --line: #333333;
-            --accent: #FFFFFF;   
-            --font-main: 'Inter', sans-serif;
-            --font-tech: 'JetBrains Mono', monospace;
+            --bg: #050505; --fg: #E6E6E6; --dim: #555555;
+            --line: #333333; --accent: #FFFFFF;   
+            --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-
         html { scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--fg); font-family: var(--font-main); line-height: 1.5; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            font-size: 14px;
-            -webkit-font-smoothing: antialiased;
-        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        .border-t { border-top: 1px solid var(--line); }
+        .border-b { border-bottom: 1px solid var(--line); }
+        .tech-font { font-family: var(--font-tech); text-transform: uppercase; font-size: 12px; letter-spacing: 2px; color: var(--dim); }
 
-	
-	/* --- TOTAL DESTRUCTIVE GLITCH PRELOADER --- */
-        .preloader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 10000;
-            display: flex; justify-content: center; align-items: center;
-        }
+        #cursor { width: 10px; height: 10px; background: var(--accent); position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
 
-        .glitch-wrapper {
-            position: relative; 
-            width: 150px; height: 150px;
-            animation: container-jump 0.4s infinite steps(1);
-        }
+        header { padding: 40px 0; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 800; font-size: 20px; letter-spacing: -1px; font-family: var(--font-tech); }
+        .status-terminal { font-family: var(--font-tech); font-size: 10px; color: #00FF41; text-transform: uppercase; max-width: 300px; text-align: right; }
 
-        .glitch-logo {
-            width: 100%; height: 100%;
-            background-image: url('logo2.png');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            position: relative;
-        }
+        .hero { padding: 100px 0 140px 0; }
+        .hero-slogan { font-size: clamp(40px, 9vw, 130px); font-weight: 800; line-height: 0.85; letter-spacing: -5px; margin-bottom: 50px; text-transform: uppercase; }
+        .hero-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 
-        .glitch-logo::before,
-        .glitch-logo::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: inherit; background-size: inherit;
-            background-repeat: inherit; background-position: inherit;
-            opacity: 0;
-            pointer-events: none;
-        }
+        .sec-title { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
 
-        .glitch-logo::before {
-            animation: glitch-step-1 0.6s infinite steps(1);
-            mix-blend-mode: difference;
-            filter: hue-rotate(180deg);
-        }
+        .project-card { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 500px; }
+        .p-info { padding: 60px 40px 60px 0; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid var(--line); }
+        .p-visual { background: #0a0a0a; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .p-visual img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 0.5s; }
+        .project-card:hover .p-visual img { filter: grayscale(0); transform: scale(1.03); }
 
-        .glitch-logo::after {
-            animation: glitch-step-2 0.8s infinite steps(1);
-            filter: saturate(10) contrast(5);
-        }
+        .p-category { font-family: var(--font-tech); color: var(--dim); margin-bottom: 10px; }
+        .p-name { font-size: 48px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; }
+        .p-desc { color: var(--dim); max-width: 450px; margin-bottom: 30px; font-size: 16px; }
+        .btn-action { display: inline-block; padding: 15px 30px; border: 1px solid var(--fg); font-family: var(--font-tech); font-size: 12px; transition: 0.3s; }
+        .btn-action:hover { background: var(--fg); color: var(--bg); }
 
-        @keyframes glitch-step-1 {
-            0% { opacity: 1; clip-path: inset(80% 0 1% 0); transform: translate(-25px, 15px); }
-            20% { opacity: 0; }
-            35% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(20px, -20px); }
-            50% { opacity: 0; }
-            70% { opacity: 1; clip-path: inset(40% 0 40% 0); transform: translate(-15px, -10px); }
-            85% { opacity: 0; }
-            95% { opacity: 1; clip-path: inset(0% 0 95% 0); transform: translate(30px, 25px); }
-        }
+        .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+        .cap-item { background: var(--bg); padding: 60px 40px; transition: 0.4s; }
+        .cap-item:hover { background: #0a0a0a; }
+        .cap-item h3 { font-family: var(--font-tech); font-size: 16px; margin-bottom: 20px; color: var(--accent); }
+        .cap-item p { color: var(--dim); font-size: 14px; }
 
-        @keyframes glitch-step-2 {
-            0% { opacity: 0; }
-            15% { opacity: 1; clip-path: inset(50% 0 10% 0); transform: translate(25px, -10px); }
-            30% { opacity: 0; }
-            45% { opacity: 1; clip-path: inset(5% 0 80% 0); transform: translate(-30px, 20px); }
-            60% { opacity: 0; }
-            80% { opacity: 1; clip-path: inset(25% 0 25% 0); transform: translate(15px, 15px); }
-        }
+        footer { padding: 80px 0; display: flex; justify-content: space-between; align-items: flex-end; }
+        .footer-logo { font-size: 64px; font-weight: 800; letter-spacing: -5px; color: #111; }
 
-        @keyframes container-jump {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-6px, 3px); filter: brightness(2.5); }
-            50% { transform: translate(6px, -3px); filter: brightness(0.2); }
-            75% { transform: translate(-3px, -6px); }
-        }
-
-        /* --- CUSTOM CURSOR --- */
-        .cursor {
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--accent);
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background 0.2s;
-            mix-blend-mode: difference;
-        }
-        .cursor::after {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        body:hover .cursor { opacity: 1; }
-        a:hover ~ .cursor, .project-card:hover ~ .cursor, .tech-font:hover ~ .cursor {
-            width: 50px; height: 50px; background: rgba(255,255,255,0.1);
-        }
-
-        /* --- SIDE MENU STYLES --- */
-        .side-panel {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 450px; height: 100vh;
-            background: var(--bg);
-            border-left: 1px solid var(--line);
-            z-index: 10000;
-            padding: 40px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: -10px 0 50px rgba(0,0,0,0.9);
-        }
-        .side-panel.active { right: 0; }
-
-        .menu-backdrop {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0; pointer-events: none;
-            transition: 0.5s ease;
-        }
-        .menu-backdrop.active { opacity: 1; pointer-events: all; }
-
-        .panel-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 40px;
-        }
-        .close-btn {
-            background: none; border: none; color: var(--accent);
-            cursor: none; font-size: 12px; transition: 0.3s;
-        }
-        .close-btn:hover { color: var(--dim); }
-
-        .panel-links a {
-            display: block; font-size: 2rem; font-weight: 500; text-transform: uppercase;
-            margin-bottom: 30px; color: var(--dim); transition: 0.3s;
-        }
-        .panel-links a:hover { color: var(--accent); padding-left: 10px; }
-        
-        .panel-footer { color: var(--dim); border-top: 1px solid var(--line); padding-top: 20px; line-height: 1.6; }
-
-        /* --- TYPOGRAPHY & LAYOUT --- */
-        .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
-        .flex { display: flex; }
-        .j-btwn { justify-content: space-between; }
-        .a-center { align-items: center; }
-        .uppercase { text-transform: uppercase; }
-
-        .wrapper {
-            max-width: 100%;
-            margin: 0 auto;
-            border-left: 1px solid var(--line);
-            border-right: 1px solid var(--line);
-            min-height: 100vh;
-        }
-
-        header {
-            padding: 20px 40px;
-            position: fixed;
-            top: 0; width: 100%; z-index: 100;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--line);
-        }
-
-        .logo-container { width: 50px; height: 50px; }
-        .logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; filter: grayscale(100%) contrast(1.2); }
-        .header-nav span { margin-left: 20px; color: var(--dim); }
-
-        .hero {
-            padding-top: 25vh; padding-bottom: 10vh;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            border-bottom: 1px solid var(--line);
-        }
-        .hero h1 {
-            font-size: clamp(3rem, 13vw, 15rem);
-            font-weight: 800; line-height: 0.8; letter-spacing: -0.04em;
-            margin-bottom: 40px; color: var(--accent); white-space: nowrap;
-        }
-        .hero-meta { display: flex; gap: 60px; text-align: left; color: var(--dim); }
-        .hero-meta div { border-left: 1px solid var(--dim); padding-left: 15px; }
-
-        .marquee-wrapper {
-            overflow: hidden; white-space: nowrap; padding: 12px 0;
-            background: var(--bg); border-bottom: 1px solid var(--line);
-        }
-        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; color: var(--accent); }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        .project-card {
-            display: grid; grid-template-columns: 0.5fr 1.5fr 1.5fr;
-            min-height: 70vh; border-bottom: 1px solid var(--line);
-            transition: background 0.3s ease; position: relative;
-        }
-        .project-card:hover { background-color: var(--fg); color: var(--bg); }
-
-        .p-col {
-            padding: 40px; display: flex; flex-direction: column;
-            justify-content: space-between; border-right: 1px solid var(--line);
-        }
-        .p-col.visual { padding: 0; border-right: none; overflow: hidden; background: #000; }
-
-        .p-title {
-            font-size: clamp(2rem, 4vw, 5rem); line-height: 0.9;
-            font-weight: 500; letter-spacing: -0.02em; margin-bottom: 20px;
-        }
-        .p-desc {
-            font-family: var(--font-tech); max-width: 420px; font-size: 12px;
-            line-height: 1.5; margin-bottom: 40px; opacity: 0.8;
-        }
-
-        .btn-buy {
-            display: inline-block; border: 1px solid var(--dim);
-            padding: 15px 30px; font-family: var(--font-tech); font-size: 11px;
-            text-transform: uppercase; transition: 0.2s; width: fit-content;
-        }
-        .project-card:hover .btn-buy { border-color: var(--bg); color: var(--bg); font-weight: 700; }
-
-        .project-img {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(100%) brightness(0.9);
-            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
-        }
-        .project-card:hover .project-img { filter: grayscale(0%) brightness(1); transform: scale(1.03); }
-
-        footer { padding: 60px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .footer-logo { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
-
-        @media (max-width: 900px) {
-            .project-card { grid-template-columns: 1fr; min-height: auto; }
-            .p-col { border-right: none; border-bottom: 1px solid var(--line); }
-            .p-col.visual { height: 350px; border-bottom: 1px solid var(--line); }
-            .hero h1 { font-size: 16vw; }
-            header { padding: 15px 20px; }
-            .header-nav { display: none; }
-            .cursor { display: none; }
-            .side-panel { width: 100%; }
-            * { cursor: auto; }
-        }
-
-        .manifesto {
-            margin-top: -10px; 
-            margin-bottom: 50px;
-            font-size: 14px;
-            letter-spacing: 0.3em; 
-            text-transform: uppercase;
-            color: var(--dim);
-            opacity: 0.7;
-            font-weight: 400;
+        @media (max-width: 768px) {
+            .hero-meta, .project-card, .cap-grid { grid-template-columns: 1fr; }
+            .p-info { border-right: none; border-bottom: 1px solid var(--line); }
+            .hero-slogan { letter-spacing: -2px; }
         }
     </style>
 </head>
 <body>
 
-<div class="preloader" id="preloader">
-    <div class="glitch-wrapper">
-        <div class="glitch-logo"></div>
-    </div>
-</div>
+<div id="cursor"></div>
 
-<div class="cursor" id="cursor"></div>
-
-<div id="menu-backdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
-
-<div id="side-menu" class="side-panel">
-    <div class="panel-header">
-        <span class="tech-font">[ SYSTEM_MENU ]</span>
-        <button onclick="toggleMenu()" class="close-btn tech-font">[ CLOSE X ]</button>
-    </div>
-
-    <nav class="panel-links">
-        <a href="index.html">01. ARCHIVE</a>
-        <a href="#">02. INTELLIGENCE</a>
-        <a href="mailto:contact@project11.bureau">03. COMMS</a>
-    </nav>
-
-    <div class="panel-footer tech-font">
-        <div>
-            LOC: 55.75 N, 37.61 E<br>
-            ENCRYPTION: AES-256
-        </div>
-        <div style="margin-top: 20px; opacity: 0.5;">
-            /// PROJECT ELEVEN BUREAU ///
-        </div>
-    </div>
-</div>
-
-<div class="wrapper">
-
-    <header class="flex j-btwn a-center">
-        <div class="logo-container">
-            <img src="logo.jpg" alt="P11 Logo" class="logo-img">
-        </div>
-        <nav class="header-nav tech-font">
-            <span>[ SYSTEM: ACTIVE ]</span>
-            <span>[ ACCESS: GRANTED ]</span>
-        </nav>
-        <div class="tech-font" onclick="toggleMenu()" style="cursor: none; padding: 10px; border: 1px solid transparent; transition:0.3s;">
-           [ MENU /// ]
-        </div>
+<div class="container">
+    <header class="border-b">
+        <div class="logo">P-11 | ENGINEERING BUREAU</div>
+        <div class="status-terminal" id="terminal">MOTTO: ВСЕ ПРОЩЕ, ЧЕМ КАЖЕТСЯ // STATUS: ACTIVE</div>
     </header>
 
-<section class="hero">
-        <h1 class="uppercase">Project<br>Eleven</h1>
-        
-        <div class="manifesto tech-font">
-            Everything is easier than it seems
-        </div>
-
-        <div class="hero-meta tech-font">
-            <div>
-                BUREAU ID: P-11<br>
-                STATUS: TESTING AND DEVELOPMENT
-            </div>
-            <div>
-                ADVANCED PROTOTYPING<br>
-                DEFENSE & AEROSPACE
-            </div>
+    <section class="hero reveal">
+        <h1 class="hero-slogan">ВСЕ ПРОЩЕ,<br>ЧЕМ КАЖЕТСЯ.</h1>
+        <div class="hero-meta border-t" style="padding-top: 30px;">
+            <div class="tech-font">Vision: Инженерия здравого смысла</div>
+            <p class="p-desc">
+                Сложные задачи — изящные решения. Мы проектируем, программируем и собираем устройства, которые работают на стыке механики и интеллекта.
+            </p>
         </div>
     </section>
 
-    <div class="marquee-wrapper tech-font">
-        <div class="marquee-content">
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM /// 
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM ///
+    <div class="tech-font border-t sec-title">01 / Capabilities</div>
+    <section class="cap-grid reveal">
+        <div class="cap-item">
+            <h3>HARDWARE DEPLOYMENT</h3>
+            <p>Проектирование систем на базе ESP32/ARM. Разработка топологии печатных плат и бесшовная IoT-интеграция.</p>
         </div>
-    </div>
+        <div class="cap-item">
+            <h3>CAD & REVERSE ENG</h3>
+            <p>Высокоточное моделирование в SolidWorks и Siemens NX. Адаптация под современные материалы: Carbon и Nylon.</p>
+        </div>
+        <div class="cap-item">
+            <h3>AI INTELLIGENCE</h3>
+            <p>Внедрение Computer Vision и LLM-моделей в автономные системы и робототехнические комплексы.</p>
+        </div>
+    </section>
 
-    <div class="projects-list">
+    <div class="tech-font sec-title">02 / Selected Works</div>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 001</span>
-                <span class="tech-font" style="margin-top: auto;">UNMANNED SYSTEM</span>
+    <article class="project-card reveal">
+        <div class="p-info">
+            <div>
+                <div class="p-category">SYSTEMS / UAV INTERCEPTOR</div>
+                <h2 class="p-name">Catcher</h2>
+                <p class="p-desc">Автономный комплекс перехвата. От аэродинамического расчета до финального прототипа.</p>
             </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Catcher</h2>
-                    <p class="p-desc">
-                        Автономная система перехвата. Раскладное крыло. Диаметр 120мм.
-                        Скорость перехвата 200км/ч. Усиленный корпус.
-                    </p>
-                </div>
-                <a href="catcher.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="catcher.jpg" alt="Catcher" class="project-img">
-            </div>
-        </article>
+            <a href="catcher.html" class="btn-action">MISSION BRIEF</a>
+        </div>
+        <div class="p-visual">
+            <img src="catcher.jpg" alt="Catcher UAV">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 002</span>
-                <span class="tech-font" style="margin-top: auto;">ACCESSORY</span>
+    <article class="project-card reveal">
+        <div class="p-info">
+            <div>
+                <div class="p-category">IOT / ADAPTIVE LIGHTING</div>
+                <h2 class="p-name">Crystal Lamp</h2>
+                <p class="p-desc">Коммерческий проект интерьерного освещения с управлением через Yandex Alice и MQTT.</p>
             </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Crystal<br>Lamp</h2>
-                    <p class="p-desc">
-                        Технологии и природа в одном корпусе. Натуральный аметист и современные решения.
-                    </p>
-                </div>
-                <a href="crystallamp.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="crystallamp.jpg" alt="Lamp" class="project-img">
-            </div>
-        </article>
+            <a href="crystallamp.html" class="btn-action">PRODUCT DETAILS</a>
+        </div>
+        <div class="p-visual">
+            <img src="crystallamp.jpg" alt="Crystal Lamp">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 003</span>
-                <span class="tech-font" style="margin-top: auto;">AI CORE</span>
+    <article class="project-card reveal">
+        <div class="p-info">
+            <div>
+                <div class="p-category">ROBOTICS / VLM MODULE</div>
+                <h2 class="p-name">ZACK System</h2>
+                <p class="p-desc">Исследовательская платформа с визуальным интеллектом на базе ESP32-S3 Sense.</p>
             </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Zack<br></h2>
-                    <p class="p-desc">
-                        Интеллектуальный помощник. Экосистема умный дом.
-                    </p>
-                </div>
-                <a href="zack.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="zacksystem.jpg" alt="Zack" class="project-img">
-            </div>
-        </article>
+            <a href="zack.html" class="btn-action">INTELLIGENCE DATA</a>
+        </div>
+        <div class="p-visual">
+            <img src="zack.jpg" alt="ZACK AI">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 004</span>
-                <span class="tech-font" style="margin-top: auto;">EDUCATION</span>
-            </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Omega</h2>
-                    <p class="p-desc">
-                        Обучающая платформа. 4-х осевой манипулятор.
-                    </p>
-                </div>
-                <a href="omega.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="omega.jpg" alt="Omega" class="project-img">
-            </div>
-        </article>
-
-    </div>
-
-    <footer class="border-t">
+    <footer class="border-t reveal">
         <div class="tech-font">
-            PROJECT ELEVEN <br>
-            © 2026. ALL RIGHTS RESERVED.
+            P-11 ENGINEERING BUREAU <br>
+            CREATING REALITY © 2026
         </div>
-        <div class="footer-logo">P—11®</div>
+        <div class="footer-logo">P—11</div>
+        <div class="tech-font">
+            <a href="mailto:contact@project11.bureau" style="border-bottom: 1px solid var(--fg);">RECRUIT / INQUIRY</a>
+        </div>
     </footer>
-
 </div>
 
 <script>
-    // Preloader Script
-    window.addEventListener('load', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 1500);
-        }
-    });
-
-    // Custom Cursor Script
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
-    // Menu Toggle Script
-    function toggleMenu() {
-        const menu = document.getElementById('side-menu');
-        const backdrop = document.getElementById('menu-backdrop');
-        menu.classList.toggle('active');
-        backdrop.classList.toggle('active');
+    const term = document.getElementById('terminal');
+    const text = term.innerText;
+    term.innerText = '';
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            term.innerText += text.charAt(i);
+            i++;
+            setTimeout(type, 30);
+        }
     }
+    type();
+
+    const reveal = () => {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(el => {
+            const windowHeight = window.innerHeight;
+            const elementTop = el.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 100) {
+                el.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', reveal);
+    reveal();
 </script>
 
 </body>
