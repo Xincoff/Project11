@@ -3,484 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT 11</title>
+    <title>PROJECT 11 | ENGINEERING BUREAU</title>
     
-    <link rel="icon" type="image/jpeg" href="logo2.png">
-
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE SETTINGS --- */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        
         :root {
-            --bg: #050505;
-            --fg: #E6E6E6;
-            --dim: #555555;
-            --line: #333333;
-            --accent: #FFFFFF;   
-            --font-main: 'Inter', sans-serif;
-            --font-tech: 'JetBrains Mono', monospace;
+            --bg: #030303; --fg: #F5F5F5; --dim: #555;
+            --line: #1A1A1A; --accent: #FFFFFF;
+            --crystal-glow: #a855f7; 
+            --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            font-size: 14px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
-
-	
-	/* --- TOTAL DESTRUCTIVE GLITCH PRELOADER --- */
-        .preloader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 10000;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        .glitch-wrapper {
-            position: relative; 
-            width: 150px; height: 150px;
-            animation: container-jump 0.4s infinite steps(1);
-        }
-
-        .glitch-logo {
-            width: 100%; height: 100%;
-            background-image: url('logo2.png');
-            background-size: contain; background-repeat: no-repeat; background-position: center;
-            position: relative;
-        }
-
-        .glitch-logo::before,
-        .glitch-logo::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: inherit; background-size: inherit;
-            background-repeat: inherit; background-position: inherit;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .glitch-logo::before {
-            animation: glitch-step-1 0.6s infinite steps(1);
-            mix-blend-mode: difference;
-            filter: hue-rotate(180deg);
-        }
-
-        .glitch-logo::after {
-            animation: glitch-step-2 0.8s infinite steps(1);
-            filter: saturate(10) contrast(5);
-        }
-
-        @keyframes glitch-step-1 {
-            0% { opacity: 1; clip-path: inset(80% 0 1% 0); transform: translate(-25px, 15px); }
-            20% { opacity: 0; }
-            35% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(20px, -20px); }
-            50% { opacity: 0; }
-            70% { opacity: 1; clip-path: inset(40% 0 40% 0); transform: translate(-15px, -10px); }
-            85% { opacity: 0; }
-            95% { opacity: 1; clip-path: inset(0% 0 95% 0); transform: translate(30px, 25px); }
-        }
-
-        @keyframes glitch-step-2 {
-            0% { opacity: 0; }
-            15% { opacity: 1; clip-path: inset(50% 0 10% 0); transform: translate(25px, -10px); }
-            30% { opacity: 0; }
-            45% { opacity: 1; clip-path: inset(5% 0 80% 0); transform: translate(-30px, 20px); }
-            60% { opacity: 0; }
-            80% { opacity: 1; clip-path: inset(25% 0 25% 0); transform: translate(15px, 15px); }
-        }
-
-        @keyframes container-jump {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(-6px, 3px); filter: brightness(2.5); }
-            50% { transform: translate(6px, -3px); filter: brightness(0.2); }
-            75% { transform: translate(-3px, -6px); }
-        }
-
-        /* --- CUSTOM CURSOR --- */
-        .cursor {
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--accent);
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background 0.2s;
-            mix-blend-mode: difference;
-        }
-        .cursor::after {
-            content: '';
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        body:hover .cursor { opacity: 1; }
-        a:hover ~ .cursor, .project-card:hover ~ .cursor, .tech-font:hover ~ .cursor {
-            width: 50px; height: 50px; background: rgba(255,255,255,0.1);
-        }
-
-        /* --- SIDE MENU STYLES --- */
-        .side-panel {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 450px; height: 100vh;
-            background: var(--bg);
-            border-left: 1px solid var(--line);
-            z-index: 10000;
-            padding: 40px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: right 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            box-shadow: -10px 0 50px rgba(0,0,0,0.9);
-        }
-        .side-panel.active { right: 0; }
-
-        .menu-backdrop {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 9998;
-            opacity: 0; pointer-events: none;
-            transition: 0.5s ease;
-        }
-        .menu-backdrop.active { opacity: 1; pointer-events: all; }
-
-        .panel-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--line); padding-bottom: 20px; margin-bottom: 40px;
-        }
-        .close-btn {
-            background: none; border: none; color: var(--accent);
-            cursor: none; font-size: 12px; transition: 0.3s;
-        }
-        .close-btn:hover { color: var(--dim); }
-
-        .panel-links a {
-            display: block; font-size: 2rem; font-weight: 500; text-transform: uppercase;
-            margin-bottom: 30px; color: var(--dim); transition: 0.3s;
-        }
-        .panel-links a:hover { color: var(--accent); padding-left: 10px; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        .panel-footer { color: var(--dim); border-top: 1px solid var(--line); padding-top: 20px; line-height: 1.6; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* --- TYPOGRAPHY & LAYOUT --- */
-        .tech-font { font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; }
-        .flex { display: flex; }
-        .j-btwn { justify-content: space-between; }
-        .a-center { align-items: center; }
-        .uppercase { text-transform: uppercase; }
-
-        .wrapper {
-            max-width: 100%;
-            margin: 0 auto;
-            border-left: 1px solid var(--line);
-            border-right: 1px solid var(--line);
-            min-height: 100vh;
+        #cursor { 
+            width: 10px; height: 10px; background: var(--accent); 
+            position: fixed; pointer-events: none; z-index: 9999; 
+            mix-blend-mode: difference; transition: transform 0.1s; 
         }
 
-        header {
-            padding: 20px 40px;
-            position: fixed;
-            top: 0; width: 100%; z-index: 100;
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--line);
-        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 0 60px; }
+        .border-v { border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 
-        .logo-container { width: 50px; height: 50px; }
-        .logo-img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; filter: grayscale(100%) contrast(1.2); }
-        .header-nav span { margin-left: 20px; color: var(--dim); }
+        /* HEADER */
+        header { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; background: rgba(3,3,3,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--line); }
+        .logo-type { font-weight: 800; font-size: 14px; letter-spacing: -0.5px; font-family: var(--font-tech); text-transform: uppercase; }
+        .terminal-status { font-family: var(--font-tech); font-size: 9px; color: #444; letter-spacing: 1px; }
 
-        .hero {
-            padding-top: 25vh; padding-bottom: 10vh;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            border-bottom: 1px solid var(--line);
-        }
-        .hero h1 {
-            font-size: clamp(3rem, 13vw, 15rem);
-            font-weight: 800; line-height: 0.8; letter-spacing: -0.04em;
-            margin-bottom: 40px; color: var(--accent); white-space: nowrap;
-        }
-        .hero-meta { display: flex; gap: 60px; text-align: left; color: var(--dim); }
-        .hero-meta div { border-left: 1px solid var(--dim); padding-left: 15px; }
+        /* HERO */
+        .hero { padding: 200px 0 100px; }
+        .hero-title { font-size: clamp(40px, 8vw, 110px); font-weight: 800; line-height: 0.9; letter-spacing: -4px; text-transform: uppercase; margin-bottom: 50px; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; border-top: 1px solid var(--line); padding-top: 30px; }
+        .hero-manifesto { font-size: 18px; line-height: 1.4; color: #888; max-width: 550px; }
+        .hero-manifesto span { color: var(--fg); font-weight: 600; }
 
-        .marquee-wrapper {
-            overflow: hidden; white-space: nowrap; padding: 12px 0;
-            background: var(--bg); border-bottom: 1px solid var(--line);
-        }
-        .marquee-content { display: inline-block; animation: marquee 25s linear infinite; color: var(--accent); }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        /* SECTIONS INFO */
+        .section-header { padding: 60px 0 20px; border-bottom: 1px solid var(--line); }
+        .section-num { font-family: var(--font-tech); font-size: 10px; color: var(--dim); margin-right: 15px; }
+        .section-title { font-size: 10px; font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 3px; color: var(--dim); }
 
-        .project-card {
-            display: grid; grid-template-columns: 0.5fr 1.5fr 1.5fr;
-            min-height: 70vh; border-bottom: 1px solid var(--line);
-            transition: background 0.3s ease; position: relative;
-        }
-        .project-card:hover { background-color: var(--fg); color: var(--bg); }
+        /* PRODUCT CARDS */
+        .project-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 600px; }
+        .p-content { padding: 60px 60px 60px 0; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
+        .p-visual { position: relative; overflow: hidden; background: #000; }
+        .p-visual img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(1); }
+        .project-row:hover .p-visual img { opacity: 0.9; transform: scale(1.02); filter: grayscale(0); }
 
-        .p-col {
-            padding: 40px; display: flex; flex-direction: column;
-            justify-content: space-between; border-right: 1px solid var(--line);
-        }
-        .p-col.visual { padding: 0; border-right: none; overflow: hidden; background: #000; }
+        .p-meta { font-family: var(--font-tech); font-size: 9px; letter-spacing: 2px; color: var(--dim); margin-bottom: 15px; display: block; text-transform: uppercase; }
+        .p-heading { font-size: 42px; font-weight: 800; line-height: 1; text-transform: uppercase; margin-bottom: 25px; letter-spacing: -2px; }
+        .p-description { font-size: 14px; color: #777; line-height: 1.6; max-width: 420px; margin-bottom: 30px; }
+        
+        .status-tag { display: inline-block; padding: 4px 10px; border: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; text-transform: uppercase; margin-bottom: 20px; }
+        .status-ready { color: #00FF41; border-color: rgba(0,255,65,0.2); }
+        .status-classified { color: #FF3E3E; border-color: rgba(255,62,62,0.2); }
 
-        .p-title {
-            font-size: clamp(2rem, 4vw, 5rem); line-height: 0.9;
-            font-weight: 500; letter-spacing: -0.02em; margin-bottom: 20px;
+        /* BUTTONS */
+        .btn-p11 { 
+            display: inline-flex; align-items: center; gap: 15px;
+            padding: 18px 48px; background: var(--fg); color: var(--bg);
+            font-family: var(--font-tech); font-size: 10px; font-weight: 800;
+            text-decoration: none; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-transform: uppercase; width: fit-content; letter-spacing: 2px;
         }
-        .p-desc {
-            font-family: var(--font-tech); max-width: 420px; font-size: 12px;
-            line-height: 1.5; margin-bottom: 40px; opacity: 0.8;
-        }
+        .btn-p11:hover { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
+        
+        footer { padding: 100px 60px; border-top: 1px solid var(--line); }
+        .f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+        .f-logo { font-size: 80px; font-weight: 800; letter-spacing: -6px; line-height: 0.8; }
+        .f-nav-title { color: var(--fg); font-size: 10px; font-family: var(--font-tech); margin-bottom: 20px; letter-spacing: 2px; }
+        .f-link { display: block; margin-bottom: 8px; color: #555; text-decoration: none; font-family: var(--font-tech); font-size: 10px; transition: 0.2s; }
+        .f-link:hover { color: var(--fg); }
 
-        .btn-buy {
-            display: inline-block; border: 1px solid var(--dim);
-            padding: 15px 30px; font-family: var(--font-tech); font-size: 11px;
-            text-transform: uppercase; transition: 0.2s; width: fit-content;
-        }
-        .project-card:hover .btn-buy { border-color: var(--bg); color: var(--bg); font-weight: 700; }
-
-        .project-img {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(100%) brightness(0.9);
-            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
-        }
-        .project-card:hover .project-img { filter: grayscale(0%) brightness(1); transform: scale(1.03); }
-
-        footer { padding: 60px 40px; display: flex; justify-content: space-between; align-items: flex-end; }
-        .footer-logo { font-weight: 800; font-size: 24px; letter-spacing: -0.02em; }
-
-        @media (max-width: 900px) {
-            .project-card { grid-template-columns: 1fr; min-height: auto; }
-            .p-col { border-right: none; border-bottom: 1px solid var(--line); }
-            .p-col.visual { height: 350px; border-bottom: 1px solid var(--line); }
-            .hero h1 { font-size: 16vw; }
-            header { padding: 15px 20px; }
-            .header-nav { display: none; }
-            .cursor { display: none; }
-            .side-panel { width: 100%; }
+        @media (max-width: 1024px) {
+            .project-row { grid-template-columns: 1fr; }
+            .p-content { border-right: none; padding: 40px 0; }
+            .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+            #cursor { display: none; }
             * { cursor: auto; }
-        }
-
-        .manifesto {
-            margin-top: -10px; 
-            margin-bottom: 50px;
-            font-size: 14px;
-            letter-spacing: 0.3em; 
-            text-transform: uppercase;
-            color: var(--dim);
-            opacity: 0.7;
-            font-weight: 400;
         }
     </style>
 </head>
 <body>
 
-<div class="preloader" id="preloader">
-    <div class="glitch-wrapper">
-        <div class="glitch-logo"></div>
-    </div>
-</div>
+<div id="cursor"></div>
 
-<div class="cursor" id="cursor"></div>
+<header>
+    <div class="logo-type">P-11 // BUREAU</div>
+    <div class="terminal-status" id="terminal">STATUS: SYSTEMS_OPERATIONAL // BRANCH: MAIN</div>
+</header>
 
-<div id="menu-backdrop" class="menu-backdrop" onclick="toggleMenu()"></div>
-
-<div id="side-menu" class="side-panel">
-    <div class="panel-header">
-        <span class="tech-font">[ SYSTEM_MENU ]</span>
-        <button onclick="toggleMenu()" class="close-btn tech-font">[ CLOSE X ]</button>
-    </div>
-
-    <nav class="panel-links">
-        <a href="index.html">01. ARCHIVE</a>
-        <a href="#">02. INTELLIGENCE</a>
-        <a href="mailto:contact@project11.bureau">03. COMMS</a>
-    </nav>
-
-    <div class="panel-footer tech-font">
-        <div>
-            LOC: 55.75 N, 37.61 E<br>
-            ENCRYPTION: AES-256
-        </div>
-        <div style="margin-top: 20px; opacity: 0.5;">
-            /// PROJECT ELEVEN BUREAU ///
-        </div>
-    </div>
-</div>
-
-<div class="wrapper">
-
-    <header class="flex j-btwn a-center">
-        <div class="logo-container">
-            <img src="logo.jpg" alt="P11 Logo" class="logo-img">
-        </div>
-        <nav class="header-nav tech-font">
-            <span>[ SYSTEM: ACTIVE ]</span>
-            <span>[ ACCESS: GRANTED ]</span>
-        </nav>
-        <div class="tech-font" onclick="toggleMenu()" style="cursor: none; padding: 10px; border: 1px solid transparent; transition:0.3s;">
-           [ MENU /// ]
-        </div>
-    </header>
-
-<section class="hero">
-        <h1 class="uppercase">Project<br>Eleven</h1>
-        
-        <div class="manifesto tech-font">
-            Everything is easier than it seems
-        </div>
-
-        <div class="hero-meta tech-font">
-            <div>
-                BUREAU ID: P-11<br>
-                STATUS: TESTING AND DEVELOPMENT
+<div class="container border-v">
+    <section class="hero reveal">
+        <h1 class="hero-title">Engineering<br>Bureau.</h1>
+        <div class="hero-grid">
+            <div class="hero-manifesto">
+                <span>Сложные инженерные задачи — изящные технологические решения.</span><br><br>
+                Бюро междисциплинарной разработки на стыке механики, электроники и интеллекта. Мы создаем артефакты, формирующие новую реальность.
             </div>
-            <div>
-                ADVANCED PROTOTYPING<br>
-                DEFENSE & AEROSPACE
+            <div class="tech-font" style="color: var(--dim); line-height: 2.2; font-family: var(--font-tech); font-size: 10px;">
+                [ 01 ] AUTONOMOUS SYSTEMS<br>
+                [ 02 ] ESOTERIC DESIGN<br>
+                [ 03 ] EDGE INTELLIGENCE<br>
+                [ 04 ] ADVANCED MATERIALS
             </div>
         </div>
     </section>
 
-    <div class="marquee-wrapper tech-font">
-        <div class="marquee-content">
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM /// 
-            /// NEW PROTOTYPES AVAILABLE /// CATCHER PROTOTYPE /// CRYSTALLAMP  /// ZACK SYSTEM  /// OMEGA PLATFORM ///
-        </div>
+    <div class="section-header">
+        <span class="section-num">01</span><span class="section-title">DEPLOYED ARTIFACTS</span>
     </div>
 
-    <div class="projects-list">
+    <!-- CRYSTAL LAMP -->
+    <article class="project-row reveal">
+        <div class="p-content">
+            <div>
+                <span class="status-tag status-ready">Artifact Ready</span>
+                <span class="p-meta">LIVING ALGORITHM / ESOTERIC BRUTALISM</span>
+                <h2 class="p-heading" style="color: var(--crystal-glow);">Crystal Lamp</h2>
+                <p class="p-description">
+                    Живой алгоритм. Природа в эпоху технологий. Натуральный аметист и чип ESP32C3. Испытайте прецизионный механизм подъема и инженерное искусство, скрытое от глаз.
+                </p>
+            </div>
+            <a href="crystallamp.html" class="btn-p11">MORE</a>
+        </div>
+        <div class="p-visual">
+            <img src="crystallamp.jpg" alt="Crystal Lamp">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 001</span>
-                <span class="tech-font" style="margin-top: auto;">UNMANNED SYSTEM</span>
+    <!-- OMEGA UNIT -->
+    <article class="project-row reveal">
+        <div class="p-content">
+            <div>
+                <span class="status-tag status-ready">System: Active</span>
+                <span class="p-meta">ROBOTICS / RESEARCH PLATFORM</span>
+                <h2 class="p-heading">Omega Unit</h2>
+                <p class="p-description">
+                    Робототехника доступна. Создавай, учись, доминируй. Прецизионный 4-осевой манипулятор. От DIY-комплектов до PRO-версий с интеграцией ZACK AI.
+                </p>
             </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Catcher</h2>
-                    <p class="p-desc">
-                        Автономная система перехвата. Раскладное крыло. Диаметр 120мм.
-                        Скорость перехвата 200км/ч. Усиленный корпус.
-                    </p>
-                </div>
-                <a href="catcher.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="catcher.jpg" alt="Catcher" class="project-img">
-            </div>
-        </article>
+            <a href="omega.html" class="btn-p11">MORE</a>
+        </div>
+        <div class="p-visual">
+            <img src="omega.jpg" alt="Omega Unit">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 002</span>
-                <span class="tech-font" style="margin-top: auto;">ACCESSORY</span>
+    <!-- ZACK -->
+    <article class="project-row reveal">
+        <div class="p-content">
+            <div>
+                <span class="status-tag status-ready">Intelligence: Ready</span>
+                <span class="p-meta">AI COMPANION / VISION INTELLIGENCE</span>
+                <h2 class="p-heading">Zack System</h2>
+                <p class="p-description">
+                    Интеллект, который понимает. Ваш цифровой компаньон. Синтез LLM-моделей и компьютерного зрения для восполнения дефицита общения.
+                </p>
             </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Crystal<br>Lamp</h2>
-                    <p class="p-desc">
-                        Технологии и природа в одном корпусе. Натуральный аметист и современные решения.
-                    </p>
-                </div>
-                <a href="crystallamp.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="crystallamp.jpg" alt="Lamp" class="project-img">
-            </div>
-        </article>
+            <a href="zack.html" class="btn-p11">MORE</a>
+        </div>
+        <div class="p-visual">
+            <img src="zacksystem.jpg" alt="ZACK">
+        </div>
+    </article>
 
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 003</span>
-                <span class="tech-font" style="margin-top: auto;">AI CORE</span>
-            </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Zack<br></h2>
-                    <p class="p-desc">
-                        Интеллектуальный помощник. Экосистема умный дом.
-                    </p>
-                </div>
-                <a href="zack.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="zacksystem.jpg" alt="Zack" class="project-img">
-            </div>
-        </article>
-
-        <article class="project-card">
-            <div class="p-col p-index">
-                <span class="tech-font">NO. 004</span>
-                <span class="tech-font" style="margin-top: auto;">EDUCATION</span>
-            </div>
-            <div class="p-col">
-                <div>
-                    <h2 class="p-title uppercase">Omega</h2>
-                    <p class="p-desc">
-                        Обучающая платформа. 4-х осевой манипулятор.
-                    </p>
-                </div>
-                <a href="omega.html" class="btn-buy">VIEW MORE</a>
-            </div>
-            <div class="p-col visual">
-                <img src="omega.jpg" alt="Omega" class="project-img">
-            </div>
-        </article>
-
+    <div class="section-header">
+        <span class="section-num">02</span><span class="section-title">CLASSIFIED R&D</span>
     </div>
 
-    <footer class="border-t">
-        <div class="tech-font">
-            PROJECT ELEVEN <br>
-            © 2026. ALL RIGHTS RESERVED.
+    <!-- CATCHER -->
+    <article class="project-row reveal">
+        <div class="p-content">
+            <div>
+                <span class="status-tag status-classified">Classified</span>
+                <span class="p-meta">AEROSPACE / INTERCEPTOR</span>
+                <h2 class="p-heading">Catcher</h2>
+                <p class="p-description">
+                    Прецизионный перехватчик. Защита неба без компромиссов. Складное титановое крыло, 200 км/ч и перегрузки до 17g.
+                </p>
+            </div>
+            <a href="catcher.html" class="btn-p11" style="background: transparent; color: #FF3E3E; box-shadow: inset 0 0 0 1px #FF3E3E;">MORE</a>
         </div>
-        <div class="footer-logo">P—11®</div>
+        <div class="p-visual">
+            <img src="catcher.jpg" alt="Catcher">
+        </div>
+    </article>
+
+    <footer>
+        <div class="f-grid">
+            <div>
+                <div class="f-logo">P—11</div>
+                <p style="margin-top: 20px; max-width: 300px; color: #444; font-size: 10px; line-height: 1.6;">
+                    Создавая реальность, мы не принимаем компромиссов. Территория тех, кто видит скрытую сложность.
+                </p>
+            </div>
+            <div>
+                <p class="f-nav-title">NAVIGATE</p>
+                <a href="#works" class="f-link">Artifacts</a>
+                <a href="mailto:contact@project11.bureau" class="f-link">Inquiry</a>
+            </div>
+            <div>
+                <p class="f-nav-title">MISSION</p>
+                <span style="color: #444; font-family: var(--font-tech); font-size: 9px; line-height: 2;">
+                    ДОМИНИРОВАТЬ ЧЕРЕЗ ИНТЕЛЛЕКТ.<br>ВДОХНОВЛЯТЬ ЧЕРЕЗ ФОРМУ.
+                </span>
+            </div>
+        </div>
     </footer>
-
 </div>
 
 <script>
-    // Preloader Script
-    window.addEventListener('load', () => {
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-            setTimeout(() => {
-                preloader.style.display = 'none';
-            }, 1500);
-        }
-    });
-
-    // Custom Cursor Script
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
-    // Menu Toggle Script
-    function toggleMenu() {
-        const menu = document.getElementById('side-menu');
-        const backdrop = document.getElementById('menu-backdrop');
-        menu.classList.toggle('active');
-        backdrop.classList.toggle('active');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const term = document.getElementById('terminal');
+    const text = term.innerText;
+    term.innerText = '';
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            term.innerText += text.charAt(i);
+            i++;
+            setTimeout(type, 30);
+        }
     }
+    type();
+
+    document.querySelectorAll('a, button').forEach(link => {
+        link.addEventListener('mouseenter', () => cursor.style.transform = 'scale(4)');
+        link.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
 </script>
 
 </body>
