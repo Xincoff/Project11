@@ -3,183 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZACK | P-11 DETAILS</title>
+    <title>ZACK | AI COMPANION P-11</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         :root {
-            --bg: #050505; --fg: #E6E6E6; --dim: #555555;
-            --line: #333333; --accent: #FFFFFF;
+            --bg: #030303; --fg: #F5F5F5; --dim: #555;
+            --line: #1A1A1A; --accent: #FFFFFF;
+            --zack-blue: #00d1ff; 
             --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        .reveal { opacity: 0; transform: translateY(20px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
-        .cursor { width: 20px; height: 20px; border: 1px solid var(--accent); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+        #cursor { width: 10px; height: 10px; background: var(--accent); position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
+
+        .wrapper { max-width: 1600px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
         
-        .wrapper { max-width: 100%; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
-        
-        header { padding: 20px 40px; position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center;}
-        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; }
+        header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(3,3,3,0.8); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
+        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-        .p-hero { padding: 150px 40px 60px; border-bottom: 1px solid var(--line); }
-        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 11px; letter-spacing: 2px; }
-        .p-hero h1 { font-size: clamp(3rem, 8vw, 10rem); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; }
-        
-        .p-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
-        .p-left { border-right: 1px solid var(--line); padding: 40px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
-        
-        .p-text-block { max-width: 500px; margin-bottom: 60px; }
-        .p-text-block h3 { font-family: var(--font-tech); font-size: 11px; margin-bottom: 20px; color: var(--dim); letter-spacing: 1px; }
-        .p-text-block p { font-size: 15px; line-height: 1.6; color: #aaa; }
+        /* HERO */
+        .p-hero { padding: 180px 40px 60px; border-bottom: 1px solid var(--line); }
+        .p-type { font-family: var(--font-tech); color: var(--zack-blue); font-size: 9px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; display: block; }
+        .p-hero h1 { font-size: clamp(40px, 8vw, 120px); line-height: 0.8; text-transform: uppercase; margin-bottom: 30px; font-weight: 800; letter-spacing: -5px; }
+        .hero-tagline { font-size: 18px; color: #888; max-width: 650px; line-height: 1.4; }
 
-        .specs-table { width: 100%; border-top: 1px solid var(--line); margin-top: 20px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; font-family: var(--font-tech); font-size: 11px; }
-        .spec-val { color: var(--accent); }
+        /* GRID INFO */
+        .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+        .p-left { border-right: 1px solid var(--line); padding: 60px 40px; }
+        .p-right { background: #000; overflow: hidden; position: relative; min-height: 600px; }
+        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .p-grid:hover .p-right img { opacity: 0.8; transform: scale(1.05); }
 
-        /* --- GALLERY SLIDER STYLES --- */
-        .p-right { border-bottom: 1px solid var(--line); position: relative; background: #000; overflow: hidden; }
-        
-        .slider-container { width: 100%; height: 100%; position: relative; }
-        
-        .slider-track { 
-            display: flex; width: 100%; height: 100%; 
-            transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); 
+        .section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; display: block; border-left: 2px solid var(--zack-blue); padding-left: 15px; }
+        .p-text { font-size: 14px; line-height: 1.6; color: #888; margin-bottom: 30px; }
+        .p-text b { color: var(--fg); font-weight: 600; }
+
+        /* SENSORS BLOCK */
+        .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px; }
+        .sensor-item { border: 1px solid var(--line); padding: 25px; transition: 0.3s; }
+        .sensor-item:hover { border-color: var(--zack-blue); background: rgba(0,209,255,0.02); }
+        .sensor-item h4 { font-family: var(--font-tech); font-size: 11px; color: var(--zack-blue); margin-bottom: 10px; text-transform: uppercase; }
+        .sensor-item p { font-size: 12px; color: var(--dim); line-height: 1.5; }
+
+        /* SPECS TABLE */
+        .specs-table { width: 100%; margin-top: 50px; border-top: 1px solid var(--line); }
+        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #111; font-family: var(--font-tech); font-size: 10px; }
+        .spec-val { color: var(--accent); text-align: right; }
+
+        /* ECOSYSTEM BLOCK */
+        .eco-section { padding: 80px 40px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #030303 0%, #080808 100%); }
+        .eco-content { max-width: 800px; }
+        .eco-title { font-size: 32px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 25px; text-transform: uppercase; }
+
+        /* QUOTE */
+        .founder-quote { padding: 100px 40px; border-bottom: 1px solid var(--line); text-align: left; }
+        .quote-text { font-size: 22px; line-height: 1.4; color: var(--fg); font-style: italic; max-width: 1000px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        .quote-author { font-family: var(--font-tech); font-size: 11px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; }
+
+        /* CTA */
+        .cta-section { padding: 120px 40px; text-align: center; }
+        .btn-p11 { 
+            padding: 22px 50px; font-family: var(--font-tech); font-size: 11px; font-weight: 800;
+            text-transform: uppercase; text-decoration: none; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid var(--accent); display: inline-block; letter-spacing: 2px;
         }
-        
-        .slider-track img { 
-            min-width: 100%; height: 100%; object-fit: cover; 
-            filter: grayscale(100%); transition: 0.5s ease;
-        }
-        
-        .p-right:hover .slider-track img { filter: grayscale(0%); }
+        .btn-fill { background: var(--accent); color: var(--bg); }
+        .btn-outline { background: transparent; color: var(--fg); margin-left: 15px; }
+        .btn-p11:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,209,255,0.1); }
 
-        .slider-nav {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 30px;
-            background: rgba(5,5,5,0.8); padding: 12px 25px;
-            border: 1px solid var(--line); backdrop-filter: blur(10px); z-index: 10;
-        }
-
-        .nav-btn { 
-            background: none; border: none; color: var(--accent); 
-            font-family: var(--font-tech); font-size: 10px; letter-spacing: 1px;
-            transition: 0.3s; cursor: none;
-        }
-        .nav-btn:hover { color: var(--dim); }
-
-        #slide-counter { font-family: var(--font-tech); font-size: 10px; color: var(--dim); min-width: 60px; text-align: center; }
-
-        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); }
-        .cta-btn { font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 800; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 5px; transition: 0.3s; }
-        .cta-btn:hover { color: var(--dim); border-color: var(--dim); }
-
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .p-grid { grid-template-columns: 1fr; }
             .p-left { border-right: none; }
-            .p-right { height: 500px; }
-            .cursor { display: none; }
-            * { cursor: auto; }
+            .sensor-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+<div id="cursor"></div>
 
 <div class="wrapper">
     <header>
-        <div style="font-weight: 800; letter-spacing: -1px;">P—11</div>
-        <a href="index.html" class="back-btn">[ RETURN TO BASE ]</a>
+        <div class="logo-type" style="font-family: var(--font-tech); font-size: 12px; font-weight: 800;">P—11 // INTELLIGENCE</div>
+        <a href="index.html" class="back-btn">Return to Base</a>
     </header>
 
-    <section class="p-hero">
-        <span class="p-type">[ CLASSIFIED PROJECT: NO. 003 ]</span>
-        <h1 id="project-title">ZACK</h1> 
+    <section class="p-hero reveal">
+        <span class="p-type">[ AI COMPANION / PROJECT NO. 003 ]</span>
+        <h1>Zack System</h1>
+        <p class="hero-tagline">Интеллект, который понимает. Ваш цифровой компаньон в эпоху изоляции. Где технологии обретают душу.</p>
     </section>
 
     <section class="p-grid">
-        <div class="p-left">
-            <div class="p-text-block">
-                <h3>/// MISSION BRIEF</h3>
-                <p id="project-desc">
-                    Интеллектуальный помощник нового поколения. Экосистема ZackSystem спроектирована для полной автоматизации жилых и рабочих пространств. Центральный узел обработки данных на базе кастомного ядра ESP32-S3 Sense обеспечивает мгновенный отклик и конфиденциальность локальных вычислений.
-                </p>
-            </div>
-
-            <div class="p-text-block">
-                <h3>/// TECHNICAL DATA</h3>
-                <div class="specs-table">
-                    <div class="spec-row"><span>STATUS</span><span class="spec-val">ACTIVE / PROTOTYPE</span></div>
-                    <div class="spec-row"><span>MATERIAL</span><span class="spec-val">PETG CARBON REINFORCED</span></div>
-                    <div class="spec-row"><span>CORE UNIT</span><span class="spec-val">ESP32-S3 SENSE</span></div>
-                    <div class="spec-row"><span>OS INTERFACE</span><span class="spec-val">ZACK SYSTEM</span></div>
+        <div class="p-left reveal">
+            <span class="section-label">Обзор Продукта</span>
+            <p class="p-text">
+                <b>ZACK</b> — это антропоморфный модуль-компаньон, спроектированный для восполнения дефицита интеллектуального взаимодействия. 
+                Это синтез передовых <b>LLM-моделей</b> и визуального интеллекта, способный к автономному пониманию мира.
+            </p>
+            
+            <span class="section-label" style="margin-top: 60px;">Интеллект, Который Чувствует</span>
+            <div class="sensor-grid">
+                <div class="sensor-item">
+                    <h4>Чувства</h4>
+                    <p>Камера OV3660 и радар RCWL-0516. ZACK видит ваше присутствие и отслеживает состояние среды.</p>
+                </div>
+                <div class="sensor-item">
+                    <h4>Общение</h4>
+                    <p>Голосовое взаимодействие, мимика на OLED-дисплеях и запоминание важных дат.</p>
+                </div>
+                <div class="sensor-item">
+                    <h4>Эмпатия</h4>
+                    <p>Он засыпает, когда никого нет рядом, и адаптируется под вашу личность.</p>
+                </div>
+                <div class="sensor-item">
+                    <h4>Автономность</h4>
+                    <p>Встроенная литиевая батарея позволяет ZACK быть рядом в любой точке вашего пространства.</p>
                 </div>
             </div>
         </div>
+        <div class="p-right reveal">
+            <img src="zacksystem.jpg" alt="ZACK AI Companion">
+        </div>
+    </section>
 
-        <div class="p-right">
-            <div class="slider-container">
-                <div class="slider-track" id="slider-track">
-                    <img src="zacksystem.jpg" alt="Zack Front View">
-                    <img src="zacksystem2.jpg" alt="Zack Side View">
-                    <img src="zacksystem3.jpg" alt="Zack Internal">
-                </div>
-
-                <div class="slider-nav">
-                    <button onclick="moveSlide(-1)" class="nav-btn">PREV</button>
-                    <span id="slide-counter">01 / 03</span>
-                    <button onclick="moveSlide(1)" class="nav-btn">NEXT</button>
-                </div>
+    <section class="eco-section reveal">
+        <div class="eco-content">
+            <span class="section-label">Экосистема ZackSystem</span>
+            <h2 class="eco-title">Ваш Дом, Управляемый Заботой</h2>
+            <p class="p-text" style="font-size: 16px; color: var(--fg);">
+                ZackSystem позволяет ZACK бесшовно интегрироваться с умным домом. Используя метеостанцию BME-680, он следит за качеством воздуха, температурой и влажностью, снимая рутинные задачи с ваших плеч.
+            </p>
+            <div class="specs-table">
+                <div class="spec-row"><span>CORE PROCESSOR</span><span class="spec-val">ESP32-S3 SENSE</span></div>
+                <div class="spec-row"><span>VISION SENSOR</span><span class="spec-val">OV3660 3MP CAMERA</span></div>
+                <div class="spec-row"><span>ENVIRONMENTAL</span><span class="spec-val">BME-680 (AIR/TEMP/HUM)</span></div>
+                <div class="spec-row"><span>MOTION SENSOR</span><span class="spec-val">RCWL-0516 MICROWAVE RADAR</span></div>
+                <div class="spec-row"><span>INTERFACES</span><span class="spec-val">DUAL OLED / MICROPHONE / SPEAKER</span></div>
+                <div class="spec-row"><span>CONNECTIVITY</span><span class="spec-val">WIFI / MQTT / ZACK-NET</span></div>
             </div>
         </div>
     </section>
 
-    <section class="cta-section">
-        <div style="margin-bottom: 20px;" class="p-type">READY TO DEPLOY?</div>
-        <a href="mailto:contact@project11.bureau" class="cta-btn">INITIATE INQUIRY</a>
+    <section class="founder-quote reveal">
+        <p class="quote-text">
+            "ZACK родился из осознания дефицита настоящего общения. Это попытка создать спутника, который не судит, а слушает. Это ответ на вызов одиночества, воплощенный в кремнии и коде."
+        </p>
+        <div class="quote-author">Евгений Семенов — Основатель Project 11 Bureau</div>
     </section>
+
+    <section class="cta-section reveal">
+        <span class="section-label">Откройте новую эру общения</span><br>
+        <div style="margin-top: 40px;">
+            <a href="mailto:contact@project11.bureau" class="btn-p11 btn-fill">Познакомьтесь с ZACK</a>
+            <a href="index.html" class="btn-p11 btn-outline">Все системы P-11</a>
+        </div>
+    </section>
+
+    <footer style="padding: 40px; text-align: center; border-top: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; color: var(--dim);">
+        PROJECT 11 BUREAU // ZACK SYSTEM DEPLOYMENT // 2025
+    </footer>
 </div>
 
 <script>
-    // Курсор
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
-    // Логика слайдера
-    let currentSlide = 0;
-    const track = document.getElementById('slider-track');
-    const counter = document.getElementById('slide-counter');
-    const slides = track.getElementsByTagName('img');
-    const totalSlides = slides.length;
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
 
-    function moveSlide(direction) {
-        currentSlide += direction;
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        if (currentSlide >= totalSlides) currentSlide = 0;
-        if (currentSlide < 0) currentSlide = totalSlides - 1;
-
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
-        updateCounter();
-    }
-
-    function updateCounter() {
-        const currentNum = (currentSlide + 1).toString().padStart(2, '0');
-        const totalNum = totalSlides.toString().padStart(2, '0');
-        counter.innerText = `${currentNum} / ${totalNum}`;
-    }
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'scale(4)';
+            cursor.style.borderColor = 'var(--zack-blue)';
+        });
+        link.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'scale(1)';
+            cursor.style.borderColor = 'var(--accent)';
+        });
+    });
 </script>
 
 </body>
 </html>
-
-
