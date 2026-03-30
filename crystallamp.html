@@ -3,116 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT DETAILS | P-11</title>
+    <title>CRYSTALLAMP | ARTEFACT P-11</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* (Те же стили, что и на главной, для целостности) */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         :root {
-            --bg: #050505; --fg: #E6E6E6; --dim: #555555;
-            --line: #333333; --accent: #FFFFFF;
+            --bg: #030303; --fg: #F5F5F5; --dim: #555;
+            --line: #1A1A1A; --accent: #FFFFFF;
+            --crystal-glow: #a855f7; 
             --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); }
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
-
-        /* --- LAYOUT --- */
-        .wrapper { max-width: 100%; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        /* HEADER */
-        header { padding: 20px 40px; position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center;}
-        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; }
+        .reveal { opacity: 0; transform: translateY(20px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        #cursor { width: 10px; height: 10px; background: var(--accent); position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
+
+        .wrapper { max-width: 1600px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
+        
+        header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(3,3,3,0.8); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
+        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-        /* HERO PROJECT */
-        .p-hero { padding: 150px 40px 60px; border-bottom: 1px solid var(--line); }
-        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; }
-        .p-hero h1 { font-size: clamp(3rem, 8vw, 10rem); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; }
+        /* HERO */
+        .p-hero { padding: 180px 40px 60px; border-bottom: 1px solid var(--line); }
+        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+        .p-hero h1 { font-size: clamp(40px, 8vw, 100px); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; letter-spacing: -4px; }
         
-        /* GRID INFO */
-        .p-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 60vh; }
-        .p-left { border-right: 1px solid var(--line); padding: 40px; border-bottom: 1px solid var(--line); }
-        .p-right { border-bottom: 1px solid var(--line); overflow: hidden; position: relative;}
-        
-        .p-text-block { max-width: 500px; margin-bottom: 60px; }
-        .p-text-block h3 { font-family: var(--font-tech); font-size: 12px; margin-bottom: 20px; color: var(--dim); }
-        .p-text-block p { font-size: 16px; line-height: 1.6; color: #ccc; }
+        /* GRID */
+        .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+        .p-left { border-right: 1px solid var(--line); padding: 60px 40px; display: flex; flex-direction: column; }
+        .p-right { background: #000; overflow: hidden; position: relative; }
+        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 1s; }
+        .p-right:hover img { opacity: 1; transform: scale(1.02); }
+
+        .p-section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; display: block; border-left: 2px solid var(--crystal-glow); padding-left: 15px; }
+        .p-main-text { font-size: 14px; line-height: 1.6; color: #888; max-width: 500px; margin-bottom: 40px; }
+        .p-main-text span { color: var(--fg); font-weight: 600; }
+
+        /* INTERACTION BOX */
+        .interaction-block { background: #080808; border: 1px solid var(--line); padding: 40px; margin-top: 40px; }
+        .interaction-block h3 { font-size: 18px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
+        .interaction-block p { font-size: 13px; color: #666; line-height: 1.6; }
 
         /* SPECS TABLE */
-        .specs-table { width: 100%; border-top: 1px solid var(--line); margin-top: 40px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; font-family: var(--font-tech); font-size: 12px; }
-        .spec-val { color: var(--accent); }
+        .specs-table { width: 100%; margin-top: 60px; border-top: 1px solid var(--line); }
+        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #111; font-family: var(--font-tech); font-size: 10px; }
+        .spec-val { color: var(--accent); text-align: right; }
 
-        /* IMAGES */
-        .detail-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
-        .p-right:hover .detail-img { filter: grayscale(0%); }
+        /* REVIEW */
+        .review-section { padding: 80px 40px; border-bottom: 1px solid var(--line); background: #050505; }
+        .review-box { max-width: 800px; margin: 0 auto; text-align: center; }
+        .review-text { font-size: 18px; font-style: italic; color: #aaa; line-height: 1.6; margin-bottom: 30px; }
+        .review-author { font-family: var(--font-tech); font-size: 10px; color: var(--dim); letter-spacing: 2px; }
 
-        /* FOOTER CTA */
-        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); }
-        .cta-btn { font-size: 40px; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
-        .cta-btn:hover { color: var(--dim); border-color: var(--dim); }
+        /* CTA */
+        .cta-section { padding: 120px 40px; text-align: center; }
+        .btn-large { font-size: clamp(24px, 4vw, 48px); font-weight: 800; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 2px solid var(--crystal-glow); padding-bottom: 10px; transition: 0.3s; letter-spacing: -2px; }
+        .btn-large:hover { color: var(--crystal-glow); }
 
-        /* CURSOR */
-        .cursor { width: 20px; height: 20px; border: 1px solid var(--accent); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
-        
         @media (max-width: 900px) {
             .p-grid { grid-template-columns: 1fr; }
             .p-left { border-right: none; }
             .p-right { height: 400px; }
-            .cursor { display: none; }
-            * { cursor: auto; }
         }
     </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+<div id="cursor"></div>
 
 <div class="wrapper">
     <header>
-        <div style="font-weight: 800;">P—11</div>
-        <a href="index.html" class="back-btn"><< RETURN TO BASE</a>
+        <div class="logo-type" style="font-family: var(--font-tech); font-size: 12px; font-weight: 800;">P—11 // ARTEFACT</div>
+        <a href="index.html" class="back-btn">Return to Base</a>
     </header>
 
-    <section class="p-hero">
-        <span class="p-type">[ CLASSIFIED PROJECT ]</span>
-        <h1 id="project-title">crystallamp</h1> 
+    <section class="p-hero reveal">
+        <span class="p-type">Living Algorithm / Status: Deployed</span>
+        <h1>Crystal Lamp</h1>
+        <p class="p-main-text" style="font-size: 18px; color: var(--fg);">Природа в эпоху технологий. Материя, обретшая смысл.</p>
     </section>
 
     <section class="p-grid">
-        <div class="p-left">
-            <div class="p-text-block">
-                <h3>/// MISSION BRIEF</h3>
-                <p id="project-desc">
-                    Эзотерический брутализм: природный кристалл в симбиозе с чипом ESP32C3 и протоколом MQTT. Живой алгоритм адаптивного свечения, интегрированный в архитектуру умного дома. Технология как новая форма духовности.
+        <div class="p-left reveal">
+            <span class="p-section-label">Обзор Продукта</span>
+            <p class="p-main-text">
+                CrystalLamp — это не просто светильник. Это <span>артефакт</span>. Диалог между первозданной силой природы и передовой технологией Project 11 Bureau. 
+                В его сердце — <span>натуральный розовый аметист</span>, окруженный изумрудным ягелем под стеклянным куполом. Это предмет, который не кричит о себе, но завораживает своей глубиной.
+            </p>
+
+            <div class="interaction-block">
+                <span class="p-section-label" style="margin-bottom: 15px;">Опыт Распаковки</span>
+                <h3>Ритуал Открытия</h3>
+                <p>
+                    Каждый CrystalLamp поставляется в монолитном черном кубе (100x100x100мм). При легком нажатии на вершину, артефакт медленно поднимается из глубины. 
+                    Этот бесшумный ход обеспечивается <span>скрытыми металлическими пружинами</span> и прецизионными EVA-направляющими.
+                </p>
+                <p style="margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; color: var(--crystal-glow);">
+                    Секретный уровень: Под ложементом скрыт отсек с манифестом Создателя. Это фильтр для тех, кто понимает инженерное изящество.
                 </p>
             </div>
+        </div>
+        <div class="p-right reveal">
+            <img src="crystallamp.jpg" alt="Crystal Lamp Artefact">
+        </div>
+    </section>
 
-            <div class="p-text-block">
-                <h3>/// TECHNICAL DATA</h3>
-                <div class="specs-table">
-                    <div class="spec-row"><span>STATUS</span><span class="spec-val">IS BEING COMMERCIALIZED</span></div>
-                    <div class="spec-row"><span>MATERIAL</span><span class="spec-val">ALUMINUM / GLASS</span></div>
-                    <div class="spec-row"><span>CORE</span><span class="spec-val">ESP32-C3</span></div>
-                    <div class="spec-row"><span>POWER</span><span class="spec-val">5V</span></div>
-                </div>
+    <section class="p-grid">
+        <div class="p-right reveal" style="border-right: 1px solid var(--line);">
+            <!-- Здесь можно вставить макро-фото аметиста -->
+            <img src="crystallamp.jpg" alt="Amethyst Macro" style="filter: hue-rotate(280deg);">
+        </div>
+        <div class="p-left reveal">
+            <span class="p-section-label">Технологический Стек</span>
+            <p class="p-main-text">
+                CrystalLamp оживает благодаря чипу <span>ESP32C3</span>. Он позволяет кристаллу буквально "чувствовать" пространство, управляя адаптивной подсветкой. 
+                Интеграция с протоколом <span>MQTT</span> делает его центральным элементом вашей личной экосистемы умного дома.
+            </p>
+
+            <div class="specs-table">
+                <div class="spec-row"><span>DIMENSIONS (PROD)</span><span class="spec-val">Ø 64mm / H 44mm</span></div>
+                <div class="spec-row"><span>DIMENSIONS (BOX)</span><span class="spec-val">100 x 100 x 100mm</span></div>
+                <div class="spec-row"><span>CORE UNIT</span><span class="spec-val">ESP32C3 IoT SoC</span></div>
+                <div class="spec-row"><span>POWER / DATA</span><span class="spec-val">USB-C / MQTT</span></div>
+                <div class="spec-row"><span>CRYSTAL</span><span class="spec-val">NATURAL PINK AMETHYST</span></div>
+                <div class="spec-row"><span>BASE MATERIAL</span><span class="spec-val">PETG CARBON REINFORCED</span></div>
             </div>
         </div>
+    </section>
 
-        <div class="p-right">
-            <img src="crystallamp.jpg" alt="Project Detail" class="detail-img" id="project-img">
+    <section class="review-section reveal">
+        <div class="review-box">
+            <p class="review-text">
+                "Это не просто покупка, это событие. С первых секунд, когда куб оказался в моих руках, я понял, что держу нечто особенное. Медленный подъем из глубины — чистый восторг инженерной мысли."
+            </p>
+            <span class="review-author">— Анонимный ценитель инженерного искусства</span>
         </div>
     </section>
 
-    <section class="cta-section">
-        <div style="margin-bottom: 20px;" class="p-type">INTERESTED IN THIS TECHNOLOGY?</div>
-        <a href="mailto:contact@project11.bureau" class="cta-btn">INITIATE INQUIRY</a>
+    <section class="cta-section reveal">
+        <span class="p-type" style="margin-bottom: 40px;">Ready to initiate?</span><br>
+        <a href="mailto:contact@project11.bureau" class="btn-large">КУПИТЬ CRYSTALLAMP</a>
+        <div style="margin-top: 60px;">
+            <a href="index.html" class="p-type" style="text-decoration: underline;">MORE ABOUT BUREAU</a>
+        </div>
     </section>
+
+    <footer style="padding: 40px; text-align: center; border-top: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; color: var(--dim);">
+        PROJECT 11 BUREAU // ARTEFACT DEPLOYMENT // 2025
+    </footer>
 </div>
 
 <script>
@@ -121,8 +166,20 @@
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('mouseenter', () => cursor.style.transform = 'scale(4)');
+        link.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
 </script>
 
 </body>
-
 </html>
