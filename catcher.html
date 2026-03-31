@@ -3,129 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CATCHER | P-11 DETAILS</title>
+    <title>CATCHER | R&D PHASE P-11</title>
     
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Базовые стили (такие же как в zack.html) */
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         :root {
-            --bg: #050505; --fg: #E6E6E6; --dim: #555555;
-            --line: #333333; --accent: #FFFFFF;
+            --bg: #050505; --fg: #F5F5F5; --dim: #333;
+            --line: #1A1A1A; --accent: #FFFFFF;
+            --alert-red: #ff3e3e; 
             --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; }
-        a { text-decoration: none; color: inherit; cursor: none; }
-        img { display: block; max-width: 100%; }
-
-        .cursor { width: 20px; height: 20px; border: 1px solid var(--accent); position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        .wrapper { max-width: 100%; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
+        .reveal { opacity: 0; filter: blur(5px); transform: translateY(20px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; filter: blur(0); transform: translateY(0); }
+
+        #cursor { 
+            width: 10px; height: 10px; background: var(--alert-red); 
+            position: fixed; pointer-events: none; z-index: 9999; 
+            mix-blend-mode: screen; transition: transform 0.1s; 
+        }
+
+        .wrapper { max-width: 1600px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
         
-        header { padding: 20px 40px; position: fixed; width: 100%; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(5px); display: flex; justify-content: space-between; align-items: center;}
-        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; }
-        .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+        header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(5,5,5,0.9); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
+        .clearance-btn { font-family: var(--font-tech); border: 1px solid var(--alert-red); color: var(--alert-red); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; }
+        .clearance-btn:hover { background: var(--alert-red); color: var(--bg); }
 
-        .p-hero { padding: 150px 40px 60px; border-bottom: 1px solid var(--line); }
-        .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 11px; letter-spacing: 2px; }
-        .p-hero h1 { font-size: clamp(3rem, 8vw, 10rem); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; }
+        /* HERO */
+        .p-hero { padding: 180px 40px 60px; border-bottom: 1px solid var(--line); }
+        .secure-tag { font-family: var(--font-tech); color: var(--alert-red); font-size: 9px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; display: block; }
         
-        .p-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
-        .p-left { border-right: 1px solid var(--line); padding: 40px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
-        
-        .p-text-block { max-width: 500px; margin-bottom: 60px; }
-        .p-text-block h3 { font-family: var(--font-tech); font-size: 11px; margin-bottom: 20px; color: var(--dim); letter-spacing: 1px; }
-        .p-text-block p { font-size: 15px; line-height: 1.6; color: #aaa; }
+        .p-hero h1 { font-size: clamp(40px, 9vw, 120px); line-height: 0.8; text-transform: uppercase; margin-bottom: 30px; font-weight: 900; letter-spacing: -6px; }
+        .hero-tagline { font-size: 16px; color: #666; max-width: 700px; line-height: 1.4; border-left: 2px solid var(--alert-red); padding-left: 20px; }
 
-        .specs-table { width: 100%; border-top: 1px solid var(--line); margin-top: 20px; }
-        .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #222; font-family: var(--font-tech); font-size: 11px; }
-        .spec-val { color: var(--accent); }
+        /* GRID INFO */
+        .p-grid { display: grid; grid-template-columns: 1.2fr 1fr; border-bottom: 1px solid var(--line); }
+        .p-left { border-right: 1px solid var(--line); padding: 60px 40px; }
+        .p-right { background: #000; overflow: hidden; position: relative; }
+        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.2; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(1); }
+        .p-grid:hover .p-right img { opacity: 0.4; filter: grayscale(0) brightness(0.6); }
 
-        /* GALLERY SLIDER */
-        .p-right { border-bottom: 1px solid var(--line); position: relative; background: #000; overflow: hidden; }
-        .slider-container { width: 100%; height: 100%; position: relative; }
-        .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
-        .slider-track img { min-width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s ease; }
-        .p-right:hover .slider-track img { filter: grayscale(0%); }
-        .slider-nav { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 30px; background: rgba(5,5,5,0.8); padding: 12px 25px; border: 1px solid var(--line); backdrop-filter: blur(10px); z-index: 10; }
-        .nav-btn { background: none; border: none; color: var(--accent); font-family: var(--font-tech); font-size: 10px; cursor: none; }
-        #slide-counter { font-family: var(--font-tech); font-size: 10px; color: var(--dim); min-width: 60px; text-align: center; }
+        .section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; display: block; }
+        .p-text { font-size: 14px; line-height: 1.8; color: #888; margin-bottom: 40px; }
+        .p-text b { color: var(--fg); font-weight: 700; }
 
-        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); }
-        .cta-btn { font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 800; text-transform: uppercase; border-bottom: 2px solid var(--accent); padding-bottom: 5px; transition: 0.3s; }
-        .cta-btn:hover { color: var(--dim); border-color: var(--dim); }
+        /* TACTICAL GRID WITH RED BORDERS */
+        .tactical-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+        .tactical-item { border: 1px solid var(--alert-red); padding: 30px; background: rgba(255,62,62,0.02); }
+        .tactical-item h4 { font-family: var(--font-tech); font-size: 10px; color: var(--alert-red); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .tactical-item p { font-size: 12px; color: #777; line-height: 1.6; }
 
-        @media (max-width: 900px) { .p-grid { grid-template-columns: 1fr; } .p-right { height: 500px; } .cursor { display: none; } * { cursor: auto; } }
+        /* DATA TABLE RED FRAME */
+        .data-container { margin-top: 50px; border: 1px solid var(--alert-red); padding: 30px; background: rgba(255,62,62,0.03); }
+        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,62,62,0.1); font-family: var(--font-tech); font-size: 10px; text-transform: uppercase; }
+        .data-val { color: var(--alert-red); }
+
+        /* CTA */
+        .cta-section { padding: 120px 40px; text-align: center; }
+        .btn-secure { 
+            padding: 22px 50px; font-family: var(--font-tech); font-size: 11px; font-weight: 900;
+            text-transform: uppercase; text-decoration: none; transition: 0.4s;
+            border: 1px solid var(--alert-red); background: transparent; color: var(--alert-red);
+            display: inline-block; letter-spacing: 2px;
+        }
+        .btn-secure:hover { background: var(--alert-red); color: var(--bg); box-shadow: 0 0 40px rgba(255,62,62,0.2); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 1024px) {
+            .p-grid { grid-template-columns: 1fr; }
+            .p-left { border-right: none; }
+            .tactical-grid { grid-template-columns: 1fr; }
+            #cursor { display: none; }
+            * { cursor: auto; }
+            .wrapper { border: none; }
+        }
     </style>
 </head>
 <body>
-<div class="cursor" id="cursor"></div>
+
+<div id="cursor"></div>
+
 <div class="wrapper">
     <header>
-        <div style="font-weight: 800; letter-spacing: -1px;">P—11</div>
-        <a href="index.html" class="back-btn">[ RETURN TO BASE ]</a>
+        <div class="logo-type" style="color: var(--alert-red); font-size: 11px;">P—11 // R&D TERMINAL</div>
+        <a href="index.html" class="clearance-btn">Exit Secure Terminal</a>
     </header>
 
-    <section class="p-hero">
-        <span class="p-type">[ CLASSIFIED PROJECT: NO. 001 ]</span>
-        <h1>CATCHER</h1> 
+    <section class="p-hero reveal">
+        <span class="secure-tag">[ PROJECT STATUS: ACTIVE PROTOTYPING ]</span>
+        <h1>Catcher</h1>
+        <p class="hero-tagline">Стратегический перехват. Неоспоримое господство в воздухе. Система на стадии глубокого проектирования.</p>
     </section>
 
     <section class="p-grid">
-        <div class="p-left">
-            <div class="p-text-block">
-                <h3>/// MISSION BRIEF</h3>
-                <p>
-                    Автономная система перехвата. Спроектирована для быстрого развертывания и нейтрализации воздушных целей. Компактный складной корпус из композитных материалов позволяет транспортировать устройство в стандартных модулях.
-                </p>
-            </div>
-            <div class="p-text-block">
-                <h3>/// TECHNICAL DATA</h3>
-                <div class="specs-table">
-                    <div class="spec-row"><span>STATUS</span><span class="spec-val">OPERATIONAL</span></div>
-                    <div class="spec-row"><span>MATERIAL</span><span class="spec-val">CARBON COMPOSITE</span></div>
-                    <div class="spec-row"><span>WEIGHT</span><span class="spec-val">5.2 KG</span></div>
-                    <div class="spec-row"><span>MAX SPEED</span><span class="spec-val">210 KM/H</span></div>
+        <div class="p-left reveal">
+            <span class="section-label">Цели Проектирования</span>
+            <p class="p-text">
+                <b>Catcher</b> — проектируемая автономная система стратегического назначения. В рамках Project 11 Bureau мы <b>разрабатываем</b> решение для обеспечения превосходства в закрытых воздушных пространствах. 
+                Это аппарат, создаваемый для выполнения миссий, где точность является единственным критерием эффективности.
+            </p>
+            
+            <div class="tactical-grid">
+                <div class="tactical-item">
+                    <h4>Дискретное Развертывание</h4>
+                    <p>Прорабатываются протоколы быстрого старта с различных платформ для готовности в любой операционной среде.</p>
+                </div>
+                <div class="tactical-item">
+                    <h4>Целевой Скоростной Профиль</h4>
+                    <p>Система проектируется для достижения скоростей до 200 км/ч для мгновенного сближения с целью.</p>
+                </div>
+                <div class="tactical-item">
+                    <h4>Инновационные Сплавы</h4>
+                    <p>В конструкцию закладываются проприетарные композиты и SLM-титан для устойчивости к нагрузкам до 17g.</p>
+                </div>
+                <div class="tactical-item">
+                    <h4>Адаптивная Геометрия</h4>
+                    <p>Проводятся тесты складного крыла с косым шарниром для оптимизации аэродинамики на разных фазах миссии.</p>
                 </div>
             </div>
         </div>
-        <div class="p-right">
-            <div class="slider-container">
-                <div class="slider-track" id="slider-track">
-                    <img src="catcher.jpg" alt="Catcher 01">
-                    <img src="catcher2.jpg" alt="Catcher 02">
-                    <img src="catcher3.jpg" alt="Catcher 03"> </div>
-                <div class="slider-nav">
-                    <button onclick="moveSlide(-1)" class="nav-btn">PREV</button>
-                    <span id="slide-counter">01 / 03</span>
-                    <button onclick="moveSlide(1)" class="nav-btn">NEXT</button>
-                </div>
+        <div class="p-right reveal">
+            <img src="catcher.jpg" alt="Catcher R&D Visual">
+        </div>
+    </section>
+
+    <section class="p-grid">
+        <div class="p-right reveal" style="border-right: 1px solid var(--line);">
+            <img src="catcher.jpg" alt="Catcher Detail" style="filter: hue-rotate(330deg) brightness(0.3) contrast(1.5);">
+        </div>
+        <div class="p-left reveal">
+            <span class="section-label">Целевые Характеристики</span>
+            <p class="p-text">
+                Доступ к логам разработки строго контролируется. Мы <b>формируем</b> систему, способную к целевой нейтрализации угроз с минимальным сопутствующим ущербом.
+            </p>
+
+            <div class="data-container">
+                <div class="data-row"><span>R&D Phase</span><span class="data-val">ACTIVE PROTOTYPING / REV 02</span></div>
+                <div class="data-row"><span>Target Materials</span><span class="data-val">CARBON COMPOSITE 1.2 GPa</span></div>
+                <div class="data-row"><span>Calculated Velocity</span><span class="data-val">200 KM/H</span></div>
+                <div class="data-row"><span>Structural Limit</span><span class="data-val">17G TARGETED</span></div>
+                <div class="data-row"><span>Deployment System</span><span class="data-val">UNDER DEVELOPMENT</span></div>
+                <div class="data-row"><span>Intelligence Level</span><span class="data-val">P11 EDGE-AUTONOMOUS L3</span></div>
             </div>
         </div>
     </section>
 
-    <section class="cta-section">
-        <a href="mailto:contact@project11.bureau" class="cta-btn">GET SPECIFICATIONS</a>
+    <section class="cta-section reveal">
+        <span class="secure-tag" style="margin-bottom: 40px; color: #444;">Inquiry queue for strategic hardware...</span><br>
+        <a href="mailto:contact@project11.bureau?subject=R&D Clearance: Catcher" class="btn-secure">Отправить классифицированный запрос</a>
     </section>
+
+    <footer style="padding: 40px; text-align: center; border-top: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; color: #222;">
+        SECURE R&D LOGS // PROJECT 11 BUREAU // PHASE_01
+    </footer>
 </div>
 
 <script>
     const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
 
-    let currentSlide = 0;
-    const track = document.getElementById('slider-track');
-    const counter = document.getElementById('slide-counter');
-    const slides = track.getElementsByTagName('img');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+    }, { threshold: 0.1 });
 
-    function moveSlide(direction) {
-        currentSlide = (currentSlide + direction + slides.length) % slides.length;
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
-        counter.innerText = `${(currentSlide + 1).toString().padStart(2, '0')} / ${slides.length.toString().padStart(2, '0')}`;
-    }
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('mouseenter', () => cursor.style.transform = 'scale(4)');
+        link.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
 </script>
+
 </body>
-</html>
+    </html>
