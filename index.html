@@ -18,11 +18,14 @@
             --crystal-glow: #a855f7; 
             --font-main: 'Inter', sans-serif; --font-tech: 'JetBrains Mono', monospace;
         }
+        html { scroll-behavior: smooth; }
         body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
+        /* Reveal Animation */
         .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* ORIGINAL SQUARE CURSOR */
         #cursor { 
             width: 10px; height: 10px; background: var(--accent); 
             position: fixed; pointer-events: none; z-index: 9999; 
@@ -37,19 +40,19 @@
         .logo-type { font-weight: 800; font-size: 14px; letter-spacing: -0.5px; font-family: var(--font-tech); text-transform: uppercase; }
         .terminal-status { font-family: var(--font-tech); font-size: 9px; color: #444; letter-spacing: 1px; }
 
-        /* HERO */
+        /* HERO SECTION */
         .hero { padding: 200px 0 100px; }
         .hero-title { font-size: clamp(40px, 8vw, 110px); font-weight: 800; line-height: 0.9; letter-spacing: -4px; text-transform: uppercase; margin-bottom: 50px; }
         .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; border-top: 1px solid var(--line); padding-top: 30px; }
         .hero-manifesto { font-size: 18px; line-height: 1.4; color: #888; max-width: 550px; }
         .hero-manifesto span { color: var(--fg); font-weight: 600; }
 
-        /* SECTIONS INFO */
+        /* SECTION LABELS */
         .section-header { padding: 60px 0 20px; border-bottom: 1px solid var(--line); }
         .section-num { font-family: var(--font-tech); font-size: 10px; color: var(--dim); margin-right: 15px; }
         .section-title { font-size: 10px; font-family: var(--font-tech); text-transform: uppercase; letter-spacing: 3px; color: var(--dim); }
 
-        /* PRODUCT CARDS */
+        /* PROJECT CARDS */
         .project-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 600px; }
         .p-content { padding: 60px 60px 60px 0; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
         .p-visual { position: relative; overflow: hidden; background: #000; }
@@ -74,6 +77,7 @@
         }
         .btn-p11:hover { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
         
+        /* FOOTER */
         footer { padding: 100px 60px; border-top: 1px solid var(--line); }
         .f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
         .f-logo { font-size: 80px; font-weight: 800; letter-spacing: -6px; line-height: 0.8; }
@@ -81,12 +85,25 @@
         .f-link { display: block; margin-bottom: 8px; color: #555; text-decoration: none; font-family: var(--font-tech); font-size: 10px; transition: 0.2s; }
         .f-link:hover { color: var(--fg); }
 
-        @media (max-width: 1024px) {
-            .project-row { grid-template-columns: 1fr; }
-            .p-content { border-right: none; padding: 40px 0; }
-            .hero-grid { grid-template-columns: 1fr; gap: 30px; }
-            #cursor { display: none; }
-            * { cursor: auto; }
+        /* --- MOBILE REPAIR PATCH --- */
+        @media (max-width: 768px) {
+            #cursor { display: none !important; }
+            * { cursor: auto !important; }
+            .container { padding: 0 20px !important; border: none !important; }
+            header { padding: 20px !important; }
+            .hero { padding: 150px 0 60px; }
+            .hero-title { font-size: 42px !important; letter-spacing: -2px !important; }
+            .hero-grid { grid-template-columns: 1fr !important; gap: 30px !important; }
+            .hero-manifesto { font-size: 15px !important; }
+            .section-header { padding: 40px 0 20px; }
+            .project-row { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; min-height: auto !important; }
+            .p-content { padding: 40px 0 !important; border-right: none !important; order: 2; }
+            .p-visual { height: 300px !important; width: 100% !important; order: 1; }
+            .p-heading { font-size: 32px !important; letter-spacing: -1px !important; }
+            .p-description { font-size: 13px !important; }
+            .btn-p11 { width: 100% !important; justify-content: center; }
+            .f-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+            .f-logo { font-size: 60px !important; }
         }
     </style>
 </head>
@@ -220,12 +237,14 @@
 </div>
 
 <script>
+    // CURSOR
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
+    // REVEAL ON SCROLL
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('active');
@@ -234,6 +253,7 @@
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+    // TERMINAL TYPE EFFECT
     const term = document.getElementById('terminal');
     const text = term.innerText;
     term.innerText = '';
@@ -247,6 +267,7 @@
     }
     type();
 
+    // INTERACTION
     document.querySelectorAll('a, button').forEach(link => {
         link.addEventListener('mouseenter', () => cursor.style.transform = 'scale(4)');
         link.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
