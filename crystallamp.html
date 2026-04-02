@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRYSTALLAMP | ARTEFACT P-11</title>
     
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -19,59 +20,127 @@
         }
         body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         
-        .reveal { opacity: 0; transform: translateY(20px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        #cursor { width: 10px; height: 10px; background: var(--accent); position: fixed; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transition: transform 0.1s; }
+        /* ORIGINAL SQUARE CURSOR */
+        #cursor { 
+            width: 10px; height: 10px; background: var(--accent); 
+            position: fixed; pointer-events: none; z-index: 9999; 
+            mix-blend-mode: difference; transition: transform 0.1s; 
+        }
 
         .wrapper { max-width: 1600px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
         
+        /* HEADER */
         header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(3,3,3,0.8); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
-        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; color: var(--fg); }
         .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-        /* HERO */
+        /* HERO SECTION */
         .p-hero { padding: 180px 40px 60px; border-bottom: 1px solid var(--line); }
         .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
         .p-hero h1 { font-size: clamp(40px, 8vw, 100px); line-height: 0.9; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; letter-spacing: -4px; }
         
-        /* GRID */
+        /* GRID INFO */
         .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
-        .p-left { border-right: 1px solid var(--line); padding: 60px 40px; display: flex; flex-direction: column; }
+        .p-left { border-right: 1px solid var(--line); padding: 60px 40px; }
         .p-right { background: #000; overflow: hidden; position: relative; }
-        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 1s; }
-        .p-right:hover img { opacity: 1; transform: scale(1.02); }
+        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(1); }
+        .p-grid:hover .p-right img { opacity: 0.8; filter: grayscale(0); transform: scale(1.02); }
 
-        .p-section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; display: block; border-left: 2px solid var(--crystal-glow); padding-left: 15px; }
-        .p-main-text { font-size: 14px; line-height: 1.6; color: #888; max-width: 500px; margin-bottom: 40px; }
-        .p-main-text span { color: var(--fg); font-weight: 600; }
+        .section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; display: block; border-left: 2px solid var(--crystal-glow); padding-left: 15px; }
+        .p-text { font-size: 14px; line-height: 1.6; color: #777; margin-bottom: 30px; }
+        .p-text span { color: var(--fg); font-weight: 600; }
 
-        /* INTERACTION BOX */
+        /* INTERACTION BLOCK */
         .interaction-block { background: #080808; border: 1px solid var(--line); padding: 40px; margin-top: 40px; }
         .interaction-block h3 { font-size: 18px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
-        .interaction-block p { font-size: 13px; color: #666; line-height: 1.6; }
+        .interaction-block p { font-size: 13px; color: #555; line-height: 1.6; }
 
-        /* SPECS TABLE */
+        /* SPEC TABLE */
         .specs-table { width: 100%; margin-top: 60px; border-top: 1px solid var(--line); }
         .spec-row { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #111; font-family: var(--font-tech); font-size: 10px; }
         .spec-val { color: var(--accent); text-align: right; }
 
         /* REVIEW */
         .review-section { padding: 80px 40px; border-bottom: 1px solid var(--line); background: #050505; }
-        .review-box { max-width: 800px; margin: 0 auto; text-align: center; }
-        .review-text { font-size: 18px; font-style: italic; color: #aaa; line-height: 1.6; margin-bottom: 30px; }
-        .review-author { font-family: var(--font-tech); font-size: 10px; color: var(--dim); letter-spacing: 2px; }
+        .review-text { font-size: 18px; font-style: italic; color: #888; line-height: 1.5; max-width: 800px; margin: 0 auto; text-align: center; margin-bottom: 30px; }
+        .review-author { font-family: var(--font-tech); font-size: 10px; color: var(--dim); text-align: center; display: block; letter-spacing: 2px; }
 
         /* CTA */
         .cta-section { padding: 120px 40px; text-align: center; }
-        .btn-large { font-size: clamp(24px, 4vw, 48px); font-weight: 800; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 2px solid var(--crystal-glow); padding-bottom: 10px; transition: 0.3s; letter-spacing: -2px; }
-        .btn-large:hover { color: var(--crystal-glow); }
+        .btn-large { font-size: clamp(24px, 4vw, 42px); font-weight: 800; text-transform: uppercase; color: var(--fg); text-decoration: none; border-bottom: 2px solid var(--crystal-glow); padding-bottom: 10px; transition: 0.3s; letter-spacing: -2px; display: inline-block; }
+        .btn-large:hover { color: var(--crystal-glow); border-color: var(--fg); }
 
-        @media (max-width: 900px) {
-            .p-grid { grid-template-columns: 1fr; }
-            .p-left { border-right: none; }
-            .p-right { height: 400px; }
+        /* MODAL OVERLAY */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center;
+            backdrop-filter: blur(20px);
         }
+        .modal-content {
+            background: #080808; border: 1px solid var(--line); padding: 40px;
+            width: 100%; max-width: 500px; position: relative;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .close-btn { background: none; border: none; color: var(--dim); font-family: var(--font-tech); font-size: 10px; text-transform: uppercase; }
+        
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-family: var(--font-tech); font-size: 9px; color: var(--dim); margin-bottom: 10px; letter-spacing: 1px; }
+        .input-group input, .input-group select {
+            width: 100%; background: #000; border: 1px solid var(--line); padding: 12px;
+            color: var(--fg); font-family: var(--font-main); font-size: 14px; outline: none;
+        }
+        .input-group input:focus { border-color: var(--crystal-glow); }
+
+        .btn-confirm {
+            width: 100%; padding: 15px; background: transparent; border: 1px solid var(--crystal-glow);
+            color: var(--crystal-glow); font-family: var(--font-tech); font-size: 11px; font-weight: 700;
+            text-transform: uppercase; transition: 0.3s; letter-spacing: 1px;
+        }
+        .btn-confirm:hover:not(:disabled) { background: var(--crystal-glow); color: #000; }
+        .btn-confirm:disabled { opacity: 0.5; border-color: var(--dim); color: var(--dim); }
+
+        .status-msg { margin-top: 20px; font-family: var(--font-tech); font-size: 10px; text-align: center; display: none; }
+        .status-msg.active { display: block; }
+        .glitch-text { color: var(--crystal-glow); animation: glitch 0.3s infinite; }
+        @keyframes glitch { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* MOBILE REPAIR PATCH */
+        @media (max-width: 768px) {
+            #cursor { display: none !important; }
+            * { cursor: auto !important; }
+            .wrapper { border: none !important; }
+            header { padding: 20px !important; }
+            .p-hero { padding: 150px 20px 40px; }
+            .p-hero h1 { font-size: 42px !important; letter-spacing: -2px !important; }
+            .p-grid { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; }
+            .p-left { border-right: none !important; padding: 40px 20px !important; order: 2; }
+            .p-right { height: 300px !important; width: 100% !important; order: 1; }
+            .interaction-block { padding: 25px !important; }
+            .review-text { font-size: 15px !important; }
+            .btn-large { font-size: 24px !important; }
+            .modal-content { max-width: 90%; padding: 30px 20px; }
+        }
+		
+				/* Эффект свечения для блоков */
+		.interaction-block, .spec-row {
+			transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+			border: 1px solid var(--line); /* Базовая рамка */
+		}
+
+		.interaction-block:hover {
+			border-color: var(--crystal-glow) !important;
+			box-shadow: 0 0 20px rgba(168, 85, 247, 0.15); /* Мягкое фиолетовое свечение */
+			background: rgba(168, 85, 247, 0.02);
+		}
+
+		.spec-row:hover {
+			border-bottom-color: var(--crystal-glow);
+			padding-left: 10px; /* Небольшой сдвиг для интерактивности */
+		}
     </style>
 </head>
 <body>
@@ -81,78 +150,72 @@
 <div class="wrapper">
     <header>
         <div class="logo-type" style="font-family: var(--font-tech); font-size: 12px; font-weight: 800;">P—11 // ARTEFACT</div>
-        <a href="index.html" class="back-btn">Return to Base</a>
+        <a href="index.html" class="back-btn">RETURN TO BASE</a>
     </header>
 
     <section class="p-hero reveal">
-        <span class="p-type">Living Algorithm / Status: Deployed</span>
+        <span class="p-type">LIVING ALGORITHM / STATUS: DEPLOYED</span>
         <h1>Crystal Lamp</h1>
-        <p class="p-main-text" style="font-size: 18px; color: var(--fg);">Природа в эпоху технологий. Материя, обретшая смысл.</p>
+        <p style="font-size: 18px; color: #888; max-width: 600px; line-height: 1.4;">Природа в эпоху технологий. Материя, обретшая смысл в Project 11 Bureau.</p>
     </section>
 
     <section class="p-grid">
         <div class="p-left reveal">
-            <span class="p-section-label">Обзор Продукта</span>
-            <p class="p-main-text">
-                CrystalLamp — это не просто светильник. Это <span>артефакт</span>. Диалог между первозданной силой природы и передовой технологией. 
+            <span class="section-label">Обзор Продукта</span>
+            <p class="p-text">
+				CrystalLamp — это не просто светильник. Это <span>артефакт</span>. Диалог между первозданной силой природы и передовой технологией. 
                 В его сердце — <span>натуральный розовый аметист</span>, окруженный изумрудным ягелем под стеклянным куполом. Это предмет, который не кричит о себе, но завораживает своей глубиной.
             </p>
 
             <div class="interaction-block">
-                <span class="p-section-label" style="margin-bottom: 15px;">Опыт Распаковки</span>
+                <span class="section-label" style="margin-bottom: 15px;">Опыт Взаимодействия</span>
                 <h3>Ритуал Открытия</h3>
                 <p>
                     Каждый CrystalLamp поставляется в монолитном черном кубе. При легком нажатии на вершину, артефакт медленно поднимается из глубины. 
-                    Этот бесшумный ход обеспечивается <span>скрытыми металлическими пружинами</span> и EVA-направляющими.
+                    Этот плавный ход обеспечивается <span>скрытыми металлическими пружинами</span> и EVA-направляющими.
                 </p>
-                <p style="margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; color: var(--crystal-glow);">
+                <p style="margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; color: var(--crystal-glow); font-size: 11px;">
                     Секретный уровень: Под ложементом скрыт отсек с посланием Создателя. Это фильтр для тех, кто понимает инженерное изящество.
                 </p>
             </div>
         </div>
         <div class="p-right reveal">
-            <img src="drawing.jpg" alt="Crystal Lamp Artefact">
+            <img src="crystallamp2.jpg" alt="Crystal Lamp Artefact">
         </div>
     </section>
 
     <section class="p-grid">
         <div class="p-right reveal" style="border-right: 1px solid var(--line);">
-            <!-- Здесь можно вставить макро-фото аметиста -->
-            <img src="crystallamp2.jpg" alt="Amethyst Macro">
+            <img src="drawing.jpg" alt="Amethyst Macro">
         </div>
         <div class="p-left reveal">
-            <span class="p-section-label">Технологический Стек</span>
-            <p class="p-main-text">
+            <span class="section-label">Технологический Стек</span>
+            <p class="p-text">
                 CrystalLamp оживает благодаря чипу <span>ESP32</span>. Он позволяет кристаллу буквально "чувствовать" пространство, управляя адаптивной подсветкой. 
-                Интеграция с протоколом <span>MQTT</span> делает его центральным элементом вашей личной экосистемы умного дома.
+                Интеграция с протоколом <span>MQTT</span> делает его центральным элементом вашей личной экосистемы умного дома
             </p>
 
             <div class="specs-table">
                 <div class="spec-row"><span>DIMENSIONS (PROD)</span><span class="spec-val">Ø 64mm / H 43mm</span></div>
                 <div class="spec-row"><span>DIMENSIONS (BOX)</span><span class="spec-val">100 x 100 x 100mm</span></div>
-                <div class="spec-row"><span>CORE UNIT</span><span class="spec-val">ESP32</span></div>
-                <div class="spec-row"><span>POWER / DATA</span><span class="spec-val">USB-C</span></div>
-                <div class="spec-row"><span>CRYSTAL</span><span class="spec-val">NATURAL PINK AMETHYST</span></div>
+                <div class="spec-row"><span>CORE</span><span class="spec-val">ESP32</span></div>
+                <div class="spec-row"><span>POWER</span><span class="spec-val">USB-C</span></div>
+                <div class="spec-row"><span>CRYSTAL TYPE</span><span class="spec-val">NATURAL PINK AMETHYST</span></div>
                 <div class="spec-row"><span>BASE / SPHERE MATERIAL</span><span class="spec-val">PETG / GLASS</span></div>
             </div>
         </div>
     </section>
 
     <section class="review-section reveal">
-        <div class="review-box">
-            <p class="review-text">
-                "Это не просто покупка, это событие. С первых секунд, когда куб оказался в моих руках, я понял, что держу нечто особенное. Медленный подъем из глубины — чистый восторг инженерной мысли."
-            </p>
-            <span class="review-author">— Анонимный ценитель инженерного искусства</span>
+        <div class="review-text">
+            "Это не просто покупка, это событие. С первых секунд, когда монолитный куб оказался в моих руках, я понял, что держу нечто особенное. Медленный подъем из глубины — чистый восторг инженерной мысли."
         </div>
+        <span class="review-author">— АНОНИМНЫЙ ЦЕНИТЕЛЬ ИНЖЕНЕРНОГО ИСКУССТВА</span>
     </section>
 
     <section class="cta-section reveal">
-        <span class="p-type" style="margin-bottom: 40px;">Ready to initiate?</span><br>
-        <a href="mailto:contact@project11.bureau" class="btn-large">КУПИТЬ CRYSTALLAMP</a>
-        <div style="margin-top: 60px;">
-            <a href="index.html" class="p-type" style="text-decoration: underline;">MORE ABOUT BUREAU</a>
-        </div>
+        <span class="section-label" style="margin-bottom: 40px;">Ready to initiate?</span><br>
+        <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-large">INITIATE DEPLOYMENT</a>
     </section>
 
     <footer style="padding: 40px; text-align: center; border-top: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; color: var(--dim);">
@@ -160,13 +223,53 @@
     </footer>
 </div>
 
+<!-- ORDER MODAL -->
+<div id="orderModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="section-label" style="margin-bottom: 0; border: none; padding: 0;">Order Protocol: CrystalLamp</span>
+            <button onclick="closeOrderModal()" class="close-btn">[ CLOSE ]</button>
+        </div>
+        
+        <form id="orderForm" onsubmit="handleOrder(event)">
+            <div class="input-group">
+                <label>YOUR NAME / IDENTIFIER</label>
+                <input type="text" id="custName" required placeholder="Заглушка">
+            </div>
+            <div class="input-group">
+                <label>TELEGRAM @USERNAME OR EMAIL</label>
+                <input type="text" id="custContact" required placeholder="Заглушка">
+            </div>
+            <div class="input-group">
+                <label>SELECT VERSION</label>
+                <select id="prodVersion">
+                    <option value="Standard Edition">Standard Edition (Amethyst + ESP32C3)</option>
+                    <option value="Custom Artifact">Custom Artifact (Bespoke materials)</option>
+                </select>
+            </div>
+            
+            <button type="submit" id="submitBtn" class="btn-confirm">
+                CONFIRM DEPLOYMENT
+            </button>
+        </form>
+        
+        <div id="statusMsg" class="status-msg"></div>
+    </div>
+</div>
+
 <script>
+    // --- ТВОИ ДАННЫЕ ТЕЛЕГРАМ ---
+    const TG_TOKEN = 'ТВОЙ_ТОКЕН_БОТА';
+    const TG_CHAT_ID = 'ТВОЙ_CHAT_ID';
+
+    // CURSOR
     const cursor = document.getElementById('cursor');
     document.addEventListener('mousemove', (e) => {
         cursor.style.left = e.clientX + 'px';
         cursor.style.top = e.clientY + 'px';
     });
 
+    // REVEAL
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('active');
@@ -175,9 +278,79 @@
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    document.querySelectorAll('a').forEach(link => {
+    // INTERACTION SCALING
+    document.querySelectorAll('a, button').forEach(link => {
         link.addEventListener('mouseenter', () => cursor.style.transform = 'scale(4)');
         link.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
+
+// MODAL LOGIC
+    function openOrderModal() {
+        document.getElementById('orderModal').style.display = 'flex';
+        // УДАЛИЛИ СТРОКУ cursor.style.display = 'none';
+    }
+
+    function closeOrderModal() {
+        document.getElementById('orderModal').style.display = 'none';
+        // УДАЛИЛИ СТРОКУ cursor.style.display = 'block';
+    }
+
+    // TELEGRAM SENDING
+    async function handleOrder(event) {
+        event.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMsg');
+        
+        const name = document.getElementById('custName').value;
+        const contact = document.getElementById('custContact').value;
+        const version = document.getElementById('prodVersion').value;
+
+        btn.disabled = true;
+        btn.innerText = "ENCRYPTING DATA...";
+        status.classList.add('active');
+        status.innerText = "ESTABLISHING SECURE CONNECTION...";
+
+        const message = `🚨 НОВЫЙ ЗАКАЗ: CrystalLamp\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n📦 Версия: ${version}`;
+
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TG_CHAT_ID,
+                    text: message
+                })
+            });
+
+            if (response.ok) {
+                status.innerHTML = "<span class='glitch-text'>DEPLOYMENT INITIATED. BUREAU NOTIFIED.</span>";
+                btn.innerText = "DONE";
+                setTimeout(() => {
+                    closeOrderModal();
+                    event.target.reset();
+                    btn.disabled = false;
+                    btn.innerText = "CONFIRM DEPLOYMENT";
+                    status.classList.remove('active');
+                }, 3000);
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
+            status.innerText = "CONNECTION ERROR. RETRY LATER.";
+            btn.disabled = false;
+            btn.innerText = "RETRY";
+        }
+    }
+	
+	document.querySelectorAll('a, button, .interaction-block').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'scale(4)';
+            cursor.style.background = 'var(--crystal-glow)'; // Курсор становится фиолетовым
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'scale(1)';
+            cursor.style.background = 'var(--accent)'; // Возвращается к белому
+        });
     });
 </script>
 
