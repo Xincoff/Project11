@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRYSTALLAMP | ARTEFACT P-11</title>
+    <title>INSPIRATUS | ARTEFACT P-11</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,8 +47,17 @@
         .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
         .p-left { border-right: 1px solid var(--line); padding: 60px 40px; }
         .p-right { background: #000; overflow: hidden; position: relative; }
-        .p-right img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(1); }
-        .p-grid:hover .p-right img { opacity: 0.8; filter: grayscale(0); transform: scale(1.02); }
+        
+        /* УБРАЛИ ЗАТЕМНЕНИЕ ТУТ */
+        .p-right img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 1; /* Было 0.4 */
+            transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); 
+            filter: grayscale(0); /* Было grayscale(1) */
+        }
+        .p-grid:hover .p-right img { opacity: 1; transform: scale(1.02); }
 
         .section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px; display: block; border-left: 2px solid var(--crystal-glow); padding-left: 15px; }
         .p-text { font-size: 14px; line-height: 1.6; color: #777; margin-bottom: 30px; }
@@ -155,15 +164,15 @@
 
     <section class="p-hero reveal">
         <span class="p-type">LIVING ALGORITHM / STATUS: DEPLOYED</span>
-        <h1>Crystal Lamp</h1>
-        <p style="font-size: 18px; color: #888; max-width: 600px; line-height: 1.4;">Природа в эпоху технологий. Материя, обретшая смысл в Project 11 Bureau.</p>
+        <h1> INSPIRATUS </h1>
+        <p style="font-size: 18px; color: #888; max-width: 600px; line-height: 1.4;">Природа в эпоху технологий. Материя, обретшая смысл.</p>
     </section>
 
     <section class="p-grid">
         <div class="p-left reveal">
             <span class="section-label">Обзор Продукта</span>
             <p class="p-text">
-				CrystalLamp — это не просто светильник. Это <span>артефакт</span>. Диалог между первозданной силой природы и передовой технологией. 
+				Inspiratus — это не просто светильник. Это <span>артефакт</span>. Диалог между первозданной силой природы и передовой технологией. 
                 В его сердце — <span>натуральный розовый аметист</span>, окруженный изумрудным ягелем под стеклянным куполом. Это предмет, который не кричит о себе, но завораживает своей глубиной.
             </p>
 
@@ -171,11 +180,11 @@
                 <span class="section-label" style="margin-bottom: 15px;">Опыт Взаимодействия</span>
                 <h3>Ритуал Открытия</h3>
                 <p>
-                    Каждый CrystalLamp поставляется в монолитном черном кубе. При легком нажатии на вершину, артефакт медленно поднимается из глубины. 
-                    Этот плавный ход обеспечивается <span>скрытыми металлическими пружинами</span> и EVA-направляющими.
+                    Каждый Inspiratus поставляется в монолитном черном кубе. При легком нажатии на вершину, артефакт поднимается из глубины. 
+                    Этот плавный ход обеспечивается <span>скрытыми металлическими пружинами</span> и скрытыми направляющими.
                 </p>
                 <p style="margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; color: var(--crystal-glow); font-size: 11px;">
-                    Секретный уровень: Под ложементом скрыт отсек с посланием Создателя. Это фильтр для тех, кто понимает инженерное изящество.
+                    Секретный уровень: Под ложементом скрыт отсек с посланием Создателя. Это создано для тех, кто хочет большего.
                 </p>
             </div>
         </div>
@@ -191,7 +200,7 @@
         <div class="p-left reveal">
             <span class="section-label">Технологический Стек</span>
             <p class="p-text">
-                CrystalLamp оживает благодаря чипу <span>ESP32</span>. Он позволяет кристаллу буквально "чувствовать" пространство, управляя адаптивной подсветкой. 
+                Inspiratus оживает благодаря чипу <span>ESP32</span>. Он позволяет кристаллу "чувствовать" пространство, управляя адаптивной подсветкой. 
                 Интеграция с протоколом <span>MQTT</span> делает его центральным элементом вашей личной экосистемы умного дома
             </p>
 
@@ -208,7 +217,7 @@
 
     <section class="review-section reveal">
         <div class="review-text">
-            "Это не просто покупка, это событие. С первых секунд, когда монолитный куб оказался в моих руках, я понял, что держу нечто особенное. Медленный подъем из глубины — чистый восторг инженерной мысли."
+            "Это не просто покупка, это событие. С первых секунд, когда монолитный куб оказался в моих руках, я понял, что держу нечто особенное."
         </div>
         <span class="review-author">— АНОНИМНЫЙ ЦЕНИТЕЛЬ ИНЖЕНЕРНОГО ИСКУССТВА</span>
     </section>
@@ -259,8 +268,8 @@
 
 <script>
     // --- ТВОИ ДАННЫЕ ТЕЛЕГРАМ ---
-    const TG_TOKEN = 'ТВОЙ_ТОКЕН_БОТА';
-    const TG_CHAT_ID = 'ТВОЙ_CHAT_ID';
+    const TG_TOKEN = '8226255997:AAHvmBAi3gLdUTWdsOkkZUXwT-sUozKVZyY';
+    const TG_CHAT_ID = 'Prroject11';
 
     // CURSOR
     const cursor = document.getElementById('cursor');
@@ -287,12 +296,10 @@
 // MODAL LOGIC
     function openOrderModal() {
         document.getElementById('orderModal').style.display = 'flex';
-        // УДАЛИЛИ СТРОКУ cursor.style.display = 'none';
     }
 
     function closeOrderModal() {
         document.getElementById('orderModal').style.display = 'none';
-        // УДАЛИЛИ СТРОКУ cursor.style.display = 'block';
     }
 
     // TELEGRAM SENDING
@@ -310,7 +317,7 @@
         status.classList.add('active');
         status.innerText = "ESTABLISHING SECURE CONNECTION...";
 
-        const message = `🚨 НОВЫЙ ЗАКАЗ: CrystalLamp\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n📦 Версия: ${version}`;
+        const message = `🚨 НОВЫЙ ЗАКАЗ: Inspiratus\n👤 Имя: ${name}\n📱 Контакт: ${contact}\n📦 Версия: ${version}`;
 
         try {
             const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
