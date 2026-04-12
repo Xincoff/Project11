@@ -6,39 +6,46 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
         body { background: #050505; color: #F5F5F5; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .radar-box { text-align: center; width: 100%; max-width: 400px; }
+        .radar-box { text-align: center; width: 100%; max-width: 400px; padding: 20px; }
         
-        /* Визуальный сканер */
-        .scanner { width: 180px; height: 180px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .scanner { width: 180px; height: 180px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
+        .scanner.found { border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); }
         .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2s infinite; opacity: 0; }
         @keyframes pulse { 0% { transform: scale(0.6); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: scale(1.3); opacity: 0; } }
         
         #status { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 5px; }
-        #ip-info { font-size: 12px; color: #a855f7; font-weight: bold; height: 15px; }
+        #ip-info { font-size: 14px; color: #a855f7; font-weight: bold; margin-top: 5px; letter-spacing: 1px; }
         
-        /* Полоса загрузки (появится при нахождении) */
-        .progress-bar { width: 100%; height: 1px; background: #111; margin-top: 30px; position: relative; display: none; }
-        .progress-fill { height: 100%; background: #a855f7; width: 0%; transition: width 1.5s linear; }
+        /* КНОПКА ДОСТУПА */
+        .access-btn { 
+            display: none; margin-top: 40px; padding: 20px 40px; 
+            border: 1px solid #a855f7; background: transparent; 
+            color: #a855f7; text-decoration: none; font-size: 12px; 
+            font-weight: 900; letter-spacing: 3px; transition: 0.3s;
+            animation: fadeIn 0.5s forwards;
+        }
+        .access-btn:hover { background: #a855f7; color: #000; box-shadow: 0 0 50px rgba(168, 85, 247, 0.4); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .manual-btn { display: none; margin-top: 30px; padding: 15px 30px; border: 1px solid #a855f7; color: #a855f7; text-decoration: none; font-size: 11px; transition: 0.3s; letter-spacing: 2px; }
-        .manual-btn:hover { background: #a855f7; color: #000; }
+        .note { font-size: 8px; color: #222; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
 <div class="radar-box">
-    <div class="scanner">
+    <div class="scanner" id="scannerCircle">
         <div>
             <div id="status">SCANNING NETWORK...</div>
-            <div id="ip-info"></div>
+            <div id="ip-info">SEARCHING BEACON</div>
         </div>
     </div>
 
-    <div id="p-bar" class="progress-bar">
-        <div id="p-fill" class="progress-fill"></div>
-    </div>
+    <a href="#" id="accessBtn" class="access-btn">ESTABLISH CONNECTION</a>
 
-    <a href="#" id="manualLink" class="manual-btn">MANUAL OVERRIDE</a>
+    <div class="note" id="note">
+        SECURE GATEWAY P-11 // SEARCHING FOR LOCAL IP VIA MQTT MESH
+    </div>
 </div>
 
 <script>
@@ -48,53 +55,42 @@
     const client = mqtt.connect(MQTT_BROKER);
     const statusEl = document.getElementById('status');
     const ipEl = document.getElementById('ip-info');
-    const pBar = document.getElementById('p-bar');
-    const pFill = document.getElementById('p-fill');
-    const manualLink = document.getElementById('manualLink');
-
-    let artifactFound = false;
+    const accessBtn = document.getElementById('accessBtn');
+    const scannerCircle = document.getElementById('scannerCircle');
 
     client.on('connect', () => {
-        statusEl.innerText = "LISTENING FOR BEACON...";
+        statusEl.innerText = "INITIALIZING SENSORS...";
         client.subscribe(TOPIC);
     });
 
     client.on('message', (topic, message) => {
-        if (topic === TOPIC && !artifactFound) {
-            artifactFound = true;
+        if (topic === TOPIC) {
             const ip = message.toString();
-            const targetUrl = "http://" + ip;
-
-            // 1. Обновляем UI
+            
+            // 1. Фиксируем находку
+            scannerCircle.classList.add('found');
             statusEl.innerText = "ARTIFACT LOCATED";
             statusEl.style.color = "#a855f7";
             ipEl.innerText = ip;
+
+            // 2. Показываем кнопку (Браузер потребует клик для перехода на HTTP)
+            accessBtn.style.display = "inline-block";
+            accessBtn.href = "http://" + ip;
             
-            pBar.style.display = "block";
-            manualLink.style.display = "inline-block";
-            manualLink.href = targetUrl;
-
-            // 2. Анимация прогресса и автоматический переход
-            setTimeout(() => {
-                pFill.style.width = "100%";
-                statusEl.innerText = "INITIALIZING TERMINAL...";
-            }, 100);
-
-            // 3. Пытаемся перейти автоматически через 1.5 секунды
-            setTimeout(() => {
-                window.location.href = targetUrl;
-            }, 1600);
+            // Если IP найден, убираем пульсацию и останавливаем сканер
+            scannerCircle.style.animation = "none";
         }
     });
 
-    // Ошибка поиска
+    // Ошибка (таймаут 20 секунд)
     setTimeout(() => {
-        if (!artifactFound) {
-            statusEl.innerText = "NO BEACON DETECTED";
+        if (accessBtn.style.display !== "inline-block") {
+            statusEl.innerText = "LINK FAILED";
             statusEl.style.color = "#ff3e3e";
-            ipEl.innerText = "CHECK DEVICE POWER";
+            ipEl.innerText = "NO BEACON FOUND";
+            ipEl.style.color = "#333";
         }
-    }, 15000);
+    }, 20000);
 </script>
 </body>
 </html>
