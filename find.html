@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>P-11 // GATEWAY</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body { background: #050505; color: #F5F5F5; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .radar-box { text-align: center; }
+        .scanner { width: 200px; height: 200px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2s infinite; opacity: 0; }
+        @keyframes pulse { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: scale(1.2); opacity: 0; } }
+        
+        #status { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; }
+        .btn-link { display: none; margin-top: 20px; padding: 15px 30px; border: 1px solid #a855f7; color: #a855f7; text-decoration: none; font-size: 12px; font-weight: bold; transition: 0.3s; }
+        .btn-link:hover { background: #a855f7; color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="radar-box">
+    <div class="scanner">
+        <div id="status">Scanning...</div>
+    </div>
+    <a href="#" id="deviceLink" class="btn-link">ACCESS ARTEFACT TERMINAL</a>
+</div>
+
+<script>
+    // КОНФИГУРАЦИЯ (Должна совпадать с лампой)
+    const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt'; // Используем WebSockets версию брокера
+    const TOPIC = 'p11/discovery/inspiratus';
+
+    const client = mqtt.connect(MQTT_BROKER);
+    const statusEl = document.getElementById('status');
+    const linkEl = document.getElementById('deviceLink');
+
+    client.on('connect', () => {
+        statusEl.innerText = "Listening for signal...";
+        client.subscribe(TOPIC);
+    });
+
+    client.on('message', (topic, message) => {
+        if (topic === TOPIC) {
+            const ip = message.toString();
+            statusEl.innerText = "Artifact located";
+            statusEl.style.color = "#a855f7";
+            linkEl.style.display = "inline-block";
+            linkEl.href = "http://" + ip;
+            
+            // Если мы на iPhone, можно попробовать сразу .local
+            // Но IP надежнее
+            console.log("Device IP found:", ip);
+        }
+    });
+
+    // Тайм-аут поиска
+    setTimeout(() => {
+        if (linkEl.style.display !== "inline-block") {
+            statusEl.innerText = "No signal. Check power.";
+        }
+    }, 10000);
+</script>
+</body>
+</html>
