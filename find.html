@@ -2,63 +2,99 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>P-11 // GATEWAY</title>
+    <title>P-11 // TERMINAL GATEWAY</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
         body { background: #050505; color: #F5F5F5; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .radar-box { text-align: center; }
-        .scanner { width: 200px; height: 200px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
-        .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2s infinite; opacity: 0; }
-        @keyframes pulse { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.5; } 100% { transform: scale(1.2); opacity: 0; } }
+        .radar-box { text-align: center; width: 100%; max-width: 400px; }
         
-        #status { font-size: 10px; letter-spacing: 2px; color: #555; text-transform: uppercase; }
-        .btn-link { display: none; margin-top: 20px; padding: 15px 30px; border: 1px solid #a855f7; color: #a855f7; text-decoration: none; font-size: 12px; font-weight: bold; transition: 0.3s; }
-        .btn-link:hover { background: #a855f7; color: #000; }
+        /* Визуальный сканер */
+        .scanner { width: 180px; height: 180px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2s infinite; opacity: 0; }
+        @keyframes pulse { 0% { transform: scale(0.6); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: scale(1.3); opacity: 0; } }
+        
+        #status { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 5px; }
+        #ip-info { font-size: 12px; color: #a855f7; font-weight: bold; height: 15px; }
+        
+        /* Полоса загрузки (появится при нахождении) */
+        .progress-bar { width: 100%; height: 1px; background: #111; margin-top: 30px; position: relative; display: none; }
+        .progress-fill { height: 100%; background: #a855f7; width: 0%; transition: width 1.5s linear; }
+
+        .manual-btn { display: none; margin-top: 30px; padding: 15px 30px; border: 1px solid #a855f7; color: #a855f7; text-decoration: none; font-size: 11px; transition: 0.3s; letter-spacing: 2px; }
+        .manual-btn:hover { background: #a855f7; color: #000; }
     </style>
 </head>
 <body>
 
 <div class="radar-box">
     <div class="scanner">
-        <div id="status">Scanning...</div>
+        <div>
+            <div id="status">SCANNING NETWORK...</div>
+            <div id="ip-info"></div>
+        </div>
     </div>
-    <a href="#" id="deviceLink" class="btn-link">ACCESS ARTEFACT TERMINAL</a>
+
+    <div id="p-bar" class="progress-bar">
+        <div id="p-fill" class="progress-fill"></div>
+    </div>
+
+    <a href="#" id="manualLink" class="manual-btn">MANUAL OVERRIDE</a>
 </div>
 
 <script>
-    // КОНФИГУРАЦИЯ (Должна совпадать с лампой)
-    const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt'; // Используем WebSockets версию брокера
+    const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt'; 
     const TOPIC = 'p11/discovery/inspiratus';
 
     const client = mqtt.connect(MQTT_BROKER);
     const statusEl = document.getElementById('status');
-    const linkEl = document.getElementById('deviceLink');
+    const ipEl = document.getElementById('ip-info');
+    const pBar = document.getElementById('p-bar');
+    const pFill = document.getElementById('p-fill');
+    const manualLink = document.getElementById('manualLink');
+
+    let artifactFound = false;
 
     client.on('connect', () => {
-        statusEl.innerText = "Listening for signal...";
+        statusEl.innerText = "LISTENING FOR BEACON...";
         client.subscribe(TOPIC);
     });
 
     client.on('message', (topic, message) => {
-        if (topic === TOPIC) {
+        if (topic === TOPIC && !artifactFound) {
+            artifactFound = true;
             const ip = message.toString();
-            statusEl.innerText = "Artifact located";
+            const targetUrl = "http://" + ip;
+
+            // 1. Обновляем UI
+            statusEl.innerText = "ARTIFACT LOCATED";
             statusEl.style.color = "#a855f7";
-            linkEl.style.display = "inline-block";
-            linkEl.href = "http://" + ip;
+            ipEl.innerText = ip;
             
-            // Если мы на iPhone, можно попробовать сразу .local
-            // Но IP надежнее
-            console.log("Device IP found:", ip);
+            pBar.style.display = "block";
+            manualLink.style.display = "inline-block";
+            manualLink.href = targetUrl;
+
+            // 2. Анимация прогресса и автоматический переход
+            setTimeout(() => {
+                pFill.style.width = "100%";
+                statusEl.innerText = "INITIALIZING TERMINAL...";
+            }, 100);
+
+            // 3. Пытаемся перейти автоматически через 1.5 секунды
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 1600);
         }
     });
 
-    // Тайм-аут поиска
+    // Ошибка поиска
     setTimeout(() => {
-        if (linkEl.style.display !== "inline-block") {
-            statusEl.innerText = "No signal. Check power.";
+        if (!artifactFound) {
+            statusEl.innerText = "NO BEACON DETECTED";
+            statusEl.style.color = "#ff3e3e";
+            ipEl.innerText = "CHECK DEVICE POWER";
         }
-    }, 10000);
+    }, 15000);
 </script>
 </body>
 </html>
