@@ -7,118 +7,77 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #050505; color: #F5F5F5; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+        body { background: #050505; color: #F5F5F5; font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
         .radar-box { text-align: center; width: 100%; max-width: 500px; padding: 40px 20px; }
-        
-        .scanner { width: 220px; height: 220px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .scanner { width: 200px; height: 200px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; }
         .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2.5s infinite; opacity: 0; }
         @keyframes pulse { 0% { transform: scale(0.5); opacity: 0; } 50% { opacity: 0.3; } 100% { transform: scale(1.4); opacity: 0; } }
+        #status { font-size: 10px; letter-spacing: 4px; color: #444; text-transform: uppercase; }
         
-        #status { font-size: 10px; letter-spacing: 4px; color: #444; text-transform: uppercase; margin-bottom: 8px; }
-        
-        /* СПИСОК УСТРОЙСТВ */
         .device-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .device-card { 
-            padding: 20px; border: 1px solid #1A1A1A; background: #080808; 
-            text-align: left; transition: 0.3s; animation: slideIn 0.5s forwards;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .device-card:hover { border-color: #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.1); }
-        
-        .device-info h4 { font-size: 12px; color: #fff; margin-bottom: 5px; }
-        .device-info p { font-size: 10px; color: #a855f7; font-weight: bold; }
-        
-        .open-btn { 
-            padding: 10px 20px; border: 1px solid #a855f7; color: #a855f7; 
-            text-decoration: none; font-size: 10px; font-weight: 900; transition: 0.3s;
-        }
+        .device-card { padding: 20px; border: 1px solid #1A1A1A; background: #080808; text-align: left; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .device-card:hover { border-color: #a855f7; }
+        .device-info h4 { font-size: 11px; color: #fff; margin-bottom: 4px; letter-spacing: 1px; }
+        .device-info p { font-size: 12px; color: #a855f7; font-weight: bold; }
+        .open-btn { padding: 10px 20px; border: 1px solid #a855f7; color: #a855f7; text-decoration: none; font-size: 10px; font-weight: 900; }
         .open-btn:hover { background: #a855f7; color: #000; }
-
-        .rescan-btn { margin-top: 40px; background: none; border: none; color: #222; font-size: 9px; cursor: pointer; text-decoration: underline; text-transform: uppercase; }
-        .rescan-btn:hover { color: #555; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
 
 <div class="radar-box">
-    <div class="scanner" id="scannerCircle">
-        <div>
-            <div id="status">SCANNING MESH</div>
-            <div style="font-size: 10px; color: #222;">P-11 // DISCOVERY</div>
-        </div>
+    <div class="scanner">
+        <div id="status">SCANNING MESH</div>
     </div>
-
-    <div class="device-list" id="deviceList">
-        <!-- Сюда будут падать найденные устройства -->
-    </div>
-
-    <button onclick="window.location.reload()" class="rescan-btn">Restart Sensors (Rescan)</button>
+    <div class="device-list" id="deviceList"></div>
 </div>
 
 <script>
-    // Для корректной работы нескольких устройств, нам нужно, 
-    // чтобы ESP в MQTT слал не просто IP, а "ID|IP"
     const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt'; 
-    const TOPIC = 'p11/discovery/inspiratus';
+    // ПОДПИСЫВАЕМСЯ НА ВСЕ УСТРОЙСТВА ЧЕРЕЗ /#
+    const DISCOVERY_ROOT = 'p11/discovery/inspiratus/#';
 
     const client = mqtt.connect(MQTT_BROKER);
     const deviceListEl = document.getElementById('deviceList');
     const statusEl = document.getElementById('status');
-    
-    // Хранилище найденных ID, чтобы не дублировать кнопки
-    const foundDevices = new Set();
+    const foundDevices = {}; // Объект для отслеживания по ID
 
     client.on('connect', () => {
         statusEl.innerText = "SENSORS ACTIVE";
-        client.subscribe(TOPIC);
+        client.subscribe(DISCOVERY_ROOT);
     });
 
     client.on('message', (topic, message) => {
-        if (topic === TOPIC) {
-            const rawData = message.toString();
-            let id, ip;
+        // Извлекаем ID из топика (p11/discovery/inspiratus/ID)
+        const parts = topic.split('/');
+        const deviceID = parts[parts.length - 1];
+        const ip = message.toString();
 
-            // Проверяем, прислал ли ESP данные в формате ID|IP или просто IP
-            if (rawData.includes('|')) {
-                [id, ip] = rawData.split('|');
-            } else {
-                // Если старая прошивка шлет только IP
-                id = "Unknown_Artefact";
-                ip = rawData;
-            }
-
-            // Если это устройство мы еще не отрисовали
-            if (!foundDevices.has(id + ip)) {
-                foundDevices.add(id + ip);
-                statusEl.innerText = "SIGNAL DETECTED";
-                statusEl.style.color = "#a855f7";
-                
-                addDeviceCard(id, ip);
-            }
+        // Если это новое устройство или IP изменился
+        if (!foundDevices[deviceID] || foundDevices[deviceID] !== ip) {
+            foundDevices[deviceID] = ip;
+            updateUI();
         }
     });
 
-    function addDeviceCard(id, ip) {
-        const card = document.createElement('div');
-        card.className = 'device-card';
-        card.innerHTML = `
-            <div class="device-info">
-                <h4>${id.toUpperCase()}</h4>
-                <p>${ip}</p>
-            </div>
-            <a href="http://${ip}" target="_blank" class="open-btn">CONNECT</a>
-        `;
-        deviceListEl.appendChild(card);
+    function updateUI() {
+        deviceListEl.innerHTML = '';
+        Object.keys(foundDevices).forEach(id => {
+            const ip = foundDevices[id];
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.innerHTML = `
+                <div class="device-info">
+                    <h4>${id.toUpperCase()}</h4>
+                    <p>${ip}</p>
+                </div>
+                <a href="http://${ip}" target="_blank" class="open-btn">CONNECT</a>
+            `;
+            deviceListEl.appendChild(card);
+        });
+        statusEl.innerText = "NODES LOCATED: " + Object.keys(foundDevices).length;
+        statusEl.style.color = "#a855f7";
     }
-
-    setTimeout(() => {
-        if (foundDevices.size === 0) {
-            statusEl.innerText = "NO ARTEFACTS FOUND";
-            statusEl.style.color = "#ff3e3e";
-        }
-    }, 15000);
 </script>
 </body>
 </html>
