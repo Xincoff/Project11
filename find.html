@@ -2,37 +2,127 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P-11 // TERMINAL GATEWAY</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
-        body { background: #050505; color: #F5F5F5; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .radar-box { text-align: center; width: 100%; max-width: 400px; padding: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #050505; 
+            color: #F5F5F5; 
+            font-family: 'JetBrains Mono', monospace; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            overflow: hidden; 
+        }
+
+        .radar-box { 
+            text-align: center; 
+            width: 100%; 
+            max-width: 500px; 
+            padding: 40px 20px; 
+        }
         
-        .scanner { width: 180px; height: 180px; border: 1px solid #1A1A1A; border-radius: 50%; margin: 0 auto 40px; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
-        .scanner.found { border-color: #a855f7; box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); }
-        .scanner::after { content: ''; width: 100%; height: 100%; border: 1px solid #a855f7; border-radius: 50%; position: absolute; animation: pulse 2s infinite; opacity: 0; }
-        @keyframes pulse { 0% { transform: scale(0.6); opacity: 0; } 50% { opacity: 0.4; } 100% { transform: scale(1.3); opacity: 0; } }
+        /* СКАНЕР - УВЕЛИЧЕННЫЙ */
+        .scanner { 
+            width: 280px; 
+            height: 280px; 
+            border: 1px solid #1A1A1A; 
+            border-radius: 50%; 
+            margin: 0 auto 60px; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
         
-        #status { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 5px; }
-        #ip-info { font-size: 16px; color: #a855f7; font-weight: bold; margin-top: 5px; letter-spacing: 2px; cursor: pointer; }
+        .scanner.found { 
+            border-color: #a855f7; 
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.15); 
+        }
+
+        .scanner::after { 
+            content: ''; 
+            width: 100%; 
+            height: 100%; 
+            border: 1px solid #a855f7; 
+            border-radius: 50%; 
+            position: absolute; 
+            animation: pulse 2.5s infinite; 
+            opacity: 0; 
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(0.5); opacity: 0; } 
+            50% { opacity: 0.3; } 
+            100% { transform: scale(1.4); opacity: 0; } 
+        }
+        
+        #status { font-size: 10px; letter-spacing: 4px; color: #444; text-transform: uppercase; margin-bottom: 8px; }
+        #ip-info { font-size: 18px; color: #a855f7; font-weight: bold; letter-spacing: 2px; }
         
         /* КНОПКИ */
-        .controls { display: none; flex-direction: column; gap: 15px; margin-top: 40px; animation: fadeIn 0.5s forwards; }
-        .access-btn { 
-            padding: 20px 40px; border: 1px solid #a855f7; background: #a855f7; 
-            color: #000; text-decoration: none; font-size: 11px; 
-            font-weight: 900; letter-spacing: 2px; transition: 0.3s;
+        .controls { 
+            display: none; 
+            flex-direction: column; 
+            gap: 20px; 
+            margin-top: 20px; 
+            animation: fadeIn 0.8s forwards; 
         }
-        .copy-btn { 
-            padding: 12px 20px; border: 1px solid #333; background: transparent; 
-            color: #555; text-decoration: none; font-size: 9px; 
-            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer;
-        }
-        .copy-btn:hover { color: #fff; border-color: #fff; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .error-note { display: none; font-size: 9px; color: #444; margin-top: 30px; line-height: 1.6; text-transform: uppercase; }
+        .access-btn { 
+            padding: 24px 40px; 
+            border: 1px solid #a855f7; 
+            background: #a855f7; 
+            color: #000; 
+            text-decoration: none; 
+            font-size: 13px; 
+            font-weight: 900; 
+            letter-spacing: 3px; 
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .copy-btn { 
+            padding: 15px; 
+            border: 1px solid #222; 
+            background: transparent; 
+            color: #555; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            transition: 0.3s; 
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .copy-btn:active { background: #111; color: #fff; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .error-note { 
+            display: none; 
+            font-size: 9px; 
+            color: #333; 
+            margin-top: 40px; 
+            line-height: 1.8; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+
+        /* АДАПТИВ ПОД МАЛЕНЬКИЕ ТЕЛЕФОНЫ */
+        @media (max-width: 380px) {
+            .scanner { width: 75vw; height: 75vw; margin-bottom: 40px; }
+            #ip-info { font-size: 16px; }
+        }
+
+        @media (min-width: 768px) {
+            .scanner { width: 320px; height: 320px; }
+            .copy-btn:hover { color: #888; border-color: #444; }
+        }
     </style>
 </head>
 <body>
@@ -40,22 +130,23 @@
 <div class="radar-box">
     <div class="scanner" id="scannerCircle">
         <div>
-            <div id="status">SCANNING...</div>
+            <div id="status">INITIATING SCAN</div>
             <div id="ip-info">---.---.---.---</div>
         </div>
     </div>
 
     <div class="controls" id="controls">
         <a href="#" id="accessBtn" target="_blank" class="access-btn">OPEN TERMINAL</a>
-        <button onclick="copyIP()" class="copy-btn">Copy IP to clipboard</button>
+        <button onclick="copyIP()" class="copy-btn">Copy Device IP</button>
         <div class="error-note" id="errorNote">
-            If "OPEN" doesn't work: Browser blocked the bridge.<br>
-            Please paste the copied IP into a new tab.
+            BRIDGE PROTOCOL BLOCKED BY BROWSER.<br>
+            COPY IP AND OPEN IN NEW TAB.
         </div>
     </div>
 </div>
 
 <script>
+    // КОНФИГУРАЦИЯ MQTT
     const MQTT_BROKER = 'wss://broker.emqx.io:8084/mqtt'; 
     const TOPIC = 'p11/discovery/inspiratus';
 
@@ -68,7 +159,7 @@
     const errorNote = document.getElementById('errorNote');
 
     client.on('connect', () => {
-        statusEl.innerText = "SENSORS ONLINE";
+        statusEl.innerText = "LISTENING FOR SIGNAL";
         client.subscribe(TOPIC);
     });
 
@@ -76,6 +167,7 @@
         if (topic === TOPIC) {
             const ip = message.toString();
             
+            // Визуальное обнаружение
             scannerCircle.classList.add('found');
             statusEl.innerText = "ARTIFACT LOCATED";
             statusEl.style.color = "#a855f7";
@@ -85,6 +177,7 @@
             controls.style.display = "flex";
             errorNote.style.display = "block";
             
+            // Замедляем анимацию после нахождения для стабильности
             scannerCircle.style.animation = "none";
         }
     });
@@ -92,18 +185,23 @@
     function copyIP() {
         const ip = ipEl.innerText;
         navigator.clipboard.writeText(ip).then(() => {
-            const oldText = document.querySelector('.copy-btn').innerText;
-            document.querySelector('.copy-btn').innerText = "COPIED TO CLIPBOARD";
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "COPIED TO CLIPBOARD";
+            btn.style.color = "#a855f7";
             setTimeout(() => {
-                document.querySelector('.copy-btn').innerText = oldText;
+                btn.innerText = originalText;
+                btn.style.color = "#555";
             }, 2000);
         });
     }
 
+    // Таймаут
     setTimeout(() => {
         if (controls.style.display !== "flex") {
-            statusEl.innerText = "NO SIGNAL";
+            statusEl.innerText = "SIGNAL LOST";
             statusEl.style.color = "#ff3e3e";
+            ipEl.innerText = "CHECK HARDWARE";
         }
     }, 20000);
 </script>
