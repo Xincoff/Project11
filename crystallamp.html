@@ -32,8 +32,16 @@
         .wrapper { max-width: 1600px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; }
         
         header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(3,3,3,0.8); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
+        
+        /* Блок для кнопок в шапке */
+        .header-links { display: flex; gap: 15px; }
+
         .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; color: var(--fg); }
         .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+        /* Специфический стиль для кнопки поиска */
+        .gateway-btn { border-color: var(--crystal-glow); color: var(--crystal-glow); }
+        .gateway-btn:hover { background: var(--crystal-glow); color: #000; border-color: var(--crystal-glow); }
 
         /* HERO SECTION */
         .p-hero { padding: 180px 40px 100px; border-bottom: 1px solid var(--line); position: relative; }
@@ -77,12 +85,17 @@
         .btn-sub-text { font-family: var(--font-tech); font-size: 10px; font-weight: 700; letter-spacing: 2px; opacity: 0.8; }
         .btn-price { color: var(--crystal-glow); }
 
+        /* Ссылка под кнопкой */
+        .find-link { display: block; font-family: var(--font-tech); font-size: 10px; color: var(--dim); text-decoration: underline; letter-spacing: 1px; transition: 0.3s; margin-top: 25px; }
+        .find-link:hover { color: var(--crystal-glow); }
+
         @media (max-width: 768px) {
             #cursor { display: none !important; }
             .p-grid { grid-template-columns: 1fr !important; }
             .p-left { border-right: none !important; padding: 60px 20px !important; order: 2; }
             .p-right { height: 350px !important; order: 1; }
             .btn-acquire { width: 100%; }
+            header { flex-direction: column; gap: 15px; text-align: center; padding: 20px; }
         }
     </style>
 </head>
@@ -93,7 +106,10 @@
 <div class="wrapper">
     <header>
         <div class="logo-type" style="font-family: var(--font-tech); font-size: 12px; font-weight: 800;">P—11 // ARTEFACTS</div>
-        <a href="index.html" class="back-btn">RETURN TO BASE</a>
+        <div class="header-links">
+            <a href="find.html" class="back-btn gateway-btn">TERMINAL GATEWAY</a>
+            <a href="index.html" class="back-btn">RETURN TO BASE</a>
+        </div>
     </header>
 
     <section class="p-hero reveal">
@@ -162,6 +178,7 @@
             <span class="btn-main-text">Acquire Inspiratus — <span class="btn-price"> ----₽</span></span>
             <span class="btn-sub-text">[ BATCH 01: 10 UNITS REMAINING ]</span>
         </a>
+        <a href="find.html" class="find-link">ALREADY HAVE ONE? ACCESS TERMINAL VIA GATEWAY</a>
     </section>
 
     <footer style="padding: 40px; text-align: center; border-top: 1px solid var(--line); font-family: var(--font-tech); font-size: 9px; color: var(--dim);">
