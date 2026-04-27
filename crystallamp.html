@@ -33,18 +33,53 @@
         
         header { padding: 30px 40px; position: fixed; width: 100%; max-width: 1600px; z-index: 100; border-bottom: 1px solid var(--line); background: rgba(3,3,3,0.8); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center;}
         
-        /* Блок для кнопок в шапке */
         .header-links { display: flex; gap: 15px; }
 
         .back-btn { font-family: var(--font-tech); border: 1px solid var(--dim); padding: 8px 16px; transition: 0.3s; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; color: var(--fg); }
         .back-btn:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-        /* Специфический стиль для кнопки поиска */
         .gateway-btn { border-color: var(--crystal-glow); color: var(--crystal-glow); }
         .gateway-btn:hover { background: var(--crystal-glow); color: #000; border-color: var(--crystal-glow); }
 
-        /* HERO SECTION */
-        .p-hero { padding: 180px 40px 100px; border-bottom: 1px solid var(--line); position: relative; }
+        /* HERO SECTION WITH VIDEO BACKGROUND */
+        .p-hero { 
+            padding: 180px 40px 100px; 
+            border-bottom: 1px solid var(--line); 
+            position: relative; 
+            overflow: hidden; /* Чтобы видео не вылезало за границы */
+        }
+
+        .hero-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+			width: 120%; /* Делаем видео чуть шире контейнера */
+			left: 10%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.4; /* Настройка прозрачности видео для читаемости текста */
+        }
+
+        .hero-video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(3,3,3,1) 0%, 
+                rgba(3,3,3,0.2) 50%, 
+                rgba(3,3,3,1) 100%);
+            z-index: 1;
+        }
+
+        .p-hero-content {
+            position: relative;
+            z-index: 2; /* Текст поверх видео и оверлея */
+        }
+
         .p-type { font-family: var(--font-tech); color: var(--dim); margin-bottom: 20px; display: block; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
         .p-hero h1 { font-size: clamp(40px, 8vw, 120px); line-height: 0.8; text-transform: uppercase; margin-bottom: 40px; font-weight: 800; letter-spacing: -6px; }
         .hero-price { font-size: 24px; font-family: var(--font-tech); font-weight: 700; margin-top: 20px; color: var(--fg); }
@@ -53,23 +88,20 @@
         .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
         .p-left { border-right: 1px solid var(--line); padding: 80px 40px; }
         .p-right { background: #000; overflow: hidden; position: relative; }
-        .p-right img { width: 100%; height: 100%; object-fit: cover; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .p-right img, .p-right video { width: 100%; height: 100%; object-fit: cover; transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
 
         .section-label { font-family: var(--font-tech); font-size: 9px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 40px; display: block; border-left: 2px solid var(--crystal-glow); padding-left: 15px; }
         
-        /* BENEFITS BLOCK */
         .benefit-item { margin-bottom: 60px; }
         .benefit-item h3 { font-size: 20px; text-transform: uppercase; margin-bottom: 15px; letter-spacing: -1px; color: var(--fg); }
         .benefit-item p { font-size: 14px; line-height: 1.6; color: #888; }
 
-        /* INVENTORY BOX */
         .inventory-card { background: #080808; border: 1px solid var(--line); padding: 40px; margin-top: 40px; position: relative; overflow: hidden; }
         .inventory-card::after { content: "P-11 INVENTORY"; position: absolute; bottom: -10px; right: -10px; font-family: var(--font-tech); font-size: 40px; opacity: 0.03; font-weight: 900; }
         .inventory-list { list-style: none; }
         .inventory-item { font-family: var(--font-tech); font-size: 11px; color: #777; padding: 12px 0; border-bottom: 1px solid #111; display: flex; justify-content: space-between; }
         .inventory-item span { color: var(--crystal-glow); }
 
-        /* CTA SECTION - INTEGRATED */
         .cta-section { padding: 150px 40px; text-align: center; background: radial-gradient(circle at center, #0a0a0a 0%, #030303 100%); }
         
         .btn-acquire { 
@@ -85,7 +117,6 @@
         .btn-sub-text { font-family: var(--font-tech); font-size: 10px; font-weight: 700; letter-spacing: 2px; opacity: 0.8; }
         .btn-price { color: var(--crystal-glow); }
 
-        /* Ссылка под кнопкой */
         .find-link { display: block; font-family: var(--font-tech); font-size: 10px; color: var(--dim); text-decoration: underline; letter-spacing: 1px; transition: 0.3s; margin-top: 25px; }
         .find-link:hover { color: var(--crystal-glow); }
 
@@ -113,10 +144,18 @@
     </header>
 
     <section class="p-hero reveal">
-        <span class="p-type">Transform Your Environment</span>
-        <h1>Inspiratus</h1>
-        <div class="hero-tagline" style="font-size: 20px; color: #888; max-width: 700px; line-height: 1.4;">
-            Это не лампа. Это <span>энергетический узел</span> вашего пространства. Слияние живого аметиста и цифрового интеллекта.
+        <!-- BACKGROUND VIDEO -->
+        <video class="hero-video-bg" autoplay loop muted playsinline>
+            <source src="vid.MOV" type="video/mp4">
+        </video>
+        <div class="hero-video-overlay"></div>
+
+        <div class="p-hero-content">
+            <span class="p-type">Transform Your Environment</span>
+            <h1>Inspiratus</h1>
+            <div class="hero-tagline" style="font-size: 20px; color: #888; max-width: 700px; line-height: 1.4;">
+                Это не лампа. Это <span>энергетический узел</span> вашего пространства. Слияние живого аметиста и цифрового интеллекта.
+            </div>
         </div>
     </section>
 
@@ -140,7 +179,9 @@
             </div>
         </div>
         <div class="p-right reveal">
-            <img src="crystallamp2.jpg" alt="Inspiratus Close-up">
+            <video autoplay loop muted playsinline poster="crystallamp2.jpg">
+                <source src="core_glow.mp4" type="video/mp4">
+            </video>
         </div>
     </section>
 
