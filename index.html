@@ -56,8 +56,21 @@
         .project-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 600px; }
         .p-content { padding: 60px 60px 60px 0; border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: space-between; }
         .p-visual { position: relative; overflow: hidden; background: #000; }
-        .p-visual img { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); filter: grayscale(1); }
-        .project-row:hover .p-visual img { opacity: 0.9; transform: scale(1.02); filter: grayscale(0); }
+        
+        /* ИЗМЕНЕНИЯ ЗДЕСЬ: фото теперь сразу яркие и цветные */
+        .p-visual img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            opacity: 1; /* Было 0.4 */
+            transition: 1.2s cubic-bezier(0.16, 1, 0.3, 1); 
+            filter: grayscale(0); /* Было grayscale(1) */
+        }
+        
+        /* ИЗМЕНЕНИЯ ЗДЕСЬ: при наведении только легкое увеличение */
+        .project-row:hover .p-visual img { 
+            transform: scale(1.05); 
+        }
 
         .p-meta { font-family: var(--font-tech); font-size: 9px; letter-spacing: 2px; color: var(--dim); margin-bottom: 15px; display: block; text-transform: uppercase; }
         .p-heading { font-size: 42px; font-weight: 800; line-height: 1; text-transform: uppercase; margin-bottom: 25px; letter-spacing: -2px; }
