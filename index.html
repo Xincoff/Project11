@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>P—11 | ОБЪЕКТЫ ИНЖЕНЕРНОГО ПРЕВОСХОДСТВА</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg">
@@ -11,12 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        @media (min-width: 1025px) { * { cursor: none; } }
+
         :root {
-            --bg: #FDFDFD; 
-            --fg: #000000; 
-            --gucci-red: #8B0000; /* Deep Rosso Ancora */
-            --line: #E8E8E8;
+            --bg: #FDFDFD; --fg: #000000; 
+            --gucci-red: #8B0000; --line: #E8E8E8;
             --font-editorial: 'Inter', sans-serif;
             --font-classic: 'Cormorant Garamond', serif;
             --font-tech: 'JetBrains Mono', monospace;
@@ -28,73 +29,71 @@
             width: 12px; height: 12px; background: var(--gucci-red); 
             position: fixed; pointer-events: none; z-index: 10000; 
             transition: transform 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 50%;
+            border-radius: 50%; display: none; 
         }
+        @media (min-width: 1025px) { #cursor { display: block; } }
 
         .reveal { opacity: 0; transform: translateY(40px); transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* HEADER */
-        header { padding: 40px; position: fixed; width: 100%; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        header { padding: 20px 40px; position: fixed; width: 100%; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; background: rgba(253,253,253,0.8); backdrop-filter: blur(10px); }
         .logo-type { font-weight: 900; font-size: 26px; letter-spacing: -2px; text-transform: lowercase; }
         .nav-status { font-family: var(--font-tech); font-size: 10px; color: var(--gucci-red); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
 
         /* HERO */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 0 40px; border-bottom: 2px solid var(--fg); }
-        .hero-title { font-size: clamp(60px, 20vw, 300px); font-weight: 900; line-height: 0.75; letter-spacing: -0.07em; text-transform: uppercase; }
-        .hero-sub { font-family: var(--font-classic); font-size: 36px; font-style: italic; color: #444; margin-top: 40px; max-width: 700px; line-height: 1.1; }
+        .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; padding: 0 40px; border-bottom: 2px solid var(--fg); }
+        .hero-title { font-size: clamp(60px, 18vw, 300px); font-weight: 900; line-height: 0.75; letter-spacing: -0.07em; text-transform: uppercase; }
+        .hero-sub { font-family: var(--font-classic); font-size: clamp(24px, 5vw, 36px); font-style: italic; color: #444; margin-top: 40px; max-width: 700px; line-height: 1.1; }
 
-        /* STRATEGIC GRAPH (ENHANCED) */
-        .graph-section { padding: 120px 40px; border-bottom: 1px solid var(--line); background: #fff; }
+        /* STRATEGIC GRAPH */
+        .graph-section { padding: 100px 0; border-bottom: 1px solid var(--line); background: #fff; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .graph-label { font-family: var(--font-tech); font-size: 10px; color: var(--gucci-red); text-align: center; margin-bottom: 60px; letter-spacing: 5px; font-weight: 800; }
-        .main-graph { max-width: 1200px; width: 100%; height: auto; margin: 0 auto; display: block; }
+        .main-graph { min-width: 1200px; height: auto; margin: 0 auto; display: block; }
         
-        /* Линии графа стали выраженными */
         .path-line { stroke: #D0D0D0; stroke-width: 1.5; fill: none; transition: 0.5s ease; stroke-dasharray: 6; }
         .node { fill: var(--fg); stroke: var(--bg); stroke-width: 3; r: 6; transition: 0.4s; }
         .node-project { r: 8; cursor: pointer; }
         .node-hitbox { r: 35; fill: transparent; cursor: pointer; pointer-events: all; }
-        
-        text { font-family: var(--font-tech); text-transform: uppercase; font-size: 10px; letter-spacing: 2px; fill: #999; font-weight: 600; pointer-events: none; transition: 0.3s; }
+        text { font-family: var(--font-tech); text-transform: uppercase; font-size: 10px; letter-spacing: 2px; fill: #999; font-weight: 600; pointer-events: none; }
         
         .node-group:hover .path-line { stroke: var(--gucci-red); stroke-width: 2.5; stroke-dasharray: none; }
         .node-group:hover .node-project { r: 10; fill: var(--gucci-red); }
-        .node-group:hover text { fill: var(--fg); font-size: 11px; }
 
         /* DIVISION STRIP */
-        .div-header { padding: 180px 40px 60px; border-bottom: 2px solid var(--fg); display: flex; justify-content: space-between; align-items: flex-end; }
-        .div-title { font-size: clamp(50px, 12vw, 150px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.8; }
-        .div-meta { font-family: var(--font-tech); font-size: 14px; color: var(--gucci-red); font-weight: 800; writing-mode: vertical-rl; letter-spacing: 5px; }
+        .div-header { padding: 120px 40px 40px; border-bottom: 2px solid var(--fg); display: flex; justify-content: space-between; align-items: flex-end; }
+        .div-title { font-size: clamp(40px, 10vw, 150px); font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; line-height: 0.8; }
+        .div-meta { font-family: var(--font-tech); font-size: 12px; color: var(--gucci-red); font-weight: 800; letter-spacing: 3px; }
 
-        /* PROJECT EDITORIAL */
-        .project-row { display: grid; grid-template-columns: 1.1fr 0.9fr; border-bottom: 1px solid var(--line); min-height: 85vh; scroll-margin-top: 100px; }
-        .p-visual { background: #F0F0F0; overflow: hidden; position: relative; }
-        .p-visual img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        /* PROJECT ROW */
+        .project-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 80vh; scroll-margin-top: 100px; }
+        .p-visual { background: #F0F0F0; overflow: hidden; position: relative; min-height: 400px; }
+        .p-visual img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transition: 2s ease; }
         .project-row:hover .p-visual img { filter: grayscale(0); transform: scale(1.05); }
 
-        .p-info { padding: 100px 60px; display: flex; flex-direction: column; justify-content: center; background: #fff; border-left: 1px solid var(--line); }
-        .p-id { font-family: var(--font-tech); font-size: 12px; color: var(--gucci-red); margin-bottom: 40px; font-weight: 800; letter-spacing: 3px; }
-        .p-name { font-size: clamp(40px, 6vw, 90px); font-weight: 900; text-transform: uppercase; line-height: 0.85; letter-spacing: -0.05em; margin-bottom: 40px; }
-        .p-desc { font-family: var(--font-classic); font-size: 26px; color: #333; line-height: 1.2; max-width: 500px; }
+        .p-info { padding: 60px 40px; display: flex; flex-direction: column; justify-content: center; background: #fff; }
+        .p-id { font-family: var(--font-tech); font-size: 11px; color: var(--gucci-red); margin-bottom: 30px; font-weight: 800; letter-spacing: 3px; }
+        .p-name { font-size: clamp(34px, 6vw, 80px); font-weight: 900; text-transform: uppercase; line-height: 0.85; letter-spacing: -0.05em; margin-bottom: 30px; }
+        .p-desc { font-family: var(--font-classic); font-size: clamp(20px, 3vw, 26px); color: #333; line-height: 1.2; max-width: 500px; }
 
         .btn-luxury { 
-            margin-top: 60px; padding: 25px 60px; background: var(--fg); color: #fff;
-            text-transform: uppercase; font-family: var(--font-tech); font-size: 12px;
-            letter-spacing: 4px; text-decoration: none; width: fit-content; transition: 0.4s;
+            margin-top: 50px; padding: 20px 50px; background: var(--fg); color: #fff;
+            text-transform: uppercase; font-family: var(--font-tech); font-size: 10px;
+            letter-spacing: 3px; text-decoration: none; width: fit-content; transition: 0.4s;
+            text-align: center;
         }
-        .btn-luxury:hover { background: var(--gucci-red); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(139,0,0,0.2); }
-
-        footer { padding: 120px 40px; background: var(--fg); color: var(--bg); }
-        .f-logo { font-size: clamp(40px, 20vw, 350px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
+        .btn-luxury:hover { background: var(--gucci-red); transform: translateY(-5px); }
 
         @media (max-width: 1024px) {
-            #cursor { display: none; }
             .project-row { grid-template-columns: 1fr; }
-            .p-info { padding: 60px 20px; }
-            .div-header { padding: 100px 20px 40px; }
-            .hero-title { font-size: 80px; }
-            .graph-section { display: none; }
+            .p-visual { min-height: 350px; }
+            .p-info { padding: 40px 20px; }
+            .btn-luxury { width: 100%; }
+            .hero { padding: 0 20px; }
         }
+
+        footer { padding: 100px 40px; background: var(--fg); color: var(--bg); text-align: center; }
+        .f-logo { font-size: clamp(50px, 20vw, 300px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
     </style>
 </head>
 <body>
@@ -107,129 +106,110 @@
 </header>
 
 <div class="wrapper">
-    <!-- HERO -->
     <section class="hero reveal">
         <h1 class="hero-title">Project.<br>Eleven.</h1>
-        <p class="hero-sub">Архитектура инженерных систем высшего порядка. Мы проектируем реальность через призму математической дисциплины.</p>
+        <p class="hero-sub">Бюро междисциплинарного инжиниринга. Проектируем реальность через призму математической дисциплины.</p>
     </section>
 
-    <!-- GRAPH (VIZIBLE) -->
+    <!-- GRAPH MAP -->
     <section class="graph-section reveal">
-        <p class="graph-label">КАРТА СТРАТЕГИЧЕСКИХ АКТИВОВ</p>
+        <p class="graph-label">КАРТА СТРАТЕГИЧЕСКИХ АКТИВОВ (СКРОЛЛ →)</p>
         <svg viewBox="0 0 1200 700" class="main-graph">
             <g class="links">
-                <!-- Aero -->
                 <path d="M600,350 L300,150" class="path-line" />
                 <path d="M300,150 L100,50" class="path-line" />
-                <path d="M300,150 L100,150" class="path-line" />
+                <path d="M300,150 L150,150" class="path-line" />
                 <path d="M300,150 L100,250" class="path-line" />
-                <!-- Ind -->
                 <path d="M600,350 L300,550" class="path-line" />
                 <path d="M300,550 L100,450" class="path-line" />
-                <path d="M300,550 L100,550" class="path-line" />
+                <path d="M300,550 L150,550" class="path-line" />
                 <path d="M300,550 L100,650" class="path-line" />
-                <!-- Rob -->
                 <path d="M600,350 L900,200" class="path-line" />
                 <path d="M900,200 L1100,150" class="path-line" />
                 <path d="M900,200 L1100,250" class="path-line" />
-                <!-- AI -->
                 <path d="M600,350 L900,500" class="path-line" />
                 <path d="M900,500 L1100,450" class="path-line" />
                 <path d="M900,500 L1100,550" class="path-line" />
             </g>
             <g class="nodes">
                 <circle cx="600" cy="350" class="node" />
-                
-                <!-- АЭРОКОСМОС -->
                 <g class="node-group">
-                    <circle cx="100" cy="50" class="node node-project" onclick="scrollToProject('albatros')" />
-                    <circle cx="100" cy="50" class="node-hitbox" onclick="scrollToProject('albatros')" />
+                    <circle cx="100" cy="50" class="node node-project" onclick="scrollToProject('placeholder')" />
+                    <circle cx="100" cy="50" class="node-hitbox" onclick="scrollToProject('placeholder')" />
                     <text x="85" y="45" text-anchor="end">Заглушка</text>
-
-                    <circle cx="100" cy="150" class="node node-project" onclick="scrollToProject('catcher')" />
-                    <circle cx="100" cy="150" class="node-hitbox" onclick="scrollToProject('catcher')" />
-                    <text x="85" y="145" text-anchor="end">Catcher</text>
-
+                    <circle cx="150" cy="150" class="node node-project" onclick="scrollToProject('catcher')" />
+                    <circle cx="150" cy="150" class="node-hitbox" onclick="scrollToProject('catcher')" />
+                    <text x="135" y="145" text-anchor="end">Catcher</text>
                     <circle cx="100" cy="250" class="node node-project" onclick="scrollToProject('rockets')" />
                     <circle cx="100" cy="250" class="node-hitbox" onclick="scrollToProject('rockets')" />
-                    <text x="85" y="245" text-anchor="end">НИОКР Ракеты</text>
+                    <text x="85" y="245" text-anchor="end">Rocket Brain</text>
                 </g>
-
-                <!-- ПРОМЫШЛЕННОСТЬ -->
                 <g class="node-group">
                     <circle cx="100" cy="450" class="node node-project" onclick="scrollToProject('sollers')" />
                     <circle cx="100" cy="450" class="node-hitbox" onclick="scrollToProject('sollers')" />
-                    <text x="85" y="445" text-anchor="end">Соллерс Реверс</text>
-
-                    <circle cx="100" cy="550" class="node node-project" onclick="scrollToProject('turbine')" />
-                    <circle cx="100" cy="550" class="node-hitbox" onclick="scrollToProject('turbine')" />
-                    <text x="85" y="545" text-anchor="end">Турбина НИОКР</text>
-
+                    <text x="85" y="445" text-anchor="end">Sollers Bus</text>
+                    <circle cx="150" cy="550" class="node node-project" onclick="scrollToProject('turbine')" />
+                    <circle cx="150" cy="550" class="node-hitbox" onclick="scrollToProject('turbine')" />
+                    <text x="135" y="545" text-anchor="end">Impeller</text>
                     <circle cx="100" cy="650" class="node node-project" onclick="scrollToProject('milling')" />
                     <circle cx="100" cy="650" class="node-hitbox" onclick="scrollToProject('milling')" />
-                    <text x="85" y="645" text-anchor="end">САПР Фрез</text>
+                    <text x="85" y="645" text-anchor="end">CAD Фрез</text>
                 </g>
-
-                <!-- РОБОТОТЕХНИКА -->
                 <g class="node-group">
                     <circle cx="1100" cy="150" class="node node-project" onclick="scrollToProject('agv')" />
                     <circle cx="1100" cy="150" class="node-hitbox" onclick="scrollToProject('agv')" />
-                    <text x="1115" y="145" text-anchor="start">AGV Nav</text>
-
+                    <text x="1115" y="145">Caravan</text>
                     <circle cx="1100" cy="250" class="node node-project" onclick="scrollToProject('omega')" />
                     <circle cx="1100" cy="250" class="node-hitbox" onclick="scrollToProject('omega')" />
-                    <text x="1115" y="245" text-anchor="start">Omega Arm</text>
-                </g>
-
-                <!-- ИИ -->
-                <g class="node-group">
+                    <text x="1115" y="245">Omega</text>
                     <circle cx="1100" cy="450" class="node node-project" onclick="scrollToProject('zack')" />
                     <circle cx="1100" cy="450" class="node-hitbox" onclick="scrollToProject('zack')" />
-                    <text x="1115" y="445" text-anchor="start">Zack AI</text>
-
+                    <text x="1115" y="445">Zack</text>
                     <circle cx="1100" cy="550" class="node node-project" onclick="scrollToProject('inspiratus')" />
                     <circle cx="1100" cy="550" class="node-hitbox" onclick="scrollToProject('inspiratus')" />
-                    <text x="1115" y="545" text-anchor="start">Inspiratus</text>
+                    <text x="1115" y="545">Inspiratus</text>
                 </g>
             </g>
         </svg>
     </section>
 
-    <!-- DIVISION 01 -->
+    <!-- DIV 01 -->
     <div class="div-header reveal">
         <h2 class="div-title">Aero<br>space</h2>
         <span class="div-meta">collection.01</span>
     </div>
 
-    <article id="albatros" class="project-row reveal">
-        <div class="p-visual"><img src="albatros_m5.jpg" alt="Albatros"></div>
+    <article id="placeholder" class="project-row reveal">
+        <div class="p-visual"><img src="albatros_m5.jpg" alt="Заглушка"></div>
         <div class="p-info">
             <span class="p-id">obj.001</span>
-            <h3 class="p-name">Заглушка</h3>
-            <p class="p-desc">Модернизация планера БПЛА. Реконструкция геометрии Class-A и проектирование промышленной оснастки в Siemens NX.</p>
+            <h2 class="p-name">Заглушка</h2>
+            <p class="p-desc">Модернизация планера БПЛА. Реконструкция геометрии Class-A и проектирование оснастки в NX.</p>
+            <a href="albatros.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
     <article id="catcher" class="project-row reveal">
         <div class="p-visual"><img src="catcher.jpg" alt="Catcher"></div>
         <div class="p-info">
-            <span class="p-id" style="color: var(--gucci-red);">CLASSIFIED</span>
-            <h3 class="p-name">Catcher</h3>
-            <p class="p-desc">Высокоскоростная перехватывающая система. Анализ методом конечных элементов (FEA) под нагрузки 17g.</p>
-            <a href="catcher.html" class="btn-luxury">View Dossier</a>
+            <span class="p-id">obj.002</span>
+            <h2 class="p-name">Catcher</h2>
+            <p class="p-desc">Высокоскоростная перехватывающая система. Анализ прочности под перегрузки 17g.</p>
+            <a href="catcher.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
     <article id="rockets" class="project-row reveal">
-        <div class="p-visual"><img src="rocket.jpg" alt="Rocket"></div>
+        <div class="p-visual"><img src="rocket.jpg" alt="Rockets"></div>
         <div class="p-info">
             <span class="p-id">obj.003</span>
-            <h3 class="p-name">R/B</h3>
-            <p class="p-desc">Система стабилизации и контроля полета для ракета на РДТТ.</p>
+            <h2 class="p-name">Racket Brain</h2>
+            <p class="p-desc">Система активной гиростабилизации вектора тяги для аэрокосмических прототипов.</p>
+            <a href="rockets.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
-    <!-- DIVISION 02 -->
+    <!-- DIV 02 -->
     <div class="div-header reveal">
         <h2 class="div-title">Industrial<br>Solutions</h2>
         <span class="div-meta">collection.02</span>
@@ -239,8 +219,9 @@
         <div class="p-visual"><img src="sollers_frames.jpg" alt="Sollers"></div>
         <div class="p-info">
             <span class="p-id">obj.004</span>
-            <h3 class="p-name">Sollers</h3>
-            <p class="p-desc">Реверс-инжиниринг несущих рам пассажирского транспорта на основе прецизионного 3D-сканирования.</p>
+            <h2 class="p-name">Sollers Bus</h2>
+            <p class="p-desc">Реверс-инжиниринг несущих рам пассажирского транспорта на основе 3D-сканирования.</p>
+            <a href="sollers.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
@@ -248,21 +229,23 @@
         <div class="p-visual"><img src="turbine.jpg" alt="Turbine"></div>
         <div class="p-info">
             <span class="p-id">obj.005</span>
-            <h3 class="p-name">Impeller</h3>
-            <p class="p-desc">Разработка промышленного измерителя частоты вращения крыльчатки для систем АСУ ТП.</p>
+            <h2 class="p-name">Impeller</h2>
+            <p class="p-desc">Промышленная система контроля частоты вращения крыльчатки в агрессивных средах.</p>
+            <a href="turbine.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
     <article id="milling" class="project-row reveal">
-        <div class="p-visual"><img src="milling_cad.jpg" alt="CAD"></div>
+        <div class="p-visual"><img src="milling_cad.jpg" alt="Milling"></div>
         <div class="p-info">
             <span class="p-id">obj.006</span>
-            <h3 class="p-name">Tooling CAD</h3>
-            <p class="p-desc">Параметрическая генерация 3D-моделей режущего инструмента по ГОСТу на базе Python / CadQuery.</p>
+            <h2 class="p-name">Tooling CAD</h2>
+            <p class="p-desc">Генеративный алгоритм проектирования металлорежущего инструмента по ГОСТу.</p>
+            <a href="milling.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
-    <!-- DIVISION 03 -->
+    <!-- DIV 03 -->
     <div class="div-header reveal">
         <h2 class="div-title">Autonomous<br>Robotics</h2>
         <span class="div-meta">collection.03</span>
@@ -272,8 +255,9 @@
         <div class="p-visual"><img src="agv_nav.jpg" alt="AGV"></div>
         <div class="p-info">
             <span class="p-id">obj.007</span>
-            <h3 class="p-name">Caravan</h3>
-            <p class="p-desc">Архитектура мультисенсорной навигации (LiDAR SLAM) для автономной складской логистики.</p>
+            <h2 class="p-name">Caravan</h2>
+            <p class="p-desc">Мультисенсорная навигация (LiDAR SLAM) для автономной складской логистики.</p>
+            <a href="agv.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
@@ -281,13 +265,13 @@
         <div class="p-visual"><img src="omega.jpg" alt="Omega"></div>
         <div class="p-info">
             <span class="p-id">obj.008</span>
-            <h3 class="p-name">Omega</h3>
-            <p class="p-desc">4-осевой манипулятор-исследователь. Оптимизация материалоемкости и DFM-проектирование.</p>
-            <a href="omega.html" class="btn-luxury">Deploy</a>
+            <h2 class="p-name">Omega</h2>
+            <p class="p-desc">4-осевой манипулятор-исследователь с открытой архитектурой управления.</p>
+            <a href="omega.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
-    <!-- DIVISION 04 -->
+    <!-- DIV 04 -->
     <div class="div-header reveal">
         <h2 class="div-title">Neural<br>Intelligence</h2>
         <span class="div-meta">collection.04</span>
@@ -297,45 +281,47 @@
         <div class="p-visual"><img src="zacksystem.jpg" alt="Zack"></div>
         <div class="p-info">
             <span class="p-id">obj.009</span>
-            <h3 class="p-name">Zack</h3>
-            <p class="p-desc">Воплощенный ИИ-компаньон. Синтез локальных LLM-моделей и компьютерного зрения.</p>
-            <a href="zack.html" class="btn-luxury">Interface</a>
+            <h2 class="p-name">Zack</h2>
+            <p class="p-desc">Воплощенный ИИ. Синтез локальных нейросетей и кинетической мимики корпуса.</p>
+            <a href="zack.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
     <article id="inspiratus" class="project-row reveal">
         <div class="p-visual"><img src="INSP4.jpg" alt="Inspiratus"></div>
         <div class="p-info">
-            <span class="p-id">artefact</span>
-            <h3 class="p-name" style="color: var(--gucci-red);">Inspiratus</h3>
-            <p class="p-desc">Технологический артефакт. Живой алгоритм пульсации света в кристаллической структуре.</p>
-            <a href="crystallamp.html" class="btn-luxury">Acquire</a>
+            <span class="p-id">obj.010</span>
+            <h2 class="p-name">Inspiratus</h2>
+            <p class="p-desc">Световой артефакт. Живой алгоритм пульсации в кристаллической структуре.</p>
+            <a href="crystallamp.html" class="btn-luxury">Dossier</a>
         </div>
     </article>
 
-    <!-- FOOTER -->
     <footer>
         <div class="f-logo">p—11</div>
-        <p style="font-family: var(--font-tech); font-size: 11px; color: #666; letter-spacing: 5px; margin-top: 40px;">BUREAU OF STRATEGIC ENGINEERING // EST. 2024</p>
     </footer>
 </div>
 
 <script>
     const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-    });
+    if (window.innerWidth > 1024) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    }
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    function scrollToProject(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    function scrollToProject(id) { 
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({ behavior: 'smooth' }); 
+    }
 
-    // Luxury Scale interaction
-    document.querySelectorAll('a, .node-hitbox, .project-row').forEach(el => {
+    document.querySelectorAll('a, .node-hitbox').forEach(el => {
         el.addEventListener('mouseenter', () => { 
             cursor.style.transform = 'scale(6)'; 
             cursor.style.background = 'rgba(139, 0, 0, 0.15)'; 
