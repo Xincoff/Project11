@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P—11 | CARAVAN: АВТОНОМНАЯ ЛОГИСТИКА</title>
+    
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        :root {
+            --bg: #FDFDFD; 
+            --fg: #000000; 
+            --gucci-red: #8B0000;
+            --line: #E8E8E8;
+            --font-editorial: 'Inter', sans-serif;
+            --font-classic: 'Cormorant Garamond', serif;
+            --font-tech: 'JetBrains Mono', monospace;
+        }
+
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-editorial); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        #cursor { 
+            width: 12px; height: 12px; background: var(--gucci-red); 
+            position: fixed; pointer-events: none; z-index: 10000; 
+            transition: transform 0.1s cubic-bezier(0.19, 1, 0.22, 1);
+            border-radius: 50%;
+        }
+
+        header { padding: 40px; position: fixed; width: 100%; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; background: rgba(253,253,253,0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+        .back-btn { font-family: var(--font-tech); font-size: 10px; color: var(--fg); text-decoration: none; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--fg); padding: 10px 20px; transition: 0.3s; }
+        .back-btn:hover { background: var(--fg); color: var(--bg); }
+
+        /* PROJECT HERO */
+        .p-hero { padding: 200px 40px 100px; border-bottom: 2px solid var(--fg); }
+        .p-label { font-family: var(--font-tech); font-size: 12px; color: var(--gucci-red); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
+        .p-title { font-size: clamp(40px, 15vw, 180px); font-weight: 900; letter-spacing: -0.07em; text-transform: uppercase; line-height: 0.8; }
+
+        /* TECHNICAL SPEC GRID */
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
+        .spec-item { padding: 40px; border-right: 1px solid var(--line); }
+        .spec-item:last-child { border-right: none; }
+        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
+        .spec-value { font-size: 14px; font-weight: 800; text-transform: uppercase; }
+
+        /* LOGIC SECTIONS */
+        .logic-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 60vh; }
+        .logic-content { padding: 80px 40px; display: flex; flex-direction: column; justify-content: center; }
+        .logic-visual { background: #f9f9f9; display: flex; align-items: center; justify-content: center; padding: 40px; overflow: hidden; border-left: 1px solid var(--line); }
+        .logic-visual img { width: 100%; max-width: 600px; filter: contrast(1.1) brightness(0.95); }
+
+        .section-h { font-family: var(--font-classic); font-size: 42px; font-style: italic; margin-bottom: 40px; line-height: 1.1; }
+        .section-p { font-size: 18px; color: #444; line-height: 1.6; margin-bottom: 30px; max-width: 500px; }
+        
+        /* LIST STYLE */
+        .algo-list { list-style: none; margin-top: 20px; }
+        .algo-item { padding: 20px 0; border-top: 1px solid var(--line); display: flex; gap: 30px; align-items: baseline; }
+        .algo-num { font-family: var(--font-tech); font-size: 12px; color: var(--gucci-red); font-weight: 800; }
+        .algo-text { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        footer { padding: 120px 40px; background: var(--fg); color: var(--bg); text-align: left; }
+        .f-logo { font-size: clamp(40px, 15vw, 250px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
+
+        @media (max-width: 1024px) {
+            .specs-grid { grid-template-columns: repeat(2, 1fr); }
+            .logic-row { grid-template-columns: 1fr; }
+            .logic-visual { border-left: none; border-top: 1px solid var(--line); order: 1; }
+            .logic-content { order: 2; padding: 60px 20px; }
+            #cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<header>
+    <div style="font-weight:900; font-size:22px; letter-spacing:-1px; text-transform: lowercase;">p—11</div>
+    <a href="index.html" class="back-btn">← Терминал активов</a>
+</header>
+
+<main>
+    <!-- HERO -->
+    <section class="p-hero">
+        <span class="p-label">АРХИТЕКТУРА АВТОНОМНЫХ СИСТЕМ // DIV_03</span>
+        <h1 class="p-title">Caravan<br></h1>
+    </section>
+
+    <!-- SPECS -->
+    <section class="specs-grid">
+        <div class="spec-item">
+            <span class="spec-label">Вычислитель</span>
+            <div class="spec-value">Jetson Nano</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Сенсорный стек</span>
+            <div class="spec-value">LiDAR / Vision / IMU Fusion</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Стек ПО</span>
+            <div class="spec-value">ROS / SLAM / QGIS</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Алгоритм пути</span>
+            <div class="spec-value">Weighted Dijkstra Graph</div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: SENSOR FUSION -->
+    <section class="logic-row">
+        <div class="logic-content">
+            <h2 class="section-h">Всестороннее восприятие: исключение мертвых зон.</h2>
+            <p class="section-p">Протокол <b>Caravan</b> базируется на избыточности данных. Система объединяет 360-градусный лидарный скан с ультразвуковыми дальномерами и визуальным анализом дорожной обстановки.</p>
+            <p class="section-p">Это позволяет платформе сохранять ориентацию в <b>GPS-denied</b> пространствах, используя одометрию и IMU-фильтрацию для коррекции дрейфа позиционирования.</p>
+        </div>
+        <div class="logic-visual">
+            <!-- Здесь должна быть твоя схема из PDF со 2 страницы (зоны покрытия) -->
+            <img src="caravan_zone.jpg" alt="Sensor Coverage Map">
+        </div>
+    </section>
+
+    <!-- SECTION 2: ALGORITHMS -->
+    <section class="logic-row">
+        <div class="logic-visual" style="border-left: none; border-right: 1px solid var(--line);">
+            <!-- Здесь можно поставить скриншот алгоритма или графа из QGIS -->
+            <img src="caravan_graph.jpg" alt="Navigation Graph">
+        </div>
+        <div class="logic-content">
+            <h2 class="section-h">Интеллектуальная маршрутизация.</h2>
+            <p class="section-p">В основе навигации лежит динамический взвешенный граф. В отличие от стандартных решений, Caravan пересчитывает «стоимость» пути в реальном времени, учитывая заторы, качество покрытия и тип груза.</p>
+            
+            <div class="algo-list">
+                <div class="algo-item">
+                    <span class="algo-num">01</span>
+                    <span class="algo-text">Алгоритм работы с перекрестками</span>
+                </div>
+                <div class="algo-item">
+                    <span class="algo-num">02</span>
+                    <span class="algo-text">Алгоритм смены управления</span>
+                </div>
+                <div class="algo-item">
+                    <span class="algo-num">03</span>
+                    <span class="algo-text">Алгоритм совместной работы</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: RESILIENCE -->
+    <section class="logic-row">
+        <div class="logic-content">
+            <h2 class="section-h">Отказоустойчивость как стандарт.</h2>
+            <p class="section-p">Система Caravan спроектирована для работы в условиях аварийных ситуаций. При механическом ударе или потере связи активируется <b>Протокол восстановления</b>.</p>
+            <p class="section-p">Используя накопленные данные одометрии, юнит способен автономно вернуться к последней «безопасной вершине» графа для ожидания команд оператора.</p>
+            <div style="font-family: var(--font-tech); font-size: 11px; color: var(--gucci-red); margin-top: 40px;">
+                [ LOG: COLLISION_VERIFICATION_ACTIVE ]<br>
+                [ LOG: IMU_DEAD_RECKONING_READY ]
+            </div>
+        </div>
+        <div class="logic-visual">
+             <img src="caravan_flow.jpg" alt="Resilience Flowchart">
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section style="padding: 150px 40px; text-align: center; border-bottom: 1px solid var(--line);">
+        <p class="p-label" style="margin-bottom: 40px;">Заинтересованы в архитектуре?</p>
+        <a href="mailto:contact@project11.bureau?subject=Caravan Architecture Inquiry" class="btn-luxury" style="display:inline-block; text-decoration:none;">---</a>
+    </section>
+
+    <footer>
+        <div class="f-logo">p—11</div>
+        <p style="font-family: var(--font-tech); font-size: 10px; color: #555; letter-spacing: 5px; margin-top: 40px;">BUREAU OF STRATEGIC ENGINEERING // 2025</p>
+    </footer>
+</main>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    if (window.innerWidth > 1024) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    }
+
+    // Эффект увеличения курсора на ссылках
+    document.querySelectorAll('a').forEach(el => {
+        el.addEventListener('mouseenter', () => { 
+            cursor.style.transform = 'scale(6)'; 
+            cursor.style.background = 'rgba(139, 0, 0, 0.15)'; 
+            cursor.style.border = '1px solid var(--gucci-red)'; 
+        });
+        el.addEventListener('mouseleave', () => { 
+            cursor.style.transform = 'scale(1)'; 
+            cursor.style.background = 'var(--gucci-red)'; 
+            cursor.style.border = 'none'; 
+        });
+    });
+</script>
+</body>
+</html>
