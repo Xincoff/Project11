@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P—11 | TURBINE MONITOR: ПРОМЫШЛЕННЫЙ КОНТРОЛЬ</title>
+    
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        :root {
+            --bg: #FDFDFD; 
+            --fg: #000000; 
+            --gucci-red: #8B0000;
+            --line: #E8E8E8;
+            --font-main: 'Inter', sans-serif;
+            --font-classic: 'Cormorant Garamond', serif;
+            --font-tech: 'JetBrains Mono', monospace;
+        }
+
+        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        
+        #cursor { 
+            width: 12px; height: 12px; background: var(--gucci-red); 
+            position: fixed; pointer-events: none; z-index: 10000; 
+            transition: transform 0.1s cubic-bezier(0.19, 1, 0.22, 1);
+            border-radius: 50%;
+        }
+
+        header { 
+            padding: 30px 40px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(253,253,253,0.9); 
+            backdrop-filter: blur(10px); 
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .header-left { display: flex; flex-direction: column; align-items: flex-start; }
+        .red-dot { width: 8px; height: 8px; background: var(--gucci-red); border-radius: 50%; margin-bottom: 5px; margin-left: 2px; }
+        .logo-type { font-weight: 900; font-size: 32px; letter-spacing: -2px; line-height: 1; }
+
+        .header-right { display: flex; gap: 15px; }
+        .back-btn { 
+            font-family: var(--font-tech); font-size: 10px; color: var(--fg); text-decoration: none; font-weight: 800; 
+            letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--fg); 
+            padding: 12px 25px; transition: 0.3s; 
+        }
+        .back-btn:hover { background: var(--fg); color: var(--bg); }
+
+        /* HERO SECTION */
+        .p-hero { 
+            margin-top: 100px;
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            height: 75vh;
+            border-bottom: 2px solid var(--fg);
+            overflow: hidden;
+        }
+
+        .hero-text { 
+            padding: 60px 40px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center;
+            border-right: 1px solid var(--line);
+        }
+        
+        .p-label { font-family: var(--font-tech); font-size: 11px; color: var(--gucci-red); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
+        .p-title { font-size: clamp(40px, 8.5vw, 150px); font-weight: 900; letter-spacing: -0.07em; text-transform: uppercase; line-height: 1; }
+
+        .hero-visual { background: #111; position: relative; width: 100%; height: 100%; }
+        .hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.8; }
+
+        /* SPECS GRID */
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
+        .spec-item { padding: 30px 40px; border-right: 1px solid var(--line); }
+        .spec-item:last-child { border-right: none; }
+        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        .spec-value { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #000; }
+
+        /* CONTENT SECTIONS */
+        .content-row { display: grid; grid-template-columns: 1.2fr 0.8fr; border-bottom: 1px solid var(--line); min-height: 70vh; }
+        .text-block { padding: 100px 60px; display: flex; flex-direction: column; justify-content: center; }
+        .visual-block { background: #F9F9F9; overflow: hidden; border-left: 1px solid var(--line); position: relative; }
+        .visual-block img { width: 100%; height: 100%; object-fit: cover; }
+
+        .section-h { font-family: var(--font-classic); font-size: 48px; font-style: italic; margin-bottom: 40px; line-height: 1.1; }
+        .section-p { font-size: 20px; color: #333; line-height: 1.4; margin-bottom: 30px; max-width: 500px; }
+
+        /* LOG LOGIC */
+        .terminal-log { background: #000; padding: 30px; border-radius: 2px; margin-top: 40px; }
+        .log-line { font-family: var(--font-tech); font-size: 11px; color: #00FF41; margin-bottom: 5px; }
+
+        footer { padding: 120px 40px; background: #000; color: #fff; text-align: left; }
+        .f-logo { font-size: clamp(40px, 15vw, 250px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
+
+        @media (max-width: 1024px) {
+            .p-hero, .content-row { grid-template-columns: 1fr; height: auto; }
+            .hero-visual, .visual-block { height: 350px; order: 1; border-left: none; }
+            .hero-text, .text-block { order: 2; padding: 40px 20px; border-right: none; }
+            .p-title { font-size: 12vw; }
+            .specs-grid { grid-template-columns: 1fr 1fr; }
+            #cursor { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<header>
+    <div class="header-left">
+        <div class="red-dot"></div>
+        <div class="logo-type">p—11</div>
+    </div>
+    <div class="header-right">
+        <a href="index.html" class="back-btn">← К СПИСКУ АКТИВОВ</a>
+    </div>
+</header>
+
+<main>
+    <!-- HERO SECTION -->
+    <section class="p-hero">
+        <div class="hero-text">
+            <span class="p-label">INDUSTRIAL MONITORING // UNIT 005</span>
+            <h1 class="p-title">TURBINE<br>MONITOR</h1>
+        </div>
+        <div class="hero-visual">
+            <img src="turbine.jpg" alt="Oxygen Turbine Impeller Control">
+        </div>
+    </section>
+
+    <!-- SPECS -->
+    <section class="specs-grid">
+        <div class="spec-item">
+            <span class="spec-label">Input Protocol</span>
+            <div class="spec-value">Hardware Asynchronous Counter</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Analog Output</span>
+            <div class="spec-value">4–20 mA Current Loop (Industrial)</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Resolution</span>
+            <div class="spec-value">16-Bit Timer Precision</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Safety</span>
+            <div class="spec-value">Emergency Relay Lockdown</div>
+        </div>
+    </section>
+
+    <!-- DESCRIPTION BLOCK 1 -->
+    <section class="content-row">
+        <div class="text-block">
+            <h2 class="section-h">Стабильность в агрессивных средах.</h2>
+            <p class="section-p">Разработка системы контроля частоты вращения крыльчатки для кислородных станций высокого давления. В условиях сжижения газов точность данных определяет безопасность всего комплекса.</p>
+            <p class="section-p">Решение базируется на <b>низкоуровневом тактировании</b>: использование 16-битного аппаратного таймера в режиме внешнего счетчика позволяет фиксировать высокочастотные импульсы без нагрузки на основное вычислительное ядро.</p>
+        </div>
+        <div class="visual-block">
+            <img src="turbine_schematic.jpg" alt="System Logic Visual">
+        </div>
+    </section>
+
+    <!-- DESCRIPTION BLOCK 2 (TECHNICAL REFINEMENT) -->
+    <section class="content-row">
+        <div class="visual-block" style="border-left:none; border-right: 1px solid var(--line);">
+            <img src="turbine_pcb.jpg" alt="Low-level Signal Analysis">
+        </div>
+        <div class="text-block">
+            <h2 class="section-h">Атомарная целостность данных.</h2>
+            <p class="section-p">Для предотвращения ошибок состояния гонки (race condition) при чтении многобайтовых регистров внедрен протокол <b>атомарного доступа</b> с временным блокированием прерываний.</p>
+            <p class="section-p">Система преобразует цифровую частоту в аналоговый сигнал стандарта <b>4–20 мА</b>, обеспечивая бесшовную интеграцию с промышленными контроллерами (ПЛК) по всему миру.</p>
+            
+            <div class="terminal-log">
+                <div class="log-line">>>> INITIALIZING HARDWARE_TIMER_1... OK</div>
+                <div class="log-line">>>> CURRENT_LOOP_INTERFACE: 4-20mA STANDBY</div>
+                <div class="log-line">>>> EMERGENCY_RELAY_STATUS: ARMED</div>
+                <div class="log-line">>>> SAMPLING_RATE: 1000ms WINDOW</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL BUREAU BANNER -->
+    <footer>
+        <div class="f-logo">p—11</div>
+        <p style="font-family: var(--font-tech); font-size: 11px; color: #666; letter-spacing: 5px; margin-top: 40px;">BUREAU OF INDUSTRIAL SOLUTIONS // 2025</p>
+    </footer>
+</main>
+
+<script>
+    const cursor = document.getElementById('cursor');
+    if (window.innerWidth > 1024) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    }
+
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => { 
+            cursor.style.transform = 'scale(6)'; 
+            cursor.style.background = 'rgba(139, 0, 0, 0.1)'; 
+            cursor.style.border = '1px solid var(--gucci-red)'; 
+        });
+        el.addEventListener('mouseleave', () => { 
+            cursor.style.transform = 'scale(1)'; 
+            cursor.style.background = 'var(--gucci-red)'; 
+            cursor.style.border = 'none'; 
+        });
+    });
+</script>
+</body>
+</html>
