@@ -2,38 +2,60 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P—11 | INSPIRATUS: ОБЪЕКТ 010</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>INSPIRATUS | Световые арт-объекты от бюро P—11</title>
     
-    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="icon" type="image/jpeg" href="zagl.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Подключение библиотеки MQTT для работы терминала -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         :root {
-            --bg: #FDFDFD; 
-            --fg: #000000; 
-            --gucci-red: #8B0000;
-            --line: #E8E8E8;
+            --bg: #FAF9F5; /* Мягкий успокаивающий алебастровый фон */
+            --fg: #1C1B1A; /* Мягкий черный/антрацит */
+            --accent: #8B2635; /* Приглушенный терракотово-гранатовый */
+            --accent-light: #F4EBE8;
+            --line: #E3DFD5; /* Деликатные разделители */
+            --card-bg: #FFFFFF;
             --font-main: 'Inter', sans-serif;
             --font-classic: 'Cormorant Garamond', serif;
             --font-tech: 'JetBrains Mono', monospace;
+            --radius-main: 16px; /* Однородный мягкий радиус для медиа */
         }
 
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        
+        body { 
+            background: var(--bg); 
+            color: var(--fg); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        /* CUSTOM CURSOR */
         #cursor { 
-            width: 12px; height: 12px; background: var(--gucci-red); 
+            width: 8px; height: 8px; background: var(--accent); 
             position: fixed; pointer-events: none; z-index: 10000; 
-            transition: transform 0.1s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: transform 0.15s ease-out;
             border-radius: 50%;
+            display: none;
+        }
+        @media (min-width: 1025px) { 
+            body { cursor: none; }
+            #cursor { display: block; } 
+            a, button, select, input { cursor: none; }
         }
 
         /* HEADER */
         header { 
-            padding: 30px 40px; 
+            padding: 20px 40px; 
             position: fixed; 
             width: 100%; 
             top: 0; 
@@ -41,95 +63,662 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            background: rgba(253,253,253,0.9); 
-            backdrop-filter: blur(10px); 
+            background: rgba(250, 249, 245, 0.85); 
+            backdrop-filter: blur(12px); 
             border-bottom: 1px solid var(--line);
         }
         
-        .header-left { display: flex; flex-direction: column; align-items: flex-start; }
-        .red-dot { width: 8px; height: 8px; background: var(--gucci-red); border-radius: 50%; margin-bottom: 5px; margin-left: 2px; }
-        .logo-type { font-weight: 900; font-size: 32px; letter-spacing: -2px; line-height: 1; }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .logo-type { font-weight: 800; font-size: 22px; letter-spacing: -1px; text-transform: lowercase; }
 
-        .header-right { display: flex; gap: 15px; }
-        .back-btn { 
-            font-family: var(--font-tech); font-size: 10px; color: var(--fg); text-decoration: none; font-weight: 800; 
-            letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--fg); 
-            padding: 12px 25px; transition: 0.3s; 
+        nav { display: flex; gap: 30px; }
+        nav a { 
+            font-size: 13px; text-decoration: none; color: var(--fg); 
+            font-weight: 500; transition: color 0.3s; 
         }
-        .gateway-btn { border-color: var(--gucci-red); color: var(--gucci-red); }
-        .back-btn:hover { background: var(--fg); color: var(--bg); }
-        .gateway-btn:hover { background: var(--gucci-red); border-color: var(--gucci-red); color: #fff; }
+        nav a:hover { color: var(--accent); }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-header { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--fg); text-decoration: none; font-weight: 600; 
+            letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--fg); 
+            padding: 10px 20px; transition: all 0.3s; 
+        }
+        .btn-header.primary { border-color: var(--accent); color: var(--accent); }
+        .btn-header:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            header { padding: 15px 20px; }
+            .logo-type { font-size: 18px; }
+            .btn-header { padding: 8px 12px; font-size: 10px; }
+            /* На мобильных заменяем текст на стрелку для экономии места */
+            .btn-header-back-text { display: none; }
+            .btn-header-back-arrow { display: inline; }
+        }
+        @media (min-width: 769px) {
+            .btn-header-back-arrow { display: none; }
+        }
 
         /* HERO SECTION */
-        .p-hero { 
-            margin-top: 100px;
+        .hero { 
+            padding: 140px 40px 60px; 
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            height: 75vh;
-            border-bottom: 2px solid var(--fg);
-            overflow: hidden;
+            grid-template-columns: 1.1fr 0.9fr; 
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: center;
+            min-height: 90vh;
         }
 
-        .hero-text { 
-            padding: 60px 40px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            border-right: 1px solid var(--line);
+        .hero-info { display: flex; flex-direction: column; justify-content: center; }
+        .tagline { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--accent); 
+            font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; 
+        }
+        .hero-title { 
+            font-size: clamp(38px, 6vw, 85px); font-weight: 800; letter-spacing: -0.05em; 
+            line-height: 0.95; text-transform: uppercase; margin-bottom: 25px; 
+        }
+        .hero-desc { 
+            font-family: var(--font-classic); font-size: clamp(20px, 3.5vw, 32px); 
+            line-height: 1.25; color: #4A4947; margin-bottom: 40px; 
         }
         
-        .p-label { font-family: var(--font-tech); font-size: 11px; color: var(--gucci-red); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
-        .p-title { font-size: clamp(40px, 8.5vw, 150px); font-weight: 900; letter-spacing: -0.07em; text-transform: uppercase; line-height: 1; white-space: nowrap; }
-
-        .hero-visual { background: #000; position: relative; width: 100%; height: 100%; }
-        .hero-visual video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-        /* SPECS GRID */
-        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
-        .spec-item { padding: 30px 40px; border-right: 1px solid var(--line); }
-        .spec-item:last-child { border-right: none; }
-        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
-        .spec-value { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #000; }
-
-        /* DETAILED CONTENT SECTIONS */
-        .content-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 70vh; }
-        .text-block { padding: 100px 60px; display: flex; flex-direction: column; justify-content: center; }
-        .visual-block { background: #F9F9F9; overflow: hidden; border-left: 1px solid var(--line); position: relative; }
-        .visual-block img, .visual-block video { width: 100%; height: 100%; object-fit: cover; }
-
-        .section-h { font-family: var(--font-classic); font-size: 48px; font-style: italic; margin-bottom: 40px; line-height: 1.1; }
-        .section-p { font-size: 20px; color: #333; line-height: 1.4; margin-bottom: 30px; max-width: 500px; }
-        .section-p b { color: #000; }
-
-        /* INVENTORY */
-        .inventory-list { margin-top: 40px; border-top: 1px solid var(--line); }
-        .inv-item { padding: 15px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; }
-        .inv-item span { color: var(--gucci-red); font-weight: 800; }
-
-        /* CTA SECTION */
-        .cta-section { padding: 150px 40px; text-align: center; border-bottom: 1px solid var(--line); background: #fff; }
-        .btn-luxury { 
-            padding: 25px 60px; background: #000; color: #fff;
-            text-transform: uppercase; font-family: var(--font-tech); font-size: 12px;
-            letter-spacing: 4px; text-decoration: none; transition: 0.4s; display: inline-block;
+        .hero-cta-group { display: flex; gap: 20px; align-items: center; }
+        .btn-main { 
+            padding: 20px 45px; background: var(--fg); color: #fff; text-decoration: none;
+            font-family: var(--font-tech); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 600; transition: all 0.4s; border: 1px solid var(--fg); text-align: center;
         }
-        .btn-luxury:hover { background: var(--gucci-red); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(139,0,0,0.2); }
+        .btn-main:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
+        .btn-secondary {
+            padding: 20px 35px; background: transparent; color: var(--fg); text-decoration: none;
+            font-family: var(--font-tech); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 600; transition: all 0.4s; border: 1px solid var(--line); text-align: center;
+        }
+        .btn-secondary:hover { background: var(--accent-light); border-color: var(--accent); }
 
-        /* MODAL */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-content { background:#fff; border:1px solid #000; padding:60px; max-width:600px; width:90%; position:relative; }
-        .input-luxury { width: 100%; border: none; border-bottom: 1px solid #000; padding: 20px 0; font-family: var(--font-tech); text-transform: uppercase; outline: none; margin-bottom: 30px; font-size: 14px; background: transparent; }
-
-        footer { padding: 120px 40px; background: #000; color: #fff; text-align: left; }
-        .f-logo { font-size: clamp(40px, 15vw, 250px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
+        .hero-media { 
+            background: #000; border-radius: var(--radius-main); overflow: hidden; 
+            aspect-ratio: 4/5; width: 100%; box-shadow: 0 30px 60px rgba(0,0,0,0.08); 
+        }
+        .hero-media video { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--radius-main); }
 
         @media (max-width: 1024px) {
-            .p-hero, .content-row { grid-template-columns: 1fr; height: auto; }
-            .hero-visual, .visual-block { height: 400px; order: 1; border-left: none; }
-            .hero-text, .text-block { order: 2; padding: 40px 20px; border-right: none; }
-            .p-title { font-size: 12vw; white-space: normal; }
-            .specs-grid { grid-template-columns: 1fr 1fr; }
-            #cursor { display: none; }
+            .hero { grid-template-columns: 1fr; padding: 110px 20px 50px; gap: 40px; text-align: center; }
+            .hero-cta-group { justify-content: center; flex-direction: column; width: 100%; gap: 15px; }
+            .btn-main, .btn-secondary { width: 100%; }
+            .hero-media { aspect-ratio: 1/1; max-width: 500px; margin: 0 auto; }
+        }
+
+        /* BENEFITS STRIP */
+        .benefits-strip { 
+            display: grid; grid-template-columns: repeat(3, 1fr); 
+            border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); 
+            background: var(--card-bg);
+        }
+        .benefit-item { padding: 40px; border-right: 1px solid var(--line); text-align: center; }
+        .benefit-item:last-child { border-right: none; }
+        .benefit-icon { font-size: 24px; color: var(--accent); margin-bottom: 15px; }
+        .benefit-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .benefit-desc { font-size: 14px; color: #6E6D6A; }
+
+        @media (max-width: 768px) {
+            .benefits-strip { grid-template-columns: 1fr; }
+            .benefit-item { padding: 30px 20px; border-right: none; border-bottom: 1px solid var(--line); }
+            .benefit-item:last-child { border-bottom: none; }
+        }
+
+        /* CORE VALUE / SCIENCE & NATURE */
+        .details-section { padding: 80px 40px 50px; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-tag { font-family: var(--font-tech); font-size: 11px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; }
+        .section-title { font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -0.03em; margin-top: 10px; line-height: 1.1; }
+
+        .showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 40px; }
+        .showcase-text h3 { font-family: var(--font-classic); font-size: clamp(24px, 3vw, 42px); font-style: italic; line-height: 1.2; margin-bottom: 25px; }
+        .showcase-text p { color: #555451; font-size: 16px; margin-bottom: 20px; }
+        
+        .showcase-visual { 
+            border-radius: var(--radius-main); 
+            overflow: hidden; 
+            background: #e2e2e2; 
+            aspect-ratio: 16/10; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.04); 
+            position: relative;
+        }
+
+        .slider-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-main);
+        }
+
+        .slider-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            user-select: none;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+            border-radius: var(--radius-main);
+        }
+
+        /* Navigation Arrows */
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            color: var(--fg);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .slide-arrow:hover {
+            background: var(--fg);
+            color: #fff;
+            border-color: var(--fg);
+        }
+
+        .prev-arrow { left: 15px; }
+        .next-arrow { right: 15px; }
+
+        /* Navigation Dots */
+        .slider-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 1024px) {
+            .details-section { padding: 60px 20px 40px; }
+            .showcase-grid { grid-template-columns: 1fr; gap: 30px; }
+            .slide-arrow { width: 36px; height: 36px; }
+            .prev-arrow { left: 10px; }
+            .next-arrow { right: 10px; }
+        }
+
+        /* SCENARIOS (FOR EVERYONE) */
+        .scenarios-section { padding: 60px 40px 80px; max-width: 1200px; margin: 0 auto; }
+        .scenarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        
+        .scenario-card { 
+            background: var(--card-bg); border: 1px solid var(--line); 
+            border-radius: var(--radius-main); padding: 25px; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02); transition: transform 0.3s ease;
+        }
+        .scenario-card:hover { transform: translateY(-5px); }
+
+        .scenario-media-placeholder { 
+            width: 100%; aspect-ratio: 4/3; background: #EAE5DB; 
+            border-radius: var(--radius-main); overflow: hidden; margin-bottom: 20px;
+            position: relative;
+        }
+        .scenario-media-placeholder img {
+            width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--radius-main);
+        }
+
+        .scenario-meta { font-family: var(--font-tech); font-size: 10px; color: var(--accent); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+        .scenario-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.02em; }
+        .scenario-desc { font-size: 14px; color: #555451; line-height: 1.5; }
+
+        @media (max-width: 1024px) {
+            .scenarios-section { padding: 50px 20px 60px; }
+            .scenarios-grid { grid-template-columns: 1fr; gap: 25px; }
+        }
+
+        /* UNBOXING RITUAL: TACTICAL BOX */
+        .packaging-section { background: var(--accent-light); padding: 80px 40px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .packaging-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; align-items: center; }
+        
+        .packaging-media { 
+            border-radius: var(--radius-main); overflow: hidden; background: #fff; 
+            box-shadow: 0 25px 50px rgba(139,38,53,0.1); 
+        }
+        .packaging-media img { width: 100%; height: auto; display: block; border-radius: var(--radius-main); }
+        
+        @media (max-width: 1024px) {
+            .packaging-section { padding: 60px 20px; }
+            .packaging-container { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .packaging-media { max-width: 450px; margin: 0 auto; }
+        }
+
+        /* SPECS ACORDEON / GRID */
+        .specs-section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+        .specs-table { border-top: 1px solid var(--line); margin-top: 40px; }
+        .specs-row { display: grid; grid-template-columns: 1fr 2fr; padding: 25px 0; border-bottom: 1px solid var(--line); }
+        .specs-label { font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 600; }
+        .specs-value { font-size: 15px; color: var(--fg); }
+
+        @media (max-width: 768px) {
+            .specs-section { padding: 60px 20px; }
+            .specs-row { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+        }
+
+        /* INTERACTIVE RADAR TERMINAL */
+        .terminal-section { 
+            background: #0A0A09; 
+            color: #ECE9E2; 
+            padding: 80px 40px; 
+            border-top: 1px solid #1C1B1A; 
+            border-bottom: 1px solid #1C1B1A;
+            text-align: center;
+        }
+        .terminal-container { max-width: 1100px; margin: 0 auto; }
+        
+        .radar-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .scanner { 
+            width: 220px; 
+            height: 220px; 
+            border: 1px solid #2C2A29; 
+            border-radius: 50%; 
+            margin-bottom: 30px; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.5s;
+            background: #11100F;
+        }
+        
+        .scanner::after { 
+            content: ''; 
+            width: 100%; 
+            height: 100%; 
+            border: 1px solid var(--accent); 
+            border-radius: 50%; 
+            position: absolute; 
+            animation: pulse 2.5s infinite; 
+            opacity: 0; 
+        }
+
+        @keyframes pulse { 
+            0% { transform: scale(0.6); opacity: 0; } 
+            50% { opacity: 0.3; } 
+            100% { transform: scale(1.3); opacity: 0; } 
+        }
+
+        #status { 
+            font-family: var(--font-tech);
+            font-size: 11px; 
+            letter-spacing: 3px; 
+            color: #888; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .terminal-device-list { 
+            width: 100%;
+            max-width: 500px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            margin-top: 20px;
+        }
+
+        .terminal-device-card { 
+            padding: 20px; 
+            border: 1px solid #2C2A29; 
+            background: #141312; 
+            text-align: left; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-radius: 8px;
+            transition: 0.3s;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .terminal-device-card:hover {
+            border-color: var(--accent);
+            background: #1C1A19;
+        }
+        
+        .terminal-device-info h4 { 
+            font-family: var(--font-tech);
+            font-size: 13px; 
+            color: #fff; 
+            margin-bottom: 4px; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .terminal-device-info p { 
+            font-family: var(--font-tech);
+            font-size: 12px; 
+            color: var(--accent); 
+            font-weight: bold; 
+        }
+        
+        .terminal-open-btn { 
+            padding: 10px 20px; 
+            border: 1px solid var(--accent); 
+            color: var(--accent); 
+            text-decoration: none; 
+            font-family: var(--font-tech);
+            font-size: 11px; 
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .terminal-open-btn:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .terminal-rescan { 
+            margin-top: 30px; 
+            background: none; 
+            border: none; 
+            color: #666; 
+            font-size: 11px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            text-decoration: underline;
+            font-family: var(--font-tech);
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+        .terminal-rescan:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 1024px) {
+            .terminal-section { padding: 60px 20px; }
+        }
+
+        /* USER MANUAL (INSTRUCTIONS) */
+        .manual-section { 
+            padding: 80px 40px; 
+            background: var(--bg); 
+            border-bottom: 1px solid var(--line);
+        }
+        .manual-container { max-width: 1100px; margin: 0 auto; }
+        
+        .manual-steps { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 30px; 
+            margin-top: 50px;
+        }
+
+        .manual-step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-main);
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.01);
+        }
+
+        .manual-step-num {
+            font-family: var(--font-tech);
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .manual-step-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.01em;
+        }
+
+        .manual-step-desc {
+            font-size: 14px;
+            color: #555451;
+            line-height: 1.5;
+        }
+
+        .manual-step-desc code {
+            font-family: var(--font-tech);
+            background: var(--accent-light);
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .manual-section { padding: 60px 20px; }
+            .manual-steps { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .manual-steps { grid-template-columns: 1fr; }
+        }
+
+        /* ABOUT THE CREATOR & PHILOSOPHY */
+        .about-section { background: var(--fg); color: #fff; padding: 100px 40px; position: relative; }
+        .about-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+        .about-quote { font-family: var(--font-classic); font-size: clamp(22px, 4vw, 38px); font-style: italic; line-height: 1.3; color: #ECE9E2; margin-bottom: 45px; }
+        .about-author { font-family: var(--font-tech); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-light); }
+
+        @media (max-width: 768px) {
+            .about-section { padding: 70px 20px; }
+        }
+
+        /* B2B & SERVICES SECTION */
+        .services-section { padding: 80px 40px; background: #fff; text-align: center; border-bottom: 1px solid var(--line); }
+        .services-container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Изменение сетки услуг под 3 колонки */
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; text-align: left; }
+        
+        .service-card { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius-main); transition: all 0.3s; background: var(--card-bg); }
+        .service-card:hover { border-color: var(--accent); box-shadow: 0 15px 30px rgba(0,0,0,0.03); }
+        
+        /* Выделение B2B карточки контуром */
+        .service-card.b2b-highlight {
+            border: 2px solid var(--accent);
+            background: var(--accent-light);
+        }
+        
+        /* Стиль пустой карточки-заглушки */
+        .service-card.placeholder-card {
+            border: 1px dashed var(--line);
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 250px;
+        }
+        .service-card.placeholder-card .placeholder-icon {
+            font-size: 28px;
+            color: #AAA9A6;
+            margin-bottom: 15px;
+        }
+        .service-card.placeholder-card .placeholder-text {
+            font-family: var(--font-tech);
+            font-size: 10px;
+            color: #8A8986;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .service-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: var(--fg); }
+        .service-desc { font-size: 14px; color: #6E6D6A; }
+
+        @media (max-width: 1024px) {
+            .services-section { padding: 60px 20px; }
+            .services-grid { grid-template-columns: 1fr; gap: 20px; }
+            .service-card.placeholder-card { min-height: 200px; }
+        }
+
+        /* PRICING & ORDER SECTION */
+        .order-section { padding: 100px 40px; text-align: center; background: var(--bg); position: relative; }
+        .order-container { max-width: 650px; margin: 0 auto; }
+        .price-tag { font-size: 30px; font-weight: 800; color: var(--accent); margin: 20px 0 35px; font-family: var(--font-tech); }
+
+        @media (max-width: 768px) {
+            .order-section { padding: 70px 20px; }
+        }
+
+        /* FOOTER */
+        footer { padding: 80px 40px; background: #111; color: #888; border-top: 1px solid #222; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -2px; }
+        .footer-links { display: flex; gap: 30px; }
+        .footer-links a { color: #888; text-decoration: none; font-size: 13px; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+
+        @media (max-width: 768px) {
+            footer { padding: 60px 20px; }
+            .footer-container { flex-direction: column; gap: 30px; text-align: center; }
+            .footer-links { gap: 20px; }
+        }
+
+        /* MODAL FOR ORDER (RE-DESIGNED FOR CHANNELS OF COMMUNICATION) */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(28,27,26,0.6); z-index: 2000; align-items: center; 
+            justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-content { 
+            background: #fff; border-radius: var(--radius-main); padding: 40px 30px; max-width: 500px; 
+            width: 90%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+            max-height: 90vh; /* Предотвращает вырезание формы на маленьких экранах */
+            overflow-y: auto; /* Прокрутка формы при необходимости */
+        }
+        
+        /* Сетка каналов связи */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .contact-btn-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px;
+            border: 1px solid var(--line);
+            background: var(--card-bg);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--fg);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .contact-btn-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .contact-name {
+            font-family: var(--font-tech);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Полная очистка системных рамок и дефолтных стилей браузера у кнопки Закрыть */
+        .modal-close-btn { 
+            position: absolute; 
+            top: 25px; 
+            right: 30px; 
+            background: transparent !important; 
+            border: none !important; 
+            box-shadow: none !important;
+            outline: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-family: var(--font-tech); 
+            font-size: 11px; 
+            color: #9E9D9A; 
+            cursor: pointer; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .modal-close-btn:hover { 
+            color: var(--accent); 
+        }
+
+        @media (max-width: 480px) {
+            .modal-content { padding: 35px 20px 25px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 10px; }
+            .contact-btn-card { padding: 18px 15px; }
+            .modal-close-btn { top: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -138,120 +727,361 @@
 <div id="cursor"></div>
 
 <header>
-    <div class="header-left">
-        <div class="red-dot"></div>
-        <div class="logo-type">p—11</div>
+    <div class="logo-group">
+        <div class="logo-dot"></div>
+        <div class="logo-type">P—11 Bureau</div>
     </div>
-    <div class="header-right">
-        <a href="find.html" class="back-btn gateway-btn">TERMINAL GATEWAY</a>
-        <a href="index.html" class="back-btn">← RETURN</a>
+    <nav>
+        <a href="#about-product">Об объекте</a>
+        <a href="#scenarios">Интеграция</a>
+        <a href="#unboxing">Упаковка</a>
+        <a href="#specs">Характеристики</a>
+        <a href="#terminal">Панель управления</a>
+        <a href="#services">Услуги</a>
+    </nav>
+    <div class="header-actions">
+        <a href="index.html" class="btn-header">
+            <span class="btn-header-back-text">← P-11</span>
+            <span class="btn-header-back-arrow">←</span>
+        </a>
+        <a href="#order" class="btn-header primary">Заказать</a>
     </div>
 </header>
 
 <main>
     <!-- HERO SECTION -->
-    <section class="p-hero">
-        <div class="hero-text">
-            <span class="p-label">ARTEFACT COLLECTION // 010</span>
-            <h1 class="p-title">INSPIRATUS</h1>
+    <section class="hero">
+        <div class="hero-info">
+            <span class="tagline">ОБЪЕКТ 010 // СВЕТОВОЙ АРТЕФАКТ</span>
+            <h1 class="hero-title">Inspiratus</h1>
+            <p class="hero-desc">Природная эстетика бразильского аметиста и строгая цифровая дисциплина в одном объекте для вашего пространства.</p>
+            <div class="hero-cta-group">
+                <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-main">Оформить заказ</a>
+                <a href="#about-product" class="btn-secondary">Узнать больше</a>
+            </div>
         </div>
-        <div class="hero-visual">
+        <div class="hero-media">
             <video autoplay loop muted playsinline>
                 <source src="vid.MOV" type="video/mp4">
             </video>
         </div>
     </section>
 
-    <!-- SPECS -->
-    <section class="specs-grid">
-        <div class="spec-item">
-            <span class="spec-label">Core</span>
-            <div class="spec-value">XIAO ESP32-S3 SENSE</div>
+    <!-- BENEFITS STRIP -->
+    <section class="benefits-strip">
+        <div class="benefit-item">
+            <div class="benefit-icon">☯</div>
+            <h3 class="benefit-title">Баланс и фокус</h3>
+            <p class="benefit-desc">Мягкие органические ритмы свечения помогают переключить внимание и снизить уровень повседневного стресса.</p>
         </div>
-        <div class="spec-item">
-            <span class="spec-label">Optics</span>
-            <div class="spec-value">Natural Amethyst / Opalite</div>
+        <div class="benefit-item">
+            <div class="benefit-icon">✦</div>
+            <h3 class="benefit-title">Натуральный кристалл</h3>
+            <p class="benefit-desc">Сердце каждого устройства — уникальный цельный кристалл аметиста или опалита, отобранный вручную.</p>
         </div>
-        <div class="spec-item">
-            <span class="spec-label">Logic</span>
-            <div class="spec-value">10-Bit PWM Living Algorithm</div>
-        </div>
-        <div class="spec-item">
-            <span class="spec-label">Body</span>
-            <div class="spec-value">Carbon-Filled Composite</div>
-        </div>
-    </section>
-
-    <!-- DESCRIPTION BLOCK 1 -->
-    <section class="content-row">
-        <div class="text-block">
-            <h2 class="section-h">Слияние хаоса природы и цифровой дисциплины.</h2>
-            <p class="section-p">Inspiratus — это не осветительный прибор. Это <b>энергетический узел</b> вашего пространства. Каждый экземпляр собирается вручную Основателем бюро в течение 9 часов.</p>
-            <p class="section-p">Уникальный алгоритм адаптивной подсветки имитирует природные ритмы, снижая уровень кортизола и фокусируя внимание. Управление осуществляется через зашифрованный веб-терминал P-11.</p>
-        </div>
-        <div class="visual-block">
-            <video autoplay loop muted playsinline>
-                <source src="core_glow.mp4" type="video/mp4">
-            </video>
+        <div class="benefit-item">
+            <div class="benefit-icon">⚙</div>
+            <h3 class="benefit-title">Локальное управление</h3>
+            <p class="benefit-desc">Управляйте анимацией и режимами напрямую через веб-интерфейс без лишних приложений.</p>
         </div>
     </section>
 
-    <!-- DESCRIPTION BLOCK 2 (INVENTORY & PACKAGING) -->
-    <section class="content-row">
-        <div class="visual-block" style="border-left:none; border-right: 1px solid var(--line);">
-            <img src="sfbox.jpg" alt="Tactical Box Packaging">
+    <!-- DESCRIPTION / SHOWCASE -->
+    <section id="about-product" class="details-section">
+        <div class="section-header">
+            <span class="section-tag">Синергия природы и технологий</span>
+            <h2 class="section-title">Создан, чтобы возвращать в настоящий момент</h2>
         </div>
-        <div class="text-block">
-            <h2 class="section-h">Tactical Box: Ритуал распаковки.</h2>
-            <p class="section-p">Премиальный продукт требует исключительной упаковки. Мы разработали <b>Tactical Box</b> — печатный короб из композита с пружинным лифтом.</p>
-            <p class="section-p">При нажатии на ложемент устройство плавно поднимается вам в руки. Это инженерное решение превращает первое знакомство с артефактом в механический перфоманс.</p>
+
+        <div class="showcase-grid">
+            <div class="showcase-text">
+                <h3>Дыхание, переведенное в код.</h3>
+                <p>Мы спроектировали алгоритм плавного затухания, который имитирует естественные биологические ритмы. Свет не просто горит — он аккуратно рассеивается сквозь сложную природную текстуру полудрагоценного камня.</p>
+                <p>При первом запуске устройство исполняет уникальную, генерируемую именно для вас приветственную анимацию Supernova, привязанную к аппаратному адресу платы.</p>
+            </div>
             
-            <div class="inventory-list">
-                <span class="spec-label">Inventory / Состав</span>
-                <div class="inv-item">Модуль Inspiratus v1.7 <span>x1</span></div>
-                <div class="inv-item">Розовый аметист / Опалит <span>x1</span></div>
-                <div class="inv-item">Кейс с подъемным механизмом <span>x1</span></div>
-                <div class="inv-item">Сертификат оригинальности <span>#001-011</span></div>
+            <div class="showcase-visual">
+                <!-- PHOTO SLIDER COMPONENT -->
+                <div class="slider-container" id="showcaseSlider">
+                    <div class="slider-track" id="sliderTrack">
+                        <div class="slide">
+                            <img src="INSP41.jpg" alt="Inspiratus - Свечение кристалла">
+                        </div>
+                        <div class="slide">
+                            <img src="INSP51.jpg" alt="Inspiratus - Крупный план">
+                        </div>
+                        <div class="slide">
+                            <img src="INSP21.jpg" alt="Inspiratus - Премиальная упаковка">
+                        </div>
+                    </div>
+                    
+                    <!-- Arrow Navigation -->
+                    <button class="slide-arrow prev-arrow" onclick="moveSlide(-1)" aria-label="Предыдущий слайд">&#10229;</button>
+                    <button class="slide-arrow next-arrow" onclick="moveSlide(1)" aria-label="Следующий слайд">&#10230;</button>
+                    
+                    <!-- Navigation Dots -->
+                    <div class="slider-dots" id="sliderDots">
+                        <span class="slider-dot active" onclick="setSlide(0)"></span>
+                        <span class="slider-dot" onclick="setSlide(1)"></span>
+                        <span class="slider-dot" onclick="setSlide(2)"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA SECTION -->
-    <section class="cta-section">
-        <span class="p-label" style="margin-bottom: 40px;">Acquisition Protocol</span>
-        <h2 class="section-h" style="font-style: normal; text-transform: uppercase; letter-spacing: -2px;">Batch 01: Sold Out</h2>
-        <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-luxury">Join Waitlist</a>
+    <!-- SCENARIOS OF USE -->
+    <section id="scenarios" class="scenarios-section">
+        <div class="section-header">
+            <span class="section-tag">Опыт использования</span>
+            <h2 class="section-title">Вне времени и обстоятельств</h2>
+        </div>
+        <div class="scenarios-grid">
+            <!-- Scenario 1 -->
+            <div class="scenario-card">
+                <div class="scenario-media-placeholder">
+                    <img src="child_blanket.jpg" alt="Ребенок под одеялом">
+                </div>
+                <div>
+                    <span class="scenario-meta">Для уюта и сказки</span>
+                    <h4 class="scenario-title">Мечтай</h4>
+                    <p class="scenario-desc">Для маленьких исследователей Inspiratus становится проводником в мир волшебства. Мягкое, не слепящее глаза мерцание сквозь натуральный камень успокаивает перед сном и создает безопасное личное пространство под теплым одеялом.</p>
+                </div>
+            </div>
+
+            <!-- Scenario 2 -->
+            <div class="scenario-card">
+                <div class="scenario-media-placeholder">
+                    <img src="kitchen.jpg" alt="Хозяйка на кухне">
+                </div>
+                <div>
+                    <span class="scenario-meta">Для домашней гармонии</span>
+                    <h4 class="scenario-title">Наслаждайся</h4>
+                    <p class="scenario-desc">Среди повседневных домашних дел Inspiratus расставляет мягкие акценты. Размещенный на кухонной консоли или обеденном столе, он превращает привычное приготовление вечернего чая в эстетическую паузу, наполняя дом теплым физическим светом.</p>
+                </div>
+            </div>
+
+            <!-- Scenario 3 -->
+            <div class="scenario-card">
+                <div class="scenario-media-placeholder">
+                    <img src="executive_desk.jpg" alt="Руководитель в кабинете">
+                </div>
+                <div>
+                    <span class="scenario-meta">Для фокуса и статуса</span>
+                    <h4 class="scenario-title">Решай</h4>
+                    <p class="scenario-desc">На рабочем столе руководителя артефакт выступает в роли визуального якоря. Во время напряженных переговоров или принятия сложных решений ритмичное затухание кристалла помогает упорядочить мысли и сфокусироваться на главном.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <footer>
-        <div class="f-logo">p—11</div>
-        <p style="font-family: var(--font-tech); font-size: 11px; color: #666; letter-spacing: 5px; margin-top: 40px;">NO COMPROMISE IN ENGINEERING // 2025</p>
-    </footer>
+    <!-- UNBOXING: TACTICAL BOX -->
+    <section id="unboxing" class="packaging-section">
+        <div class="packaging-container">
+            <div class="packaging-media">
+                <img src="sfbox1.jpg" alt="Tactical Box packaging">
+            </div>
+            <div>
+                <span class="section-tag">Инженерный перформанс</span>
+                <h2 class="section-title" style="margin-bottom:25px;">Tactical Box: Ритуал распаковки</h2>
+                <p style="font-size:17px; color:#555451; margin-bottom:20px;">Наш премиальный подход распространяется и на момент первого знакомства с артефактом. Мы отказались от стандартного упаковочного картона и разработали полноценный механический бокс.</p>
+                <p style="font-size:17px; color:#555451; margin-bottom:25px;">Корпус Tactical Box напечатан из износостойкого композита, усилен элементами из угленаполненного PETG и снабжен встроенным пружинным лифтом. При мягком нажатии на ложемент, устройство плавно поднимается вам в руки.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECHNICAL SPECIFICATION -->
+    <section id="specs" class="specs-section">
+        <div class="section-header">
+            <span class="section-tag">Спецификация изделия</span>
+            <h2 class="section-title">Инженерная точность в деталях</h2>
+        </div>
+        <div class="specs-table">
+            <div class="specs-row">
+                <div class="specs-label">Процессор</div>
+                <div class="specs-value">XIAO ESP32-S3 SENSE.</div>
+            </div>
+            <div class="specs-row">
+                <div class="specs-label">Оптика</div>
+                <div class="specs-value">Натуральный необработанный бразильский аметист или опалит.</div>
+            </div>
+            <div class="specs-row">
+                <div class="specs-label">Охлаждение</div>
+                <div class="specs-value">Естественная конвекция воздуха через вентиляционные жабры на дне и у интерфейсного разъема.</div>
+            </div>
+            <div class="specs-row">
+                <div class="specs-label">Материалы корпуса</div>
+                <div class="specs-value">Износостойкий текстурированный композитный полимер, защитный акриловый купол.</div>
+            </div>
+            <div class="specs-row">
+                <div class="specs-label">Питание</div>
+                <div class="specs-value">USB Type-C (5V), энергоэффективная схема с защитой от перегрева.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE RADAR TERMINAL -->
+    <section id="terminal" class="terminal-section">
+        <div class="terminal-container">
+            <span class="section-tag" style="color: var(--accent-light);">Локальная Mesh-сеть</span>
+            <h2 class="section-title" style="color: #fff; margin-bottom: 20px;">Панель управления</h2>
+            <p style="color: #888; max-width: 600px; margin: 0 auto; font-size: 15px;">Запустите радар, чтобы обнаружить активные модули Inspiratus в вашей текущей Wi-Fi сети для перехода к панели тонкой настройки.</p>
+            
+            <div class="radar-box">
+                <div class="scanner" id="scannerCircle">
+                    <div id="status">SENSORS OFFLINE</div>
+                </div>
+
+                <div class="terminal-device-list" id="list">
+                    <!-- Сюда динамически рендерятся карточки активных ламп -->
+                </div>
+
+                <button class="terminal-rescan" onclick="restartMqttScan()">Сбросить сенсоры радара</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- USER MANUAL / INSTRUCTIONS -->
+    <section id="manual" class="manual-section">
+        <div class="manual-container">
+            <div class="section-header">
+                <span class="section-tag">Подключение</span>
+                <h2 class="section-title">Руководство пользователя</h2>
+            </div>
+            
+            <div class="manual-steps">
+                <!-- Step 1 -->
+                <div class="manual-step-card">
+                    <span class="manual-step-num">01 / Питание</span>
+                    <h4 class="manual-step-title">Включение</h4>
+                    <p class="manual-step-desc">Извлеките артефакт из Tactical Box. Подключите кабель USB-C. Модуль выполнит стартовое световое приветствие <code>Supernova</code>.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="manual-step-card">
+                    <span class="manual-step-num">02 / Соединение</span>
+                    <h4 class="manual-step-title">Точка доступа</h4>
+                    <p class="manual-step-desc">Откройте настройки Wi-Fi вашего смартфона. Подключитесь к временной сети модуля с именем <code>Inspiratus_AP</code>.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="manual-step-card">
+                    <span class="manual-step-num">03 / Настройка</span>
+                    <h4 class="manual-step-title">Интеграция</h4>
+                    <p class="manual-step-desc">Перейдите в браузере по адресу <code>http://192.168.4.1</code>. Введите имя вашей домашней Wi-Fi сети и пароль.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="manual-step-card">
+                    <span class="manual-step-num">04 / Старт</span>
+                    <h4 class="manual-step-title">Контроль</h4>
+                    <p class="manual-step-desc">Подключите смартфон обратно к домашней сети. Воспользуйтесь <b>Панелью управления</b> выше для перехода к настройке цвета.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREATOR STORY / PHILOSOPHY -->
+    <section id="creator" class="about-section">
+        <div class="about-container">
+            <p class="about-quote">«Для меня Inspiratus — это способ отвлечься от повседневного шума и хаоса, собрав воедино сотни часов 3D-моделирования, программирования и работы с реальным промышленным материалом. Это честный инженерный ответ миру.»</p>
+            <div class="about-author">— Основатель бюро P—11, авиационный инженер</div>
+        </div>
+    </section>
+
+    <!-- SERVICES / B2B SECTION -->
+    <section id="services" class="services-section">
+        <div class="services-container">
+            <span class="section-tag">Кастомные решения и B2B</span>
+            <h2 class="section-title">Индивидуальная инженерия</h2>
+            <p style="font-size:16px; color:#6E6D6A; margin-top:15px;">Мы адаптируем наши технологии под ваши задачи — от брендированных партий до интерьерных инсталляций.</p>
+            
+            <div class="services-grid">
+                <!-- 1. Карточка B2B с контурным выделением -->
+                <div class="service-card b2b-highlight">
+                    <h3 class="service-title">INSPIRATUS для бизнеса</h3>
+                    <p class="service-desc">Автономная работа до 100 часов, кастомизация под интерьер заведения, разработка фирменных режимов свечения и индивидуальная гравировка на корпусах.</p>
+                </div>
+                
+                <!-- 2. Обычная карточка услуг -->
+                <div class="service-card">
+                    <h3 class="service-title">Интеграция вашего кристалла</h3>
+                    <p class="service-desc">Мы спроектируем устройство под ваш собственный кристалл. Точный расчет преломления и прозрачности материала позволит создать гармоничный и персональный сценарий свечения.</p>
+                </div>
+                
+                <!-- 3. Новая пустая карточка-заглушка с штриховым контуром -->
+                <div class="service-card placeholder-card">
+                    <div class="placeholder-icon">✦</div>
+                    <div class="placeholder-text">[ Место для нового направления ]</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ORDER / CTA -->
+    <section id="order" class="order-section">
+        <div class="order-container">
+            <span class="section-tag">Приобретение</span>
+            <h2 class="section-title" style="margin-top:10px;">Владение историей</h2>
+            <p style="font-size:17px; color:#555451; margin-top:15px;">Каждое устройство собирается, калибруется и упаковывается вручную в нашей мастерской. Каждая партия строго лимитирована.</p>
+            <div class="price-tag">от 8 500 ₽</div>
+            <button onclick="openOrderModal()" class="btn-main" style="padding: 22px 60px;">Заказать Inspiratus</button>
+        </div>
+    </section>
 </main>
 
-<!-- ORDER MODAL -->
+<footer>
+    <div class="footer-container">
+        <div>
+            <div class="footer-logo">p—11</div>
+            <p style="font-size: 11px; margin-top: 10px; font-family: var(--font-tech);">NO COMPROMISE IN ENGINEERING // 2025</p>
+        </div>
+        <div class="footer-links">
+            <a href="index.html">Бюро P-11</a>
+            <a href="#about-product">Об объекте</a>
+            <a href="#services">Услуги</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ORDER MODAL (RE-DESIGNED FOR CHANNELS OF COMMUNICATION) -->
 <div id="orderModal" class="modal-overlay">
     <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; align-items: baseline; margin-bottom: 50px;">
-            <span class="p-label" style="margin:0;">Inquiry Form</span>
-            <button onclick="closeOrderModal()" style="background:none; border:none; font-family:var(--font-tech); font-size:10px; cursor:pointer;">[ CLOSE ]</button>
+        <button onclick="closeOrderModal()" class="modal-close-btn">[ ЗАКРЫТЬ ]</button>
+        
+        <div style="margin-bottom: 25px;">
+            <span class="section-tag" style="font-size:10px;">Форма связи</span>
+            <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; margin-top:5px;">Связаться с бюро</h3>
         </div>
-        <form id="orderForm" onsubmit="handleOrder(event)">
-            <input type="text" id="custName" class="input-luxury" placeholder="Ваше Имя / ID" required>
-            <input type="text" id="custContact" class="input-luxury" placeholder="Telegram / Email" required>
-            <div style="margin-bottom: 40px; font-family: var(--font-tech); font-size: 10px; color: #999; text-transform: uppercase;">
-                Нажимая кнопку, вы подтверждаете готовность к переходу на новый уровень окружения.
-            </div>
-            <button type="submit" id="submitBtn" class="btn-luxury" style="width:100%;">Отправить запрос</button>
-        </form>
-        <div id="statusMsg" style="margin-top:30px; font-family:var(--font-tech); font-size:11px; text-align:center;"></div>
+
+        <div class="contact-grid">
+            <!-- Telegram -->
+            <a href="https://t.me/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">✈</div>
+                <div class="contact-name">Telegram</div>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/79991234567" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">💬</div>
+                <div class="contact-name">WhatsApp</div>
+            </a>
+            <!-- VK -->
+            <a href="https://vk.com/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">👥</div>
+                <div class="contact-name">ВКонтакте</div>
+            </a>
+            <!-- Email -->
+            <a href="mailto:info@p11.bureau" class="contact-btn-card">
+                <div class="contact-icon">✉</div>
+                <div class="contact-name">Email</div>
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; font-family: var(--font-tech); font-size: 10px; color: #888; text-transform: uppercase; text-align: center; line-height: 1.4;">
+            Выберите удобный канал связи. Мы ответим вам в течение рабочего дня.
+        </div>
     </div>
 </div>
 
 <script>
-    const TG_TOKEN = 'ТВОЙ_ТОКЕН';
-    const TG_CHAT_ID = 'ТВОЙ_ID';
-
+    // Управление курсором
     const cursor = document.getElementById('cursor');
     if (window.innerWidth > 1024) {
         document.addEventListener('mousemove', (e) => {
@@ -260,44 +1090,144 @@
         });
     }
 
+    // Modal Control
     function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
     function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
 
-    async function handleOrder(event) {
-        event.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const status = document.getElementById('statusMsg');
-        btn.disabled = true; btn.innerText = "ПЕРЕДАЧА ДАННЫХ...";
-
-        const message = `💎 WAITLIST: Inspiratus\n👤 Name: ${document.getElementById('custName').value}\n📱 Contact: ${document.getElementById('custContact').value}`;
-
-        try {
-            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message })
+    // Анимация увеличения курсора при наведении (только для больших экранов)
+    if (window.innerWidth > 1024) {
+        document.querySelectorAll('a, button, select, input, .service-card, .scenario-card, .slide-arrow, .slider-dot, .terminal-open-btn, .terminal-rescan, .contact-btn-card').forEach(el => {
+            el.addEventListener('mouseenter', () => { 
+                cursor.style.transform = 'scale(5)'; 
+                cursor.style.background = 'rgba(139, 38, 53, 0.15)'; 
+                cursor.style.border = '1px solid var(--accent)'; 
             });
-            status.innerHTML = "<span style='color:var(--gucci-red)'>ПРОТОКОЛ ИНИЦИИРОВАН. МЫ СВЯЖЕМСЯ С ВАМИ.</span>";
-            setTimeout(() => { closeOrderModal(); btn.disabled = false; btn.innerText = "Отправить запрос"; status.innerText = ""; }, 3000);
-        } catch (e) {
-            status.innerText = "ОШИБКА СЕТИ. ПОВТОРИТЕ ПОЗЖЕ.";
-            btn.disabled = false;
+            el.addEventListener('mouseleave', () => { 
+                cursor.style.transform = 'scale(1)'; 
+                cursor.style.background = 'var(--accent)'; 
+                cursor.style.border = 'none'; 
+            });
+        });
+    }
+
+    // --- PHOTO SLIDER LOGIC ---
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const track = document.getElementById('sliderTrack');
+    const dots = document.querySelectorAll('.slider-dot');
+
+    function updateSlider() {
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function moveSlide(direction) {
+        currentSlide += direction;
+        if (currentSlide >= totalSlides) {
+            currentSlide = 0;
+        } else if (currentSlide < 0) {
+            currentSlide = totalSlides - 1;
+        }
+        updateSlider();
+    }
+
+    function setSlide(index) {
+        currentSlide = index;
+        updateSlider();
+    }
+
+    // Touch Swipe Support for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const sliderContainer = document.getElementById('showcaseSlider');
+
+    sliderContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    sliderContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const swipeThreshold = 40; // Минимальная дистанция свайпа в пикселях
+        if (touchStartX - touchEndX > swipeThreshold) {
+            moveSlide(1);
+        } else if (touchEndX - touchStartX > swipeThreshold) {
+            moveSlide(-1);
         }
     }
 
-    // Hover Interaction
-    document.querySelectorAll('a, button, .inv-item').forEach(el => {
-        el.addEventListener('mouseenter', () => { 
-            cursor.style.transform = 'scale(6)'; 
-            cursor.style.background = 'rgba(139, 0, 0, 0.1)'; 
-            cursor.style.border = '1px solid var(--gucci-red)'; 
-        });
-        el.addEventListener('mouseleave', () => { 
-            cursor.style.transform = 'scale(1)'; 
-            cursor.style.background = 'var(--gucci-red)'; 
-            cursor.style.border = 'none'; 
-        });
+    // --- INTEGRATED MQTT DISCOVERY RADAR ---
+    const client = mqtt.connect('wss://broker.emqx.io:8084/mqtt');
+    const listEl = document.getElementById('list');
+    const statusEl = document.getElementById('status');
+    const devices = {};
+
+    client.on('connect', () => { 
+        statusEl.innerText = "SENSORS ACTIVE // SCANNING"; 
+        client.subscribe('p11/discovery/inspiratus/#'); 
     });
+
+    client.on('message', (topic, msg) => {
+        const id = topic.split('/').pop();
+        const payload = msg.toString();
+
+        if (payload === "OFFLINE") { 
+            delete devices[id]; 
+        } else { 
+            devices[id] = payload; 
+        }
+        
+        renderDevices();
+    });
+
+    function renderDevices() {
+        listEl.innerHTML = '';
+        const keys = Object.keys(devices);
+        
+        if (keys.length === 0) { 
+            statusEl.innerText = "MEMBER NODES OFFLINE";
+            statusEl.style.color = "#888";
+            return; 
+        }
+
+        keys.forEach(id => {
+            const div = document.createElement('div');
+            div.className = 'terminal-device-card';
+            div.innerHTML = `
+                <div class="terminal-device-info">
+                    <h4>${id.replace('Inspiratus_', 'ID: ')}</h4>
+                    <p>${devices[id]}</p>
+                </div>
+                <a href="http://${devices[id]}" target="_blank" class="terminal-open-btn">ПОДКЛЮЧИТЬСЯ</a>
+            `;
+            listEl.appendChild(div);
+        });
+
+        statusEl.innerText = "NODES ACTIVE: " + keys.length;
+        statusEl.style.color = "var(--accent)";
+    }
+
+    function restartMqttScan() {
+        // Очистка списка для повторного сканирования
+        for (let member in devices) delete devices[member];
+        renderDevices();
+        statusEl.innerText = "RESTARTING SCAN...";
+        setTimeout(() => {
+            if (client.connected) {
+                statusEl.innerText = "SCANNING MESH ACTIVE";
+            }
+        }, 1000);
+    }
 </script>
 </body>
 </html>
