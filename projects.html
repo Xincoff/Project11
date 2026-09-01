@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P—11 | ГОТОВЫЕ ИЗДЕЛИЯ И АКТИВЫ</title>
+    
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --bg: #FAF9F5; /* Мягкий успокаивающий алебастровый фон */
+            --fg: #1C1B1A; /* Мягкий черный/антрацит */
+            --accent: #8B2635; /* Приглушенный терракотово-гранатовый */
+            --accent-light: #F4EBE8;
+            --line: #E3DFD5; /* Деликатные разделители */
+            --card-bg: #FFFFFF;
+            --font-main: 'Inter', sans-serif;
+            --font-classic: 'Cormorant Garamond', serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --radius-main: 16px; /* Однородный мягкий радиус для медиа */
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--fg); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            line-height: 1.6;
+            width: 100%;
+        }
+        
+        #cursor { 
+            width: 8px; height: 8px; background: var(--accent); 
+            position: fixed; pointer-events: none; z-index: 10000; 
+            transition: transform 0.15s ease-out;
+            border-radius: 50%; display: none; 
+        }
+        @media (min-width: 1025px) { 
+            body { cursor: none; }
+            #cursor { display: block; } 
+            a, button, select, input, .contact-btn-card { cursor: none; }
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* HEADER */
+        header { 
+            padding: 20px 40px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(250, 249, 245, 0.85); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--line);
+        }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .logo-type { font-weight: 900; font-size: 22px; letter-spacing: -1px; text-transform: lowercase; }
+
+        nav { display: flex; gap: 30px; }
+        nav a { 
+            font-size: 13px; text-decoration: none; color: var(--fg); 
+            font-weight: 500; transition: color 0.3s; 
+        }
+        nav a:hover { color: var(--accent); }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-header { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--fg); text-decoration: none; font-weight: 600; 
+            letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--fg); 
+            padding: 10px 20px; transition: all 0.3s; 
+        }
+        .btn-header.primary { border-color: var(--accent); color: var(--accent); }
+        .btn-header:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            header { padding: 15px 20px; }
+            .logo-type { font-size: 18px; }
+            .btn-header { padding: 8px 12px; font-size: 10px; }
+        }
+
+        /* HERO */
+        .catalog-hero { 
+            padding: 160px 40px 60px; 
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .tagline { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--accent); 
+            font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; display: block;
+        }
+        .catalog-title { font-size: clamp(38px, 6vw, 85px); font-weight: 900; letter-spacing: -0.05em; text-transform: uppercase; line-height: 1; }
+        .catalog-sub { font-family: var(--font-classic); font-size: clamp(18px, 2.5vw, 24px); font-style: italic; color: #4A4947; margin-top: 25px; max-width: 750px; margin-left: auto; margin-right: auto; line-height: 1.3; }
+
+        @media (max-width: 768px) {
+            .catalog-hero { padding: 120px 20px 40px; }
+        }
+
+        /* SHOWCASE VITRINE GRID */
+        .showcase-section { padding: 60px 40px 100px; max-width: 1400px; margin: 0 auto; }
+        .showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        
+        .showcase-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--line); 
+            border-radius: var(--radius-main); 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+        }
+        .showcase-card:hover { 
+            transform: translateY(-5px); 
+            border-color: var(--accent); 
+            box-shadow: 0 15px 40px rgba(139,38,53,0.03);
+        }
+
+        .showcase-media { 
+            width: 100%; 
+            aspect-ratio: 16/10; 
+            background: #EAE5DB; 
+            border-radius: var(--radius-main); 
+            overflow: hidden; 
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .showcase-media img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            border-radius: var(--radius-main);
+            filter: grayscale(0.2);
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1), filter 1.5s;
+        }
+        .showcase-card:hover .showcase-media img {
+            transform: scale(1.03);
+            filter: grayscale(0);
+        }
+
+        .showcase-meta { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+            font-family: var(--font-tech); 
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .showcase-id { color: var(--accent); font-weight: 800; }
+        .showcase-div { color: #8C8B88; font-weight: 600; }
+
+        .showcase-title { font-size: 24px; font-weight: 800; margin-bottom: 12px; color: var(--fg); text-transform: uppercase; letter-spacing: -0.5px; }
+        .showcase-desc { font-size: 14px; color: #555451; line-height: 1.6; margin-bottom: 30px; }
+
+        .btn-showcase { 
+            padding: 15px 35px; background: var(--fg); color: #fff; text-decoration: none;
+            font-family: var(--font-tech); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 600; transition: all 0.3s; border: 1px solid var(--fg); text-align: center;
+            align-self: flex-start; border-radius: 4px;
+        }
+        .btn-showcase:hover { background: var(--accent); border-color: var(--accent); }
+
+        @media (max-width: 1024px) {
+            .showcase-section { padding: 40px 20px 80px; }
+            .showcase-grid { grid-template-columns: 1fr; gap: 30px; }
+            .showcase-card { padding: 25px; }
+            .btn-showcase { width: 100%; }
+        }
+
+        /* CALL TO ACTION */
+        .cta-section { 
+            padding: 100px 40px; 
+            text-align: center; 
+            background: var(--bg); 
+            position: relative; 
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+        .cta-container { max-width: 650px; margin: 0 auto; }
+        .cta-title { font-size: clamp(32px, 5vw, 54px); font-weight: 900; text-transform: uppercase; line-height: 1.1; margin-bottom: 30px; letter-spacing: -1px; }
+
+        /* FOOTER */
+        footer { padding: 80px 40px; background: #111; color: #888; border-top: 1px solid #222; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -2px; }
+        .footer-links { display: flex; gap: 30px; }
+        .footer-links a { color: #888; text-decoration: none; font-size: 13px; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+
+        @media (max-width: 768px) {
+            footer { padding: 60px 20px; }
+            .footer-container { flex-direction: column; gap: 30px; text-align: center; }
+            .footer-links { gap: 20px; }
+        }
+
+        /* MODAL FOR SOCIAL CONTACT OPTIONS */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(28,27,26,0.6); z-index: 2000; align-items: center; 
+            justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-content { 
+            background: #fff; border-radius: var(--radius-main); padding: 40px 30px; max-width: 500px; 
+            width: 90%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+            max-height: 90vh; overflow-y: auto;
+        }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .contact-btn-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 25px 20px; border: 1px solid var(--line); background: var(--card-bg);
+            border-radius: 8px; text-decoration: none; color: var(--fg); transition: all 0.3s ease; text-align: center;
+        }
+        .contact-btn-card:hover { border-color: var(--accent); background: var(--accent-light); transform: translateY(-2px); }
+        .contact-icon { font-size: 24px; margin-bottom: 10px; color: var(--accent); }
+        .contact-name { font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .modal-close-btn { 
+            position: absolute; top: 25px; right: 30px; background: transparent !important; 
+            border: none !important; box-shadow: none !important; outline: none !important;
+            padding: 0 !important; margin: 0 !important; font-family: var(--font-tech); 
+            font-size: 11px; color: #9E9D9A; cursor: pointer; letter-spacing: 1px;
+            text-transform: uppercase; transition: color 0.3s ease;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+        .modal-close-btn:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .modal-content { padding: 35px 20px 25px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 10px; }
+            .contact-btn-card { padding: 18px 15px; }
+            .modal-close-btn { top: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<header>
+    <div class="logo-group">
+        <div class="logo-dot"></div>
+        <div class="logo-type">p—11 bureau</div>
+    </div>
+    <nav>
+        <a href="index.html#about">О бюро</a>
+        <a href="index.html#services">Услуги</a>
+        <a href="index.html#method">Протокол</a>
+    </nav>
+    <div class="header-actions">
+        <a href="index.html" class="btn-header">Бюро</a>
+        <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-header primary">Связаться</a>
+    </div>
+</header>
+
+<div class="wrapper">
+    <!-- HERO SECTION -->
+    <section class="catalog-hero reveal">
+        <span class="tagline">R&D Assets // Portfolio</span>
+        <h1 class="catalog-title">Инженерные активы</h1>
+        <p class="catalog-sub">Каталог готовых приборов, автоматизированных платформ и промышленных систем, спроектированных конструкторами бюро P—11.</p>
+    </section>
+
+    <!-- SHOWCASE VITRINE GRID (4 PRODUCTS) -->
+    <section class="showcase-section reveal">
+        <div class="showcase-grid">
+            
+            <!-- 1. Inspiratus (Obj. 010) -->
+            <article class="showcase-card">
+                <div>
+                    <div class="showcase-media">
+                        <img src="INSP4.jpg" alt="Световой артефакт Inspiratus">
+                    </div>
+                    <div class="showcase-meta">
+                        <span class="showcase-id">Obj.010</span>
+                        <span class="showcase-div">Neural Art & Embedded</span>
+                    </div>
+                    <h3 class="showcase-title">Inspiratus</h3>
+                    <p class="showcase-desc">Уникальный интерьерный световой прибор. 10-битный органический алгоритм пульсации света сквозь натуральный кристалл бразильского аметиста. Поставляется в тактильном механическом кейсе с пружинным лифтом.</p>
+                </div>
+                <a href="crystallamp.html" class="btn-showcase">Досье проекта</a>
+            </article>
+
+            <!-- 2. Catcher (Obj. 002) -->
+            <article class="showcase-card">
+                <div>
+                    <div class="showcase-media">
+                        <img src="catcher.jpg" alt="Система Catcher">
+                    </div>
+                    <div class="showcase-meta">
+                        <span class="showcase-id">Obj.002</span>
+                        <span class="showcase-div">Industrial Solutions</span>
+                    </div>
+                    <h3 class="showcase-title">Gesteresis</h3>
+                    <p class="showcase-desc">Система предиктивного мониторинга металлорежущего оборудования. Навесной монтаж, комплексный анализ акустики и вибраций в одном комплексе.</p>
+                </div>
+                <a href="catcher.html" class="btn-showcase">Досье проекта</a>
+            </article>
+
+            <!-- 3. Vortex (Obj. 005) -->
+            <article class="showcase-card">
+                <div>
+                    <div class="showcase-media">
+                        <img src="turbine.jpg" alt="Система Vortex">
+                    </div>
+                    <div class="showcase-meta">
+                        <span class="showcase-id">Obj.005</span>
+                        <span class="showcase-div">Industrial Solutions</span>
+                    </div>
+                    <h3 class="showcase-title">Vortex Monitor</h3>
+                    <p class="showcase-desc">Аппаратно-программный комплекс контроля частоты вращения турбин в агрессивных средах высокого давления. Оснащен аналоговым усилителем сигнала собственной разработки и алгоритмами низкоуровневого временного анализа. Необходимое решение для ретрофиттинга и цифровизации аналогового промышленного оборудования.</p>
+                </div>
+                <a href="Vortex.html" class="btn-showcase">Досье проекта</a>
+            </article>
+
+            <!-- 4. Zack (Obj. 009) -->
+            <article class="showcase-card">
+                <div>
+                    <div class="showcase-media">
+                        <img src="zacksystem.jpg" alt="Робот Zack">
+                    </div>
+                    <div class="showcase-meta">
+                        <span class="showcase-id">Obj.009</span>
+                        <span class="showcase-div">Robotics & Neural</span>
+                    </div>
+                    <h3 class="showcase-title">Zack Mimic AI</h3>
+                    <p class="showcase-desc">Воплощенный робот-собеседник с элементами кинетического искусства. Интеграция локальных нейросетевых моделей распознавания речи и кастомного многоосевого привода мимики корпуса.</p>
+                </div>
+                <a href="zack.html" class="btn-showcase">Досье проекта</a>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta-section reveal">
+        <div class="cta-container">
+            <span class="tagline">Начать разработку</span>
+            <h2 class="cta-title">Нужна уникальная разработка?</h2>
+            <button onclick="openOrderModal()" class="btn-main" style="padding: 22px 60px;">Запустить протокол</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div>
+                <div class="footer-logo">p—11</div>
+                <p style="font-size: 11px; margin-top: 10px; font-family: var(--font-tech);">NO COMPROMISE IN ENGINEERING // 2025</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html#services">Направления</a>
+                <a href="index.html">О бюро</a>
+                <a href="javascript:void(0)" onclick="openOrderModal()">Контакты</a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- ORDER MODAL -->
+<div id="orderModal" class="modal-overlay">
+    <div class="modal-content">
+        <button onclick="closeOrderModal()" class="modal-close-btn">[ ЗАКРЫТЬ ]</button>
+        
+        <div style="margin-bottom: 25px;">
+            <span class="section-tag" style="font-size:10px;">Форма связи</span>
+            <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; margin-top:5px;">Связаться с бюро</h3>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Telegram -->
+            <a href="https://t.me/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">✈</div>
+                <div class="contact-name">Telegram</div>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/79991234567" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">💬</div>
+                <div class="contact-name">WhatsApp</div>
+            </a>
+            <!-- VK -->
+            <a href="https://vk.com/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">👥</div>
+                <div class="contact-name">ВКонтакте</div>
+            </a>
+            <!-- Email -->
+            <a href="mailto:info@p11.bureau" class="contact-btn-card">
+                <div class="contact-icon">✉</div>
+                <div class="contact-name">Email</div>
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; font-family: var(--font-tech); font-size: 10px; color: #888; text-transform: uppercase; text-align: center; line-height: 1.4;">
+            Выберите удобный канал связи. Мы ответим вам в течение рабочего дня.
+        </div>
+    </div>
+</div>
+
+<script>
+    // Управление курсором
+    const cursor = document.getElementById('cursor');
+    if (window.innerWidth > 1024) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    }
+
+    // Modal Control
+    function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
+    function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Анимация увеличения курсора при наведении (только для больших экранов)
+    if (window.innerWidth > 1024) {
+        document.querySelectorAll('a, button, select, input, .showcase-card, .contact-btn-card').forEach(el => {
+            el.addEventListener('mouseenter', () => { 
+                cursor.style.transform = 'scale(5)'; 
+                cursor.style.background = 'rgba(139, 38, 53, 0.15)'; 
+                cursor.style.border = '1px solid var(--accent)'; 
+            });
+            el.addEventListener('mouseleave', () => { 
+                cursor.style.transform = 'scale(1)'; 
+                cursor.style.background = 'var(--accent)'; 
+                cursor.style.border = 'none'; 
+            });
+        });
+    }
+</script>
+</body>
+</html>
