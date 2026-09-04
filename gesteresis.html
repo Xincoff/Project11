@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>P—11 | GESTERESIS: ОБЪЕКТ 005</title>
+    
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root {
+            --bg: #FAF9F5; /* Мягкий успокаивающий алебастровый фон */
+            --fg: #1C1B1A; /* Мягкий черный/антрацит */
+            --accent: #8B2635; /* Приглушенный терракотово-гранатовый */
+            --accent-light: #F4EBE8;
+            --line: #E3DFD5; /* Деликатные разделители */
+            --card-bg: #FFFFFF;
+            --font-main: 'Inter', sans-serif;
+            --font-classic: 'Cormorant Garamond', serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --radius-main: 16px; /* Однородный мягкий радиус для медиа */
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--fg); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            line-height: 1.6;
+            width: 100%;
+        }
+        
+        #cursor { 
+            width: 8px; height: 8px; background: var(--accent); 
+            position: fixed; pointer-events: none; z-index: 10000; 
+            transition: transform 0.15s ease-out;
+            border-radius: 50%; display: none; 
+        }
+        @media (min-width: 1025px) { 
+            body { cursor: none; }
+            #cursor { display: block; } 
+            a, button, select, input, .contact-btn-card { cursor: none; }
+        }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* HEADER */
+        header { 
+            padding: 20px 40px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: rgba(250, 249, 245, 0.85); 
+            backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--line);
+        }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .logo-type { font-weight: 900; font-size: 22px; letter-spacing: -1px; text-transform: lowercase; }
+
+        nav { display: flex; gap: 30px; }
+        nav a { 
+            font-size: 13px; text-decoration: none; color: var(--fg); 
+            font-weight: 500; transition: color 0.3s; 
+        }
+        nav a:hover { color: var(--accent); }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-header { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--fg); text-decoration: none; font-weight: 600; 
+            letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--fg); 
+            padding: 10px 20px; transition: all 0.3s; 
+        }
+        .btn-header.primary { border-color: var(--accent); color: var(--accent); }
+        .btn-header:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            header { padding: 15px 20px; }
+            .logo-type { font-size: 18px; }
+            .btn-header { padding: 8px 12px; font-size: 10px; }
+        }
+
+        /* HERO SECTION */
+        .p-hero { 
+            margin-top: 100px;
+            display: grid; 
+            grid-template-columns: 1.1fr 0.9fr; 
+            min-height: 75vh;
+            border-bottom: 2px solid var(--fg);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
+            padding: 40px;
+            gap: 60px;
+        }
+
+        .hero-text { display: flex; flex-direction: column; justify-content: center; }
+        .p-label { font-family: var(--font-tech); font-size: 11px; color: var(--accent); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
+        .p-title { font-size: clamp(38px, 6vw, 110px); font-weight: 900; letter-spacing: -0.05em; text-transform: uppercase; line-height: 0.95; margin-bottom: 25px; }
+        .p-sub { font-family: var(--font-classic); font-size: clamp(20px, 3.5vw, 32px); font-style: italic; color: #4A4947; margin-bottom: 40px; line-height: 1.25; }
+
+        .hero-visual { 
+            background: #EAE5DB; 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 4/3; 
+            border-radius: var(--radius-main); 
+            overflow: hidden; 
+            box-shadow: 0 20px 45px rgba(0,0,0,0.06);
+        }
+        .hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--radius-main); }
+
+        @media (max-width: 1024px) {
+            .p-hero { grid-template-columns: 1fr; margin-top: 80px; padding: 40px 20px; gap: 40px; text-align: center; }
+            .hero-visual { max-width: 500px; margin: 0 auto; }
+        }
+
+        /* SPECS */
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); background: var(--card-bg); }
+        .spec-item { padding: 35px 40px; border-right: 1px solid var(--line); }
+        .spec-item:last-child { border-right: none; }
+        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        .spec-value { font-size: 14px; font-weight: 800; text-transform: uppercase; color: #000; }
+
+        @media (max-width: 1024px) {
+            .specs-grid { grid-template-columns: 1fr 1fr; }
+            .spec-item { padding: 25px 20px; border-bottom: 1px solid var(--line); }
+            .spec-item:nth-child(2n) { border-right: none; }
+            .spec-item:nth-last-child(-n+2) { border-bottom: none; }
+        }
+
+        /* DETAILED CONTENT SECTIONS */
+        .content-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 70vh; align-items: center; max-width: 1400px; margin: 0 auto; gap: 60px; padding: 60px 40px; }
+        .text-block { display: flex; flex-direction: column; justify-content: center; }
+        
+        .visual-block { 
+            background: #F0EDE6; 
+            overflow: hidden; 
+            position: relative; 
+            border-radius: var(--radius-main); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            width: 100%;
+            aspect-ratio: 16/10;
+        }
+        .visual-block img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-main); }
+
+        .section-h { font-family: var(--font-classic); font-size: clamp(28px, 4vw, 44px); font-style: italic; margin-bottom: 30px; line-height: 1.25; }
+        .section-p { font-size: 16px; color: #555451; line-height: 1.6; margin-bottom: 20px; }
+        .section-p b { color: #000; }
+
+        @media (max-width: 1024px) {
+            .content-row { grid-template-columns: 1fr; gap: 30px; padding: 40px 20px; }
+            .content-row.reverse { direction: rtl; }
+            .content-row.reverse .text-block { direction: ltr; }
+            .visual-block { aspect-ratio: 4/3; }
+        }
+
+        /* ANATOMY / EXPLODED VIEW LIST */
+        .anatomy-list { margin-top: 30px; border-top: 1px solid var(--line); }
+        .anatomy-item { padding: 15px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; }
+        .anatomy-item span { color: var(--accent); font-weight: 800; }
+
+        /* SCIENTIFIC PUBLICATIONS SECTION */
+        .publications-section { padding: 80px 40px; background: var(--card-bg); border-bottom: 1px solid var(--line); }
+        .publications-container { max-width: 1100px; margin: 0 auto; }
+        .pub-list { margin-top: 40px; display: flex; flex-direction: column; gap: 25px; }
+        .pub-item { 
+            padding: 30px; 
+            border: 1px solid var(--line); 
+            border-radius: var(--radius-main); 
+            background: var(--bg);
+            transition: border-color 0.3s;
+        }
+        .pub-item:hover { border-color: var(--accent); }
+        .pub-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; color: var(--fg); line-height: 1.4; }
+        .pub-authors { font-family: var(--font-tech); font-size: 11px; color: var(--accent); margin-bottom: 8px; }
+        .pub-meta { font-size: 13px; color: #6E6D6A; }
+
+        @media (max-width: 768px) {
+            .publications-section { padding: 60px 20px; }
+            .pub-item { padding: 20px; }
+        }
+
+        /* CTA SECTION */
+        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg); }
+        .cta-container { max-width: 700px; margin: 0 auto; }
+        .btn-luxury { 
+            padding: 22px 60px; background: var(--fg); color: #fff;
+            text-transform: uppercase; font-family: var(--font-tech); font-size: 12px;
+            letter-spacing: 3px; text-decoration: none; transition: 0.4s; display: inline-block;
+            border-radius: 4px; font-weight: 600; border: 1px solid var(--fg);
+        }
+        .btn-luxury:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
+
+        /* FOOTER */
+        footer { padding: 80px 40px; background: #111; color: #888; border-top: 1px solid #222; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -2px; }
+        .footer-links { display: flex; gap: 30px; }
+        .footer-links a { color: #888; text-decoration: none; font-size: 13px; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+
+        @media (max-width: 768px) {
+            footer { padding: 60px 20px; }
+            .footer-container { flex-direction: column; gap: 30px; text-align: center; }
+            .footer-links { gap: 20px; }
+        }
+
+        /* MODAL FOR SOCIAL CONTACT OPTIONS */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(28,27,26,0.6); z-index: 2000; align-items: center; 
+            justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-content { 
+            background: #fff; border-radius: var(--radius-main); padding: 40px 30px; max-width: 500px; 
+            width: 90%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+            max-height: 90vh; overflow-y: auto;
+        }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .contact-btn-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 25px 20px; border: 1px solid var(--line); background: var(--card-bg);
+            border-radius: 8px; text-decoration: none; color: var(--fg); transition: all 0.3s ease; text-align: center;
+        }
+        .contact-btn-card:hover { border-color: var(--accent); background: var(--accent-light); transform: translateY(-2px); }
+        .contact-icon { font-size: 24px; margin-bottom: 10px; color: var(--accent); }
+        .contact-name { font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .modal-close-btn { 
+            position: absolute; top: 25px; right: 30px; background: transparent !important; 
+            border: none !important; box-shadow: none !important; outline: none !important;
+            padding: 0 !important; margin: 0 !important; font-family: var(--font-tech); 
+            font-size: 11px; color: #9E9D9A; cursor: pointer; letter-spacing: 1px;
+            text-transform: uppercase; transition: color 0.3s ease;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+        .modal-close-btn:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .modal-content { padding: 35px 20px 25px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 10px; }
+            .contact-btn-card { padding: 18px 15px; }
+            .modal-close-btn { top: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<header>
+    <div class="logo-group">
+        <div class="logo-dot"></div>
+        <div class="logo-type">p—11 bureau</div>
+    </div>
+    <nav>
+        <a href="index.html#about">О бюро</a>
+        <a href="index.html#services">Услуги</a>
+        <a href="index.html#method">Протокол</a>
+    </nav>
+    <div class="header-actions">
+        <a href="projects.html" class="btn-header">Портфолио</a>
+        <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-header primary">Связаться</a>
+    </div>
+</header>
+
+<main>
+    <!-- HERO SECTION -->
+    <section class="p-hero">
+        <div class="hero-text">
+            <span class="p-label">INDUSTRIAL IOT // OBJ.005</span>
+            <h1 class="p-title">Gesteresis</h1>
+            <p class="p-sub">Программно-аппаратный комплекс предиктивного мониторинга и виброакустической диагностики станков ЧПУ в реальном времени.</p>
+        </div>
+        <div class="hero-visual">
+            <img src="gesteresis.jpg" alt="Модуль мониторинга Gesteresis">
+        </div>
+    </section>
+
+    <!-- SPECS -->
+    <section class="specs-grid">
+        <div class="spec-item">
+            <span class="spec-label">Core SoC</span>
+            <div class="spec-value">ESP32 Dual-Core</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Sensing Array</span>
+            <div class="spec-value">Vibration & Acoustic</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Mounting</span>
+            <div class="spec-value">Non-invasive Magnetic</div>
+        </div>
+        <div class="spec-item">
+            <span class="spec-label">Integration</span>
+            <div class="spec-value">Secure MQTT / IoT Server</div>
+        </div>
+    </section>
+
+    <!-- INTRODUCTORY / WHAT IS IT -->
+    <section class="content-row">
+        <div class="text-block">
+            <h2 class="section-h">Что такое платформа Gesteresis?</h2>
+            <p class="section-p"><b>Gesteresis</b> — это готовая экосистема, состоящая из компактных беспроводных датчиков-регистраторов и защищенной серверной платформы аналитики. Система непрерывно улавливает тончайшие акустические колебания и вибрации процесса резания металла, формируя уникальный цифровой профиль («цифровой паспорт») работы каждого станка.</p>
+            <p class="section-p">Благодаря комбинированному анализу шумов на базе микроконтроллера <b>ESP32</b>, платформа выявляет микроповреждения и аномалии узлов станка еще до того, как они приведут к поломке инструмента, браку деталей или дорогостоящему простою всего предприятия.</p>
+        </div>
+        <div class="visual-block">
+            <!-- Место под технологическую диаграмму / график процесса резания -->
+            <img src="gesteresis.jpg" alt="Анализ сигналов резания Gesteresis">
+        </div>
+    </section>
+
+    <!-- PROBLEM & SOLUTION -->
+    <section class="content-row reverse">
+        <div class="visual-block" style="background:#050505;">
+            <!-- График структуры прохождения предупреждений -->
+            <div style="width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:30px; color:#fff; text-align:center;">
+                <span style="font-family:var(--font-tech); font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:15px;">FLOW DIAGRAM</span>
+                <p style="font-size:14px; font-weight:600; max-width:400px; line-height:1.4;">Станок ➔ Акустический/Вибро датчик ➔ ESP32-контроллер ➔ IoT-сервер ➔ База данных ➔ Предупреждение о поломке</p>
+            </div>
+        </div>
+        <div class="text-block">
+            <h2 class="section-h">Устранение слепых зон станочного парка.</h2>
+            <p class="section-p">Большинство малых и средних машиностроительных производств сталкиваются с <b>внезапными поломками оборудования</b> и субъективным контролем износа инструмента. Традиционные системы мониторинга слишком дороги, сложны во внедрении и требуют глубокого вмешательства в электрику станка.</p>
+            <p class="section-p"><b>Gesteresis</b> решает эти проблемы. Датчики монтируются на магниты за 10 секунд без остановки производства и предупреждают о поломках инструмента до того, как они произойдут.</p>
+        </div>
+    </section>
+
+    <!-- DETAILED ANATOMY -->
+    <section class="content-row">
+        <div class="text-block">
+            <h2 class="section-h">Прецизионная аппаратная компоновка.</h2>
+            <p class="section-p">Мы спроектировали датчик в компактном герметичном корпусе, который устанавливается на ответственные узлы станка без изменения его конструкции с помощью мощных <b>неодимовых магнитов</b>.</p>
+            <p class="section-p">Внутри расположен прецизионный акселерометр и акустический сенсор, обрабатываемые двухъядерным контроллером ESP32 для локальной фильтрации шумов.</p>
+            
+            <div class="anatomy-list">
+                <span class="spec-label">Архитектура модуля</span>
+                <div class="anatomy-item">Контроллер <span>ESP32</span></div>
+                <div class="anatomy-item">Вибродатчик <span>Высокочувствительный акселерометр</span></div>
+                <div class="anatomy-item">Акустический модуль <span>Цифровой микрофон</span></div>
+                <div class="anatomy-item">Корпус <span>Ударопрочный с магнитами</span></div>
+            </div>
+        </div>
+        <div class="visual-block">
+            <!-- Место под 3D рендер компоновки датчика -->
+            <img src="gesteresis.jpg" alt="Внутренняя компоновка датчика Gesteresis">
+        </div>
+    </section>
+
+    <!-- TARGET CONTROL NODES -->
+    <section class="content-row reverse">
+        <div class="visual-block">
+            <!-- Место под схему расположения датчиков на токарном/фрезерном станке -->
+            <img src="gesteresis.jpg" alt="Схема размещения Gesteresis на станке с ЧПУ">
+        </div>
+        <div class="text-block">
+            <h2 class="section-h">Контроль критических узлов оборудования.</h2>
+            <p class="section-p">Система Gesteresis монтируется непосредственно на участки, подверженные наибольшему износу и механическим нагрузкам при обработке деталей:</p>
+            <p class="section-p"><b>Шпиндель</b> — контроль биения, перегрева подшипников и дисбаланса патрона.<br><b>Задняя бабка</b> — отслеживание соосности и стабильности подпора заготовки.<br><b>Револьверная головка</b> — мониторинг качества позиционирования и сколов резцов.</p>
+        </div>
+    </section>
+
+    <!-- SCIENTIFIC PEDIGREE (KFU RESEARCH) -->
+    <section class="publications-section">
+        <div class="publications-container">
+            <span class="p-label" style="text-align: center;">Академический задел</span>
+            <h2 class="section-h" style="text-align: center; font-style: normal; text-transform: uppercase;">Научная база проекта</h2>
+            <p class="section-p" style="text-align: center; max-width: 700px; margin: 0 auto 40px;">Алгоритмы фильтрации шумов и предиктивного анализа Gesteresis опираются на фундаментальные исследования ведущих научных сотрудников кафедры цифровых машиностроительных производств Набережночелнинского института КФУ:</p>
+            
+            <div class="pub-list">
+                <!-- Pub 1 -->
+                <div class="pub-item">
+                    <div class="pub-authors">Р. М. Хусаинов, И. В. Авдеев, П. Н. Крестьянинов, Д. Д. Сафин</div>
+                    <h4 class="pub-title">«Оптимизация режимов резания с применением виброакустической диагностики»</h4>
+                    <p class="pub-meta">Альметьевский государственный нефтяной институт, 2018 г.</p>
+                </div>
+                <!-- Pub 2 -->
+                <div class="pub-item">
+                    <div class="pub-authors">Р. М. Хусаинов, Д. Д. Сафин, С. М. Петров [и др.]</div>
+                    <h4 class="pub-title">«Идентификация и применение цифровой модели динамической системы станка для повышения эффективности процесса обработки»</h4>
+                    <p class="pub-meta">Научно-технический вестник Поволжья, 2022 г.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B2B CALL TO ACTION / PILOT ENTRY -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <span class="p-label">Acquisition & Pilot Integration</span>
+            <h2 class="section-h" style="font-style: normal; text-transform: uppercase; letter-spacing: -1px;">Запуск пилотного проекта</h2>
+            <p class="section-p" style="margin-bottom: 40px;">Мы предлагаем проведение пилотного развертывания системы Gesteresis на парке станков вашего предприятия (от 5 до 100 единиц) для оценки экономического эффекта и снижения простоев.</p>
+            <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-luxury">Связаться с инженерами</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-container">
+        <div>
+            <div class="footer-logo">p—11</div>
+            <p style="font-size: 11px; margin-top: 10px; font-family: var(--font-tech);">NO COMPROMISE IN ENGINEERING // 2025</p>
+        </div>
+        <div class="footer-links">
+            <a href="index.html#services">Направления</a>
+            <a href="projects.html">Активы</a>
+            <a href="javascript:void(0)" onclick="openOrderModal()">Контакты</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ORDER MODAL (RE-DESIGNED FOR CHANNELS OF COMMUNICATION) -->
+<div id="orderModal" class="modal-overlay">
+    <div class="modal-content">
+        <button onclick="closeOrderModal()" class="modal-close-btn">[ ЗАКРЫТЬ ]</button>
+        
+        <div style="margin-bottom: 25px;">
+            <span class="section-tag" style="font-size:10px;">Форма связи</span>
+            <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; margin-top:5px;">Связаться с бюро</h3>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Telegram -->
+            <a href="https://t.me/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">✈</div>
+                <div class="contact-name">Telegram</div>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/79991234567" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">💬</div>
+                <div class="contact-name">WhatsApp</div>
+            </a>
+            <!-- VK -->
+            <a href="https://vk.com/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">👥</div>
+                <div class="contact-name">ВКонтакте</div>
+            </a>
+            <!-- Email -->
+            <a href="mailto:info@p11.bureau" class="contact-btn-card">
+                <div class="contact-icon">✉</div>
+                <div class="contact-name">Email</div>
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; font-family: var(--font-tech); font-size: 10px; color: #888; text-transform: uppercase; text-align: center; line-height: 1.4;">
+            Выберите удобный канал связи. Мы ответим вам в течение рабочего дня.
+        </div>
+    </div>
+</div>
+
+<script>
+    // Управление курсором
+    const cursor = document.getElementById('cursor');
+    if (window.innerWidth > 1024) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+    }
+
+    // Modal Control
+    function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
+    function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Анимация увеличения курсора при наведении (только для больших экранов)
+    if (window.innerWidth > 1024) {
+        document.querySelectorAll('a, button, select, input, .contact-btn-card').forEach(el => {
+            el.addEventListener('mouseenter', () => { 
+                cursor.style.transform = 'scale(5)'; 
+                cursor.style.background = 'rgba(139, 38, 53, 0.15)'; 
+                cursor.style.border = '1px solid var(--accent)'; 
+            });
+            el.addEventListener('mouseleave', () => { 
+                cursor.style.transform = 'scale(1)'; 
+                cursor.style.background = 'var(--accent)'; 
+                cursor.style.border = 'none'; 
+            });
+        });
+    }
+</script>
+</body>
+</html>
