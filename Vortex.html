@@ -2,37 +2,58 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>P—11 | VORTEX: ПРОМЫШЛЕННЫЙ КОНТРОЛЬ</title>
     
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Inter:wght@900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         :root {
-            --bg: #FDFDFD; 
-            --fg: #000000; 
-            --gucci-red: #8B0000;
-            --line: #E8E8E8;
+            --bg: #FAF9F5; /* Мягкий успокаивающий алебастровый фон */
+            --fg: #1C1B1A; /* Мягкий черный/антрацит */
+            --accent: #8B2635; /* Приглушенный терракотово-гранатовый */
+            --accent-light: #F4EBE8;
+            --line: #E3DFD5; /* Деликатные разделители */
+            --card-bg: #FFFFFF;
             --font-main: 'Inter', sans-serif;
             --font-classic: 'Cormorant Garamond', serif;
             --font-tech: 'JetBrains Mono', monospace;
+            --radius-main: 16px; /* Однородный мягкий радиус для медиа */
         }
 
-        body { background: var(--bg); color: var(--fg); font-family: var(--font-main); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+        body { 
+            background: var(--bg); 
+            color: var(--fg); 
+            font-family: var(--font-main); 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased; 
+            line-height: 1.6;
+            width: 100%;
+        }
         
         #cursor { 
-            width: 12px; height: 12px; background: var(--gucci-red); 
+            width: 8px; height: 8px; background: var(--accent); 
             position: fixed; pointer-events: none; z-index: 10000; 
-            transition: transform 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 50%;
+            transition: transform 0.15s ease-out;
+            border-radius: 50%; display: none; 
+        }
+        @media (min-width: 1025px) { 
+            body { cursor: none; }
+            #cursor { display: block; } 
+            a, button, select, input, .contact-btn-card { cursor: none; }
         }
 
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* HEADER */
         header { 
-            padding: 30px 40px; 
+            padding: 20px 40px; 
             position: fixed; 
             width: 100%; 
             top: 0; 
@@ -40,77 +61,186 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            background: rgba(253,253,253,0.9); 
-            backdrop-filter: blur(10px); 
+            background: rgba(250, 249, 245, 0.85); 
+            backdrop-filter: blur(12px); 
             border-bottom: 1px solid var(--line);
         }
-        
-        .header-left { display: flex; flex-direction: column; align-items: flex-start; }
-        .red-dot { width: 8px; height: 8px; background: var(--gucci-red); border-radius: 50%; margin-bottom: 5px; margin-left: 2px; }
-        .logo-type { font-weight: 900; font-size: 32px; letter-spacing: -2px; line-height: 1; }
+        .logo-group { display: flex; align-items: center; gap: 10px; }
+        .logo-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .logo-type { font-weight: 900; font-size: 22px; letter-spacing: -1px; text-transform: lowercase; }
 
-        .header-right { display: flex; gap: 15px; }
-        .back-btn { 
-            font-family: var(--font-tech); font-size: 10px; color: var(--fg); text-decoration: none; font-weight: 800; 
-            letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--fg); 
-            padding: 12px 25px; transition: 0.3s; 
+        nav { display: flex; gap: 30px; }
+        nav a { 
+            font-size: 13px; text-decoration: none; color: var(--fg); 
+            font-weight: 500; transition: color 0.3s; 
         }
-        .back-btn:hover { background: var(--fg); color: var(--bg); }
+        nav a:hover { color: var(--accent); }
+
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .btn-header { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--fg); text-decoration: none; font-weight: 600; 
+            letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--fg); 
+            padding: 10px 20px; transition: all 0.3s; 
+        }
+        .btn-header.primary { border-color: var(--accent); color: var(--accent); }
+        .btn-header:hover { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+        @media (max-width: 768px) {
+            nav { display: none; }
+            header { padding: 15px 20px; }
+            .logo-type { font-size: 18px; }
+            .btn-header { padding: 8px 12px; font-size: 10px; }
+        }
 
         /* HERO SECTION */
         .p-hero { 
             margin-top: 100px;
             display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            height: 75vh;
+            grid-template-columns: 1.1fr 0.9fr; 
+            min-height: 75vh;
             border-bottom: 2px solid var(--fg);
-            overflow: hidden;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
+            padding: 40px;
+            gap: 60px;
         }
 
-        .hero-text { 
-            padding: 60px 40px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            border-right: 1px solid var(--line);
+        .hero-text { display: flex; flex-direction: column; justify-content: center; }
+        .p-label { font-family: var(--font-tech); font-size: 11px; color: var(--accent); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
+        .p-title { font-size: clamp(38px, 6vw, 110px); font-weight: 900; letter-spacing: -0.05em; text-transform: uppercase; line-height: 0.95; margin-bottom: 25px; }
+        .p-sub { font-family: var(--font-classic); font-size: clamp(20px, 3.5vw, 32px); font-style: italic; color: #4A4947; margin-top: 35px; max-width: 850px; line-height: 1.25; }
+
+        .hero-visual { 
+            background: #EAE5DB; 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 4/3; 
+            border-radius: var(--radius-main); 
+            overflow: hidden; 
+            box-shadow: 0 20px 45px rgba(0,0,0,0.06);
         }
-        
-        .p-label { font-family: var(--font-tech); font-size: 11px; color: var(--gucci-red); font-weight: 800; letter-spacing: 5px; margin-bottom: 20px; display: block; }
-        .p-title { font-size: clamp(40px, 8.5vw, 150px); font-weight: 900; letter-spacing: -0.07em; text-transform: uppercase; line-height: 1; }
-
-        .hero-visual { background: #111; position: relative; width: 100%; height: 100%; }
-        .hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.8; }
-
-        /* SPECS GRID */
-        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
-        .spec-item { padding: 30px 40px; border-right: 1px solid var(--line); }
-        .spec-item:last-child { border-right: none; }
-        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
-        .spec-value { font-size: 13px; font-weight: 800; text-transform: uppercase; color: #000; }
-
-        /* CONTENT SECTIONS */
-        .content-row { display: grid; grid-template-columns: 1.2fr 0.8fr; border-bottom: 1px solid var(--line); min-height: 70vh; }
-        .text-block { padding: 100px 60px; display: flex; flex-direction: column; justify-content: center; }
-        .visual-block { background: #F9F9F9; overflow: hidden; border-left: 1px solid var(--line); position: relative; }
-        .visual-block img { width: 100%; height: 100%; object-fit: cover; }
-
-        .section-h { font-family: var(--font-classic); font-size: 48px; font-style: italic; margin-bottom: 40px; line-height: 1.1; }
-        .section-p { font-size: 20px; color: #333; line-height: 1.4; margin-bottom: 30px; max-width: 500px; }
-
-        /* LOG LOGIC */
-        .terminal-log { background: #000; padding: 30px; border-radius: 2px; margin-top: 40px; }
-        .log-line { font-family: var(--font-tech); font-size: 11px; color: #00FF41; margin-bottom: 5px; }
-
-        footer { padding: 120px 40px; background: #000; color: #fff; text-align: left; }
-        .f-logo { font-size: clamp(40px, 15vw, 250px); font-weight: 900; letter-spacing: -0.08em; line-height: 0.7; }
+        .hero-visual img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--radius-main); }
 
         @media (max-width: 1024px) {
-            .p-hero, .content-row { grid-template-columns: 1fr; height: auto; }
-            .hero-visual, .visual-block { height: 350px; order: 1; border-left: none; }
-            .hero-text, .text-block { order: 2; padding: 40px 20px; border-right: none; }
-            .p-title { font-size: 12vw; }
+            .p-hero { grid-template-columns: 1fr; margin-top: 80px; padding: 40px 20px; gap: 40px; text-align: center; }
+            .hero-visual { max-width: 500px; margin: 0 auto; }
+        }
+
+        /* SPECS */
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); background: var(--card-bg); }
+        .spec-item { padding: 35px 40px; border-right: 1px solid var(--line); }
+        .spec-item:last-child { border-right: none; }
+        .spec-label { font-family: var(--font-tech); font-size: 9px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        .spec-value { font-size: 14px; font-weight: 800; text-transform: uppercase; color: #000; }
+
+        @media (max-width: 1024px) {
             .specs-grid { grid-template-columns: 1fr 1fr; }
-            #cursor { display: none; }
+            .spec-item { padding: 25px 20px; border-bottom: 1px solid var(--line); }
+            .spec-item:nth-child(2n) { border-right: none; }
+            .spec-item:nth-last-child(-n+2) { border-bottom: none; }
+        }
+
+        /* DETAILED CONTENT SECTIONS */
+        .content-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); min-height: 70vh; align-items: center; max-width: 1400px; margin: 0 auto; gap: 60px; padding: 60px 40px; }
+        .text-block { display: flex; flex-direction: column; justify-content: center; }
+        
+        .visual-block { 
+            background: #F0EDE6; 
+            overflow: hidden; 
+            position: relative; 
+            border-radius: var(--radius-main); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            width: 100%;
+            aspect-ratio: 16/10;
+        }
+        .visual-block img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-main); }
+
+        .section-h { font-family: var(--font-classic); font-size: clamp(28px, 4vw, 44px); font-style: italic; margin-bottom: 30px; line-height: 1.25; }
+        .section-p { font-size: 16px; color: #555451; line-height: 1.6; margin-bottom: 20px; }
+        .section-p b { color: #000; }
+
+        /* Terminal Logs style */
+        .terminal-log { 
+            background: #141312; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin-top: 30px; 
+            border: 1px solid #2C2A29;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .log-line { font-family: var(--font-tech); font-size: 12px; color: #00FF41; margin-bottom: 8px; line-height: 1.4; }
+        .log-line:last-child { margin-bottom: 0; }
+
+        @media (max-width: 1024px) {
+            .content-row { grid-template-columns: 1fr; gap: 30px; padding: 40px 20px; }
+            .content-row.reverse { direction: rtl; }
+            .content-row.reverse .text-block { direction: ltr; }
+            .visual-block { aspect-ratio: 4/3; }
+        }
+
+        /* B2B CALL TO ACTION / PILOT ENTRY */
+        .cta-section { padding: 100px 40px; text-align: center; border-bottom: 1px solid var(--line); background: var(--bg); }
+        .cta-container { max-width: 700px; margin: 0 auto; }
+        .btn-luxury { 
+            padding: 22px 60px; background: var(--fg); color: #fff;
+            text-transform: uppercase; font-family: var(--font-tech); font-size: 12px;
+            letter-spacing: 3px; text-decoration: none; transition: 0.4s; display: inline-block;
+            border-radius: 4px; font-weight: 600; border: 1px solid var(--fg);
+        }
+        .btn-luxury:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
+
+        /* FOOTER */
+        footer { padding: 80px 40px; background: #111; color: #888; border-top: 1px solid #222; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -2px; }
+        .footer-links { display: flex; gap: 30px; }
+        .footer-links a { color: #888; text-decoration: none; font-size: 13px; transition: color 0.3s; }
+        .footer-links a:hover { color: #fff; }
+
+        @media (max-width: 768px) {
+            footer { padding: 60px 20px; }
+            .footer-container { flex-direction: column; gap: 30px; text-align: center; }
+            .footer-links { gap: 20px; }
+        }
+
+        /* MODAL FOR SOCIAL CONTACT OPTIONS */
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(28,27,26,0.6); z-index: 2000; align-items: center; 
+            justify-content: center; backdrop-filter: blur(8px); 
+        }
+        .modal-content { 
+            background: #fff; border-radius: var(--radius-main); padding: 40px 30px; max-width: 500px; 
+            width: 90%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
+            max-height: 90vh; overflow-y: auto;
+        }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .contact-btn-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 25px 20px; border: 1px solid var(--line); background: var(--card-bg);
+            border-radius: 8px; text-decoration: none; color: var(--fg); transition: all 0.3s ease; text-align: center;
+        }
+        .contact-btn-card:hover { border-color: var(--accent); background: var(--accent-light); transform: translateY(-2px); }
+        .contact-icon { font-size: 24px; margin-bottom: 10px; color: var(--accent); }
+        .contact-name { font-family: var(--font-tech); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .modal-close-btn { 
+            position: absolute; top: 25px; right: 30px; background: transparent !important; 
+            border: none !important; box-shadow: none !important; outline: none !important;
+            padding: 0 !important; margin: 0 !important; font-family: var(--font-tech); 
+            font-size: 11px; color: #9E9D9A; cursor: pointer; letter-spacing: 1px;
+            text-transform: uppercase; transition: color 0.3s ease;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+        .modal-close-btn:hover { color: var(--accent); }
+
+        @media (max-width: 480px) {
+            .modal-content { padding: 35px 20px 25px; }
+            .contact-grid { grid-template-columns: 1fr; gap: 10px; }
+            .contact-btn-card { padding: 18px 15px; }
+            .modal-close-btn { top: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -119,12 +249,18 @@
 <div id="cursor"></div>
 
 <header>
-    <div class="header-left">
-        <div class="red-dot"></div>
-        <div class="logo-type">p—11</div>
+    <div class="logo-group">
+        <div class="logo-dot"></div>
+        <div class="logo-type">p—11 bureau</div>
     </div>
-    <div class="header-right">
-        <a href="index.html" class="back-btn">← К СПИСКУ АКТИВОВ</a>
+    <nav>
+        <a href="index.html#about">О бюро</a>
+        <a href="index.html#services">Услуги</a>
+        <a href="index.html#method">Протокол</a>
+    </nav>
+    <div class="header-actions">
+        <a href="projects.html" class="btn-header">Портфолио</a>
+        <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-header primary">Связаться</a>
     </div>
 </header>
 
@@ -133,10 +269,11 @@
     <section class="p-hero">
         <div class="hero-text">
             <span class="p-label">INDUSTRIAL MONITORING // UNIT 005</span>
-            <h1 class="p-title">VORTEX</h1>
+            <h1 class="p-title">Vortex</h1>
+            <p class="p-sub">Система прецизионного технологического контроля и аппаратной тактируемой диагностики промышленного оборудования.</p>
         </div>
         <div class="hero-visual">
-            <img src="turbine.jpg" alt="Oxygen Turbine Impeller Control">
+            <img src="vortex.jpg" alt="Мониторинг крыльчатки Vortex">
         </div>
     </section>
 
@@ -164,41 +301,93 @@
     <section class="content-row">
         <div class="text-block">
             <h2 class="section-h">Стабильность в агрессивных средах.</h2>
-            <p class="section-p">Разработка системы контроля частоты вращения крыльчатки для кислородных станций высокого давления. В условиях сжижения газов точность данных определяет безопасность всего комплекса.</p>
-            <p class="section-p">Решение базируется на <b>низкоуровневом тактировании</b>: использование 16-битного аппаратного таймера в режиме внешнего счетчика позволяет фиксировать высокочастотные импульсы без нагрузки на основное вычислительное ядро.</p>
+            <p class="section-p">Мы разработали прецизионную систему контроля частоты вращения крыльчатки для кислородных станций высокого давления. В жестких условиях сжижения и транспортировки газов точность данных напрямую определяет безопасность всего промышленного комплекса.</p>
+            <p class="section-p">Решение базируется на стабильном <b>низкоуровневом тактировании</b>: использование встроенного 16-битного аппаратного таймера в режиме внешнего асинхронного счетчика позволяет надежно фиксировать высокочастотные импульсы без нагрузки на основное вычислительное ядро процессора.</p>
         </div>
         <div class="visual-block">
-            <img src="turbine_schematic.jpg" alt="System Logic Visual">
+            <img src="vortex.jpg" alt="Схема логики работы Vortex">
         </div>
     </section>
 
     <!-- DESCRIPTION BLOCK 2 (TECHNICAL REFINEMENT) -->
-    <section class="content-row">
-        <div class="visual-block" style="border-left:none; border-right: 1px solid var(--line);">
-            <img src="turbine_pcb.jpg" alt="Low-level Signal Analysis">
+    <section class="content-row reverse">
+        <div class="visual-block">
+            <img src="vortex.jpg" alt="Низкоуровневый анализ сигналов платы">
         </div>
         <div class="text-block">
             <h2 class="section-h">Атомарная целостность данных.</h2>
-            <p class="section-p">Для предотвращения ошибок состояния гонки (race condition) при чтении многобайтовых регистров внедрен протокол <b>атомарного доступа</b> с временным блокированием прерываний.</p>
-            <p class="section-p">Система преобразует цифровую частоту в аналоговый сигнал стандарта <b>4–20 мА</b>, обеспечивая бесшовную интеграцию с промышленными контроллерами (ПЛК) по всему миру.</p>
+            <p class="section-p">Для предотвращения критических ошибок состояния гонки (race condition) при чтении многобайтовых регистров в режиме реального времени нами внедрен надежный протокол <b>атомарного доступа</b> с временным блокированием прерываний на уровне ядра.</p>
+            <p class="section-p">Модуль Vortex преобразует цифровую частоту в стабильный аналоговый сигнал промышленного стандарта <b>4–20 мА</b>, обеспечивая бесшовную интеграцию устройства с большинством стандартных ПЛК по всему миру.</p>
             
-            <div class="terminal-log">
-                <div class="log-line">>>> INITIALIZING HARDWARE_TIMER_1... OK</div>
-                <div class="log-line">>>> CURRENT_LOOP_INTERFACE: 4-20mA STANDBY</div>
-                <div class="log-line">>>> EMERGENCY_RELAY_STATUS: ARMED</div>
-                <div class="log-line">>>> SAMPLING_RATE: 1000ms WINDOW</div>
-            </div>
         </div>
     </section>
 
-    <!-- FINAL BUREAU BANNER -->
-    <footer>
-        <div class="f-logo">p—11</div>
-        <p style="font-family: var(--font-tech); font-size: 11px; color: #666; letter-spacing: 5px; margin-top: 40px;">BUREAU OF INDUSTRIAL SOLUTIONS // 2025</p>
-    </footer>
+    <!-- B2B CALL TO ACTION / PILOT ENTRY -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <span class="p-label">B2B Integration</span>
+            <h2 class="section-h" style="font-style: normal; text-transform: uppercase; letter-spacing: -1px;">Интеграция Vortex</h2>
+            <p class="section-p" style="margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">Мы предлагаем проектирование и адаптацию аппаратных модулей Vortex под параметры и интерфейсы вашего оборудования для автоматизации контроля.</p>
+            <a href="javascript:void(0)" onclick="openOrderModal()" class="btn-luxury">Обсудить спецификацию</a>
+        </div>
+    </section>
 </main>
 
+<footer>
+    <div class="footer-container">
+        <div>
+            <div class="footer-logo">p—11</div>
+            <p style="font-size: 11px; margin-top: 10px; font-family: var(--font-tech);">NO COMPROMISE IN ENGINEERING // 2025</p>
+        </div>
+        <div class="footer-links">
+            <a href="index.html#services">Направления</a>
+            <a href="projects.html">Портфолио</a>
+            <a href="javascript:void(0)" onclick="openOrderModal()">Контакты</a>
+        </div>
+    </div>
+</footer>
+
+<!-- ORDER MODAL (RE-DESIGNED FOR CHANNELS OF COMMUNICATION) -->
+<div id="orderModal" class="modal-overlay">
+    <div class="modal-content">
+        <button onclick="closeOrderModal()" class="modal-close-btn">[ ЗАКРЫТЬ ]</button>
+        
+        <div style="margin-bottom: 25px;">
+            <span class="section-tag" style="font-size:10px;">Форма связи</span>
+            <h3 style="font-size:24px; font-weight:800; text-transform:uppercase; margin-top:5px;">Связаться с бюро</h3>
+        </div>
+
+        <div class="contact-grid">
+            <!-- Telegram -->
+            <a href="https://t.me/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">✈</div>
+                <div class="contact-name">Telegram</div>
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/79991234567" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">💬</div>
+                <div class="contact-name">WhatsApp</div>
+            </a>
+            <!-- VK -->
+            <a href="https://vk.com/p11lab" target="_blank" class="contact-btn-card">
+                <div class="contact-icon">👥</div>
+                <div class="contact-name">ВКонтакте</div>
+            </a>
+            <!-- Email -->
+            <a href="mailto:info@p11.bureau" class="contact-btn-card">
+                <div class="contact-icon">✉</div>
+                <div class="contact-name">Email</div>
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; font-family: var(--font-tech); font-size: 10px; color: #888; text-transform: uppercase; text-align: center; line-height: 1.4;">
+            Выберите удобный канал связи. Мы ответим вам в течение рабочего дня.
+        </div>
+    </div>
+</div>
+
 <script>
+    // Управление курсором
     const cursor = document.getElementById('cursor');
     if (window.innerWidth > 1024) {
         document.addEventListener('mousemove', (e) => {
@@ -207,18 +396,30 @@
         });
     }
 
-    document.querySelectorAll('a, button').forEach(el => {
-        el.addEventListener('mouseenter', () => { 
-            cursor.style.transform = 'scale(6)'; 
-            cursor.style.background = 'rgba(139, 0, 0, 0.1)'; 
-            cursor.style.border = '1px solid var(--gucci-red)'; 
+    // Modal Control
+    function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
+    function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Анимация увеличения курсора при наведении (только для больших экранов)
+    if (window.innerWidth > 1024) {
+        document.querySelectorAll('a, button, select, input, .contact-btn-card').forEach(el => {
+            el.addEventListener('mouseenter', () => { 
+                cursor.style.transform = 'scale(5)'; 
+                cursor.style.background = 'rgba(139, 38, 53, 0.15)'; 
+                cursor.style.border = '1px solid var(--accent)'; 
+            });
+            el.addEventListener('mouseleave', () => { 
+                cursor.style.transform = 'scale(1)'; 
+                cursor.style.background = 'var(--accent)'; 
+                cursor.style.border = 'none'; 
+            });
         });
-        el.addEventListener('mouseleave', () => { 
-            cursor.style.transform = 'scale(1)'; 
-            cursor.style.background = 'var(--gucci-red)'; 
-            cursor.style.border = 'none'; 
-        });
-    });
+    }
 </script>
 </body>
 </html>
