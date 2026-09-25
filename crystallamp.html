@@ -564,7 +564,7 @@
         .services-container { max-width: 1200px; margin: 0 auto; }
         
         /* Изменение сетки услуг под 3 колонки */
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; text-align: left; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, 1fr); gap: 30px; margin-top: 40px; justify-content: center; }
         
         .service-card { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius-main); transition: all 0.3s; background: var(--card-bg); }
         .service-card:hover { border-color: var(--accent); box-shadow: 0 15px 30px rgba(0,0,0,0.03); }
@@ -1005,12 +1005,6 @@
                     <h3 class="service-title">Интеграция вашего кристалла</h3>
                     <p class="service-desc">Мы спроектируем устройство под ваш собственный кристалл. Точный расчет преломления и прозрачности материала позволит создать гармоничный и персональный сценарий свечения.</p>
                 </div>
-                
-                <!-- 3. Новая пустая карточка-заглушка с штриховым контуром -->
-                <div class="service-card placeholder-card">
-                    <div class="placeholder-icon">✦</div>
-                    <div class="placeholder-text">[ Место для нового направления ]</div>
-                </div>
             </div>
         </div>
     </section>
@@ -1021,7 +1015,7 @@
             <span class="section-tag">Приобретение</span>
             <h2 class="section-title" style="margin-top:10px;">Владение историей</h2>
             <p style="font-size:17px; color:#555451; margin-top:15px;">Каждое устройство собирается, калибруется и упаковывается вручную в нашей мастерской. Каждая партия строго лимитирована.</p>
-            <div class="price-tag">от 8 500 ₽</div>
+            <div class="price-tag">12 000 ₽</div>
             <button onclick="openOrderModal()" class="btn-main" style="padding: 22px 60px;">Заказать Inspiratus</button>
         </div>
     </section>
