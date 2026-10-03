@@ -17,24 +17,24 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); font-family: var(--font-main); line-height: 1.6; font-size: 16px; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-main); line-height: 1.6; font-size: 16px; overflow-x: hidden; width: 100%; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
 
         /* HEADER */
-        header { padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        header { padding: 40px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; width: 100%; }
         .logo { font-weight: 800; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
         .nav a { color: var(--text-muted); text-decoration: none; font-size: 12px; margin-left: 30px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav a:hover { color: var(--gold); }
 
         /* HERO */
         .hero { padding: 120px 0; }
-        .hero h1 { font-size: clamp(45px, 8vw, 85px); font-weight: 800; line-height: 0.95; letter-spacing: -1px; text-transform: uppercase; margin-bottom: 30px; }
+        .hero h1 { font-size: clamp(36px, 7vw, 85px); font-weight: 800; line-height: 1; letter-spacing: -1px; text-transform: uppercase; margin-bottom: 30px; }
         .hero p { font-size: 18px; color: var(--text-muted); max-width: 600px; margin-bottom: 50px; }
         .btn-gold { 
             padding: 16px 32px; background: var(--gold); color: #000; text-decoration: none; 
             font-family: var(--font-mono); font-size: 12px; font-weight: 700; text-transform: uppercase; display: inline-block;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; text-align: center;
         }
         .btn-gold:hover {
             background: #e0b86c;
@@ -42,19 +42,20 @@
 
         /* PRODUCT SLIDER & INFO */
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 80px 0; }
-        .slider-container { width: 100%; aspect-ratio: 1/1; background: #000; border: 1px solid #222; overflow: hidden; position: relative; }
+        .slider-container { width: 100%; aspect-ratio: 1/1; background: #000; border: 1px solid #222; overflow: hidden; position: relative; border-radius: 4px; }
         .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease; }
         .slide { flex: 0 0 100%; width: 100%; height: 100%; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; }
-        .slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; z-index: 10; font-size: 14px; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; z-index: 10; font-size: 14px; display: flex; align-items: center; justify-content: center; }
         .prev-arrow { left: 10px; }
         .next-arrow { right: 10px; }
 
         /* SECTIONS & CONTENT */
         section { padding: 80px 0; border-bottom: 1px solid #222; }
-        h2 { font-size: 32px; margin-bottom: 40px; font-weight: 700; text-transform: uppercase; }
+        h2 { font-size: 32px; margin-bottom: 40px; font-weight: 700; text-transform: uppercase; letter-spacing: -0.5px; }
         .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
         .text-block p { color: var(--text-muted); margin-bottom: 20px; }
+        .text-block p:last-child { margin-bottom: 0; }
         
         .specs-table { border-top: 1px solid #222; }
         .specs-row { display: grid; grid-template-columns: 1fr 1fr; padding: 20px 0; border-bottom: 1px solid #222; font-family: var(--font-mono); font-size: 13px; }
@@ -71,6 +72,7 @@
             text-align: center;
             gap: 20px; 
             background: linear-gradient(180deg, #14110a 0%, #0a0a0a 100%);
+            border-radius: 4px;
         }
         .fsi-logo-box { 
             width: 220px; 
@@ -83,16 +85,49 @@
             max-width: 100%; 
             max-height: 100%; 
             object-fit: contain; 
+            display: block;
         }
 
         footer { padding: 60px 0; text-align: center; color: #555; font-size: 12px; border-top: 1px solid #222; }
 
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
         @media (max-width: 768px) {
-            .hero { padding: 80px 20px; }
-            .product-grid, .content-grid, .specs-row { grid-template-columns: 1fr; }
-            .specs-row span:first-child { color: #fff; margin-bottom: 5px; }
-            .fsi-card { padding: 40px 20px; }
-            header { padding: 30px 20px; }
+            body { font-size: 15px; }
+            .container { padding: 0 20px; }
+            header { padding: 25px 20px; }
+            .logo { font-size: 18px; }
+            .nav a { margin-left: 16px; font-size: 11px; }
+
+            .hero { padding: 70px 0 50px; }
+            .hero h1 { font-size: clamp(32px, 8.5vw, 48px); margin-bottom: 20px; }
+            .hero p { font-size: 16px; margin-bottom: 35px; }
+            .hero .btn-gold { width: 100%; }
+
+            section { padding: 55px 0; }
+            h2 { font-size: 26px; margin-bottom: 25px; }
+
+            .product-grid { grid-template-columns: 1fr; gap: 35px; padding: 40px 0; }
+            .product-info h2 { font-size: 24px; }
+            .product-info .btn-gold { width: 100%; }
+            .slide-arrow { width: 36px; height: 36px; font-size: 12px; }
+
+            .content-grid { grid-template-columns: 1fr; gap: 25px; }
+
+            .specs-row { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; }
+            .specs-row span:first-child { color: #fff; font-size: 12px; }
+
+            .fsi-section { padding: 50px 0 30px; }
+            .fsi-card { padding: 35px 20px; gap: 15px; }
+            .fsi-card h3 { font-size: 18px; }
+            .fsi-logo-box { width: 180px; height: 75px; }
+
+            footer { padding: 40px 20px; }
+        }
+
+        @media (max-width: 380px) {
+            header { padding: 20px 15px; }
+            .nav a { margin-left: 10px; font-size: 10px; }
+            .container { padding: 0 15px; }
         }
     </style>
 </head>
@@ -121,11 +156,11 @@
                 <div class="slider-track" id="sliderTrack">
                     <div class="slide"><img src="EcoSense.png" alt="EcoSense Module"></div>
                     <div class="slide"><img src="EcoSense2.png" alt="EcoSense Interface"></div>
-					<div class="slide"><img src="EcoSense3.png" alt="EcoSense Interface"></div>
-					<div class="slide"><img src="EcoSense4.png" alt="EcoSense Interface"></div>
+                    <div class="slide"><img src="EcoSense3.png" alt="EcoSense Interface"></div>
+                    <div class="slide"><img src="EcoSense4.png" alt="EcoSense Interface"></div>
                 </div>
-                <button class="slide-arrow prev-arrow" onclick="moveSlide(-1)">❮</button>
-                <button class="slide-arrow next-arrow" onclick="moveSlide(1)">❯</button>
+                <button class="slide-arrow prev-arrow" onclick="moveSlide(-1)" aria-label="Назад">❮</button>
+                <button class="slide-arrow next-arrow" onclick="moveSlide(1)" aria-label="Вперед">❯</button>
             </div>
             
             <div class="product-info">
@@ -190,13 +225,13 @@
         track.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 
-    // Touch Swipe Support
+    // Touch Swipe Support для телефонов
     let touchStartX = 0;
     const slider = document.getElementById('ecoSlider');
     slider.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, { passive: true });
     slider.addEventListener('touchend', e => {
         let diff = touchStartX - e.changedTouches[0].screenX;
-        if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
+        if (Math.abs(diff) > 40) moveSlide(diff > 0 ? 1 : -1);
     }, { passive: true });
 </script>
 
